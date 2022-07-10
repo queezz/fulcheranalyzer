@@ -1,0 +1,687 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coronal model example &#8212; Fulcher Analyzer  documentation</title>
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
+
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/thebelab-helper.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="fulcheranalyzer" href="../modules.html" />
+    <link rel="prev" title="Examples" href="index.html" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="None">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
+
+    
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Fulcher Analyzer</p>
+  
+</a>
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="fas fa-bars"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 current active nav-item">
+ <a class="reference internal nav-link" href="index.html">
+  Examples
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../modules.html">
+  fulcheranalyzer
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
+          
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Coronal model example
+  </a>
+ </li>
+</ul>
+
+  </div>
+</nav>
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
+
+          
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+    
+    <div class="toc-item">
+      
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Coronal model example
+  </a>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#deuterium">
+   Deuterium
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#figure-8-d2">
+     Figure 8, D2
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#figure-10-d2">
+     Figure 10, D2
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#figure-12-d2">
+     Figure 12, D2
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#hydrogen">
+   Hydrogen
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#figure-7-h2">
+     Figure 7, H2
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#figure-9-h2">
+     Figure 9, H2
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#figure-11-h2">
+     Figure 11, H2
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+</nav>
+    </div>
+    
+    <div class="toc-item">
+      
+    </div>
+    
+  
+</div>
+
+
+          
+          
+          <div class="bd-content col-12 col-md-9 col-xl-7">
+              
+              <article class="bd-article" role="main">
+                
+  <div class="section" id="coronal-model-example">
+<h1>Coronal model example<a class="headerlink" href="#coronal-model-example" title="Permalink to this headline">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;../../../&quot;</span><span class="p">))</span>
+<span class="kn">from</span> <span class="nn">fulcheranalyzer</span> <span class="kn">import</span> <span class="n">coronalmodel</span> <span class="k">as</span> <span class="n">fcm</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="deuterium">
+<h1>Deuterium<a class="headerlink" href="#deuterium" title="Permalink to this headline">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load data, fit d-state with 2 Trot</span>
+<span class="n">arg</span> <span class="o">=</span> <span class="p">[</span><span class="mi">150482</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="s1">&#39;Deuterium&#39;</span><span class="p">]</span>
+<span class="c1">#arg = [152478,10,&#39;Hydrogen&#39;]</span>
+<span class="n">isotop</span> <span class="o">=</span> <span class="n">arg</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">inte</span> <span class="o">=</span> <span class="n">fcm</span><span class="o">.</span><span class="n">read_intensities</span><span class="p">(</span><span class="o">*</span><span class="n">arg</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">bp</span> <span class="o">=</span> <span class="n">fcm</span><span class="o">.</span><span class="n">BoltzmannPlot</span><span class="p">(</span><span class="n">inte</span><span class="p">,</span><span class="n">isotop</span><span class="p">)</span>
+<span class="n">bp</span><span class="o">.</span><span class="n">autofit</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="figure-8-d2">
+<h2>Figure 8, D2<a class="headerlink" href="#figure-8-d2" title="Permalink to this headline">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#plt.style.use(&#39;./ishiharastyle.mplstyle&#39;)</span>
+
+<span class="n">bp</span><span class="o">.</span><span class="n">plot_popd_paper</span><span class="p">(</span><span class="n">stylename</span><span class="o">=</span><span class="s1">&#39;color&#39;</span><span class="p">,</span><span class="n">ms</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="c1">#ticks_ishihara()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="mf">2e-2</span><span class="p">,</span><span class="mf">1.2</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="o">-</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.4</span><span class="p">])</span>
+
+<span class="c1">#gcf().set_size_inches(figsize(8))</span>
+<span class="n">fcm</span><span class="o">.</span><span class="n">set_tick_size</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">(),</span><span class="o">*</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.6</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span><span class="o">.</span><span class="n">set_dpi</span><span class="p">(</span><span class="mi">120</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/2ff740f02ba7eff4148dfaaf5ec8bfae7b42c5a4adb9a261bb19bab894cde8cd.png" src="../_images/2ff740f02ba7eff4148dfaaf5ec8bfae7b42c5a4adb9a261bb19bab894cde8cd.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bp</span><span class="o">.</span><span class="n">print_fit_result</span><span class="p">()</span>
+<span class="n">bp</span><span class="o">.</span><span class="n">trotall</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:.0f}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>alpha = 0.761 +- 0.152
+beta = 0.416 +- 0.058
+Trot1 = 280 +- 88
+Trot2 = 1783 +- 134
+</pre></div>
+</div>
+<div class="output text_html"><style type="text/css">
+</style>
+<table id="T_3624c_">
+  <thead>
+    <tr>
+      <th class="blank level0" >&nbsp;</th>
+      <th class="col_heading level0 col0" >d Trot1</th>
+      <th class="col_heading level0 col1" >d er1</th>
+      <th class="col_heading level0 col2" >d Trot2</th>
+      <th class="col_heading level0 col3" >d er2</th>
+      <th class="col_heading level0 col4" >X Trot1</th>
+      <th class="col_heading level0 col5" >X er1</th>
+      <th class="col_heading level0 col6" >X Trot2</th>
+      <th class="col_heading level0 col7" >X er2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_3624c_level0_row0" class="row_heading level0 row0" >0</th>
+      <td id="T_3624c_row0_col0" class="data row0 col0" >280</td>
+      <td id="T_3624c_row0_col1" class="data row0 col1" >88</td>
+      <td id="T_3624c_row0_col2" class="data row0 col2" >1783</td>
+      <td id="T_3624c_row0_col3" class="data row0 col3" >134</td>
+      <td id="T_3624c_row0_col4" class="data row0 col4" >561</td>
+      <td id="T_3624c_row0_col5" class="data row0 col5" >176</td>
+      <td id="T_3624c_row0_col6" class="data row0 col6" >3572</td>
+      <td id="T_3624c_row0_col7" class="data row0 col7" >268</td>
+    </tr>
+    <tr>
+      <th id="T_3624c_level0_row1" class="row_heading level0 row1" >1</th>
+      <td id="T_3624c_row1_col0" class="data row1 col0" >270</td>
+      <td id="T_3624c_row1_col1" class="data row1 col1" >85</td>
+      <td id="T_3624c_row1_col2" class="data row1 col2" >1719</td>
+      <td id="T_3624c_row1_col3" class="data row1 col3" >129</td>
+      <td id="T_3624c_row1_col4" class="data row1 col4" >541</td>
+      <td id="T_3624c_row1_col5" class="data row1 col5" >170</td>
+      <td id="T_3624c_row1_col6" class="data row1 col6" >3443</td>
+      <td id="T_3624c_row1_col7" class="data row1 col7" >258</td>
+    </tr>
+    <tr>
+      <th id="T_3624c_level0_row2" class="row_heading level0 row2" >2</th>
+      <td id="T_3624c_row2_col0" class="data row2 col0" >260</td>
+      <td id="T_3624c_row2_col1" class="data row2 col1" >81</td>
+      <td id="T_3624c_row2_col2" class="data row2 col2" >1654</td>
+      <td id="T_3624c_row2_col3" class="data row2 col3" >124</td>
+      <td id="T_3624c_row2_col4" class="data row2 col4" >520</td>
+      <td id="T_3624c_row2_col5" class="data row2 col5" >163</td>
+      <td id="T_3624c_row2_col6" class="data row2 col6" >3315</td>
+      <td id="T_3624c_row2_col7" class="data row2 col7" >248</td>
+    </tr>
+    <tr>
+      <th id="T_3624c_level0_row3" class="row_heading level0 row3" >3</th>
+      <td id="T_3624c_row3_col0" class="data row3 col0" >250</td>
+      <td id="T_3624c_row3_col1" class="data row3 col1" >78</td>
+      <td id="T_3624c_row3_col2" class="data row3 col2" >1590</td>
+      <td id="T_3624c_row3_col3" class="data row3 col3" >119</td>
+      <td id="T_3624c_row3_col4" class="data row3 col4" >500</td>
+      <td id="T_3624c_row3_col5" class="data row3 col5" >157</td>
+      <td id="T_3624c_row3_col6" class="data row3 col6" >3186</td>
+      <td id="T_3624c_row3_col7" class="data row3 col7" >239</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">como</span> <span class="o">=</span> <span class="n">fcm</span><span class="o">.</span><span class="n">CoronaModel</span><span class="p">(</span><span class="n">bp</span><span class="p">)</span>
+<span class="n">como</span><span class="o">.</span><span class="n">print_pop_shape</span><span class="p">()</span>
+<span class="n">como</span><span class="o">.</span><span class="n">coronal_autofit</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>saved R-matrix found, loaded
+vd = 0-3	Jd = 1-14
+vX = 0-3	Jx = 0-14
+Tvib = 7743 +- 557
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#plt.style.use(&#39;./ishiharastyle.mplstyle&#39;)</span>
+<span class="n">como</span><span class="o">.</span><span class="n">plot_coronal_result</span><span class="p">()</span>
+
+<span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span><span class="o">.</span><span class="n">axes</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">sca</span><span class="p">(</span><span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/25c988ee5089fd565acba57e2fcaa20a389f97857f6d0fbb2169b2cc650763e9.png" src="../_images/25c988ee5089fd565acba57e2fcaa20a389f97857f6d0fbb2169b2cc650763e9.png" />
+</div>
+</div>
+</div>
+<div class="section" id="figure-10-d2">
+<h2>Figure 10, D2<a class="headerlink" href="#figure-10-d2" title="Permalink to this headline">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#plt.style.use(&#39;./ishiharastyle.mplstyle&#39;)</span>
+<span class="n">como</span><span class="o">.</span><span class="n">plot_popx_paper</span><span class="p">(</span><span class="n">ms</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="c1">#gcf().set_size_inches(figsize(8))</span>
+<span class="n">fcm</span><span class="o">.</span><span class="n">set_tick_size</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">(),</span><span class="o">*</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.6</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span><span class="o">.</span><span class="n">set_dpi</span><span class="p">(</span><span class="mi">140</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/bbffe022e560f3a4835e2d480704feab46d35c2f14c6afc36bbbfc1c21085a71.png" src="../_images/bbffe022e560f3a4835e2d480704feab46d35c2f14c6afc36bbbfc1c21085a71.png" />
+</div>
+</div>
+</div>
+<div class="section" id="figure-12-d2">
+<h2>Figure 12, D2<a class="headerlink" href="#figure-12-d2" title="Permalink to this headline">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#plt.style.use(&#39;./ishiharastyle.mplstyle&#39;)</span>
+<span class="n">como</span><span class="o">.</span><span class="n">plot_paper_compare</span><span class="p">(</span><span class="n">yerr</span><span class="o">=</span><span class="n">como</span><span class="o">.</span><span class="n">yerr_flat</span><span class="p">,</span><span class="n">ms</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="n">fcm</span><span class="o">.</span><span class="n">figsize</span><span class="p">(</span><span class="mi">19</span><span class="p">,</span><span class="n">ratio</span><span class="o">=</span><span class="mi">6</span><span class="o">/</span><span class="mi">14</span><span class="p">))</span>
+<span class="n">fcm</span><span class="o">.</span><span class="n">set_tick_size</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">(),</span><span class="o">*</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.6</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span><span class="o">.</span><span class="n">set_dpi</span><span class="p">(</span><span class="mi">140</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.0, 0.1)
+</pre></div>
+</div>
+<img alt="../_images/6808072cfebd15ef740213514df9c0dfcb7881017da274e545c838144a9e8278.png" src="../_images/6808072cfebd15ef740213514df9c0dfcb7881017da274e545c838144a9e8278.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="hydrogen">
+<h1>Hydrogen<a class="headerlink" href="#hydrogen" title="Permalink to this headline">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load data, fit d-state with 2 Trot</span>
+<span class="c1">#arg = [150482,7,&#39;Deuterium&#39;]</span>
+<span class="n">arg</span> <span class="o">=</span> <span class="p">[</span><span class="mi">152478</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;Hydrogen&#39;</span><span class="p">]</span>
+<span class="n">isotop</span> <span class="o">=</span> <span class="n">arg</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">inte</span> <span class="o">=</span> <span class="n">fcm</span><span class="o">.</span><span class="n">read_intensities</span><span class="p">(</span><span class="o">*</span><span class="n">arg</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">bph</span> <span class="o">=</span> <span class="n">fcm</span><span class="o">.</span><span class="n">BoltzmannPlot</span><span class="p">(</span><span class="n">inte</span><span class="p">,</span><span class="n">isotop</span><span class="p">)</span>
+<span class="n">bph</span><span class="o">.</span><span class="n">autofit</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="figure-7-h2">
+<h2>Figure 7, H2<a class="headerlink" href="#figure-7-h2" title="Permalink to this headline">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#plt.style.use(&#39;./ishiharastyle.mplstyle&#39;)</span>
+
+<span class="n">bph</span><span class="o">.</span><span class="n">plot_popd_paper</span><span class="p">(</span><span class="n">stylename</span><span class="o">=</span><span class="s1">&#39;color&#39;</span><span class="p">,</span><span class="n">ms</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="c1">#ticks_ishihara()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="o">-</span><span class="mf">0.02</span><span class="p">,</span><span class="mf">0.5</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="mf">2e-2</span><span class="p">,</span><span class="mf">1.1</span><span class="p">])</span>
+
+<span class="n">fcm</span><span class="o">.</span><span class="n">set_tick_size</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">(),</span><span class="o">*</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.6</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span><span class="o">.</span><span class="n">set_dpi</span><span class="p">(</span><span class="mi">120</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/47ba2447ce62e6aea193d549b83897cdd30d6d585ed4f052abf47578851f5ccb.png" src="../_images/47ba2447ce62e6aea193d549b83897cdd30d6d585ed4f052abf47578851f5ccb.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bph</span><span class="o">.</span><span class="n">print_fit_result</span><span class="p">()</span>
+<span class="n">bph</span><span class="o">.</span><span class="n">trotall</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:.0f}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>alpha = 0.734 +- 0.161
+beta = 0.447 +- 0.059
+Trot1 = 375 +- 127
+Trot2 = 2079 +- 165
+</pre></div>
+</div>
+<div class="output text_html"><style type="text/css">
+</style>
+<table id="T_f1f0c_">
+  <thead>
+    <tr>
+      <th class="blank level0" >&nbsp;</th>
+      <th class="col_heading level0 col0" >d Trot1</th>
+      <th class="col_heading level0 col1" >d er1</th>
+      <th class="col_heading level0 col2" >d Trot2</th>
+      <th class="col_heading level0 col3" >d er2</th>
+      <th class="col_heading level0 col4" >X Trot1</th>
+      <th class="col_heading level0 col5" >X er1</th>
+      <th class="col_heading level0 col6" >X Trot2</th>
+      <th class="col_heading level0 col7" >X er2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_f1f0c_level0_row0" class="row_heading level0 row0" >0</th>
+      <td id="T_f1f0c_row0_col0" class="data row0 col0" >375</td>
+      <td id="T_f1f0c_row0_col1" class="data row0 col1" >127</td>
+      <td id="T_f1f0c_row0_col2" class="data row0 col2" >2079</td>
+      <td id="T_f1f0c_row0_col3" class="data row0 col3" >165</td>
+      <td id="T_f1f0c_row0_col4" class="data row0 col4" >751</td>
+      <td id="T_f1f0c_row0_col5" class="data row0 col5" >254</td>
+      <td id="T_f1f0c_row0_col6" class="data row0 col6" >4168</td>
+      <td id="T_f1f0c_row0_col7" class="data row0 col7" >331</td>
+    </tr>
+    <tr>
+      <th id="T_f1f0c_level0_row1" class="row_heading level0 row1" >1</th>
+      <td id="T_f1f0c_row1_col0" class="data row1 col0" >355</td>
+      <td id="T_f1f0c_row1_col1" class="data row1 col1" >120</td>
+      <td id="T_f1f0c_row1_col2" class="data row1 col2" >1972</td>
+      <td id="T_f1f0c_row1_col3" class="data row1 col3" >156</td>
+      <td id="T_f1f0c_row1_col4" class="data row1 col4" >712</td>
+      <td id="T_f1f0c_row1_col5" class="data row1 col5" >241</td>
+      <td id="T_f1f0c_row1_col6" class="data row1 col6" >3953</td>
+      <td id="T_f1f0c_row1_col7" class="data row1 col7" >314</td>
+    </tr>
+    <tr>
+      <th id="T_f1f0c_level0_row2" class="row_heading level0 row2" >2</th>
+      <td id="T_f1f0c_row2_col0" class="data row2 col0" >336</td>
+      <td id="T_f1f0c_row2_col1" class="data row2 col1" >114</td>
+      <td id="T_f1f0c_row2_col2" class="data row2 col2" >1865</td>
+      <td id="T_f1f0c_row2_col3" class="data row2 col3" >148</td>
+      <td id="T_f1f0c_row2_col4" class="data row2 col4" >674</td>
+      <td id="T_f1f0c_row2_col5" class="data row2 col5" >228</td>
+      <td id="T_f1f0c_row2_col6" class="data row2 col6" >3738</td>
+      <td id="T_f1f0c_row2_col7" class="data row2 col7" >297</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">comoh</span> <span class="o">=</span> <span class="n">fcm</span><span class="o">.</span><span class="n">CoronaModel</span><span class="p">(</span><span class="n">bph</span><span class="p">)</span>
+<span class="n">comoh</span><span class="o">.</span><span class="n">print_pop_shape</span><span class="p">()</span>
+<span class="n">comoh</span><span class="o">.</span><span class="n">coronal_autofit</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>saved R-matrix found, loaded
+vd = 0-2	Jd = 1-11
+vX = 0-2	Jx = 0-11
+Tvib = 6801 +- 753
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">comoh</span><span class="o">.</span><span class="n">plot_coronal_result</span><span class="p">()</span>
+
+<span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span><span class="o">.</span><span class="n">axes</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">sca</span><span class="p">(</span><span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/ee204247d14c93ce261810c90cec87f08c3061586b40fb7c99f69d4a319b4e74.png" src="../_images/ee204247d14c93ce261810c90cec87f08c3061586b40fb7c99f69d4a319b4e74.png" />
+</div>
+</div>
+</div>
+<div class="section" id="figure-9-h2">
+<h2>Figure 9, H2<a class="headerlink" href="#figure-9-h2" title="Permalink to this headline">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#plt.style.use(&#39;./ishiharastyle.mplstyle&#39;)</span>
+
+<span class="n">comoh</span><span class="o">.</span><span class="n">plot_popx_paper</span><span class="p">()</span>
+
+<span class="n">fcm</span><span class="o">.</span><span class="n">set_tick_size</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">(),</span><span class="o">*</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.6</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span><span class="o">.</span><span class="n">set_dpi</span><span class="p">(</span><span class="mi">140</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/8f79c0c4e09487b0b68a23729041105581f8c4c7618f3b9aa87db90277514dff.png" src="../_images/8f79c0c4e09487b0b68a23729041105581f8c4c7618f3b9aa87db90277514dff.png" />
+</div>
+</div>
+</div>
+<div class="section" id="figure-11-h2">
+<h2>Figure 11, H2<a class="headerlink" href="#figure-11-h2" title="Permalink to this headline">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#plt.style.use(&#39;./ishiharastyle.mplstyle&#39;)</span>
+
+<span class="n">comoh</span><span class="o">.</span><span class="n">plot_paper_compare</span><span class="p">(</span><span class="n">yerr</span><span class="o">=</span><span class="n">comoh</span><span class="o">.</span><span class="n">yerr_flat</span><span class="p">,</span><span class="n">ms</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="n">fcm</span><span class="o">.</span><span class="n">figsize</span><span class="p">(</span><span class="mi">19</span><span class="p">,</span><span class="n">ratio</span><span class="o">=</span><span class="mi">6</span><span class="o">/</span><span class="mi">14</span><span class="p">))</span>
+<span class="n">fcm</span><span class="o">.</span><span class="n">set_tick_size</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">(),</span><span class="o">*</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mf">0.6</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span><span class="o">.</span><span class="n">set_dpi</span><span class="p">(</span><span class="mi">140</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.14</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.0, 0.14)
+</pre></div>
+</div>
+<img alt="../_images/36f803d62dba884bce884af1f268fb02ae236e26de708fddd27c3bfc58159a2e.png" src="../_images/36f803d62dba884bce884af1f268fb02ae236e26de708fddd27c3bfc58159a2e.png" />
+</div>
+</div>
+</div>
+</div>
+
+
+              </article>
+              
+
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+  <a class='left-prev' id="prev-link" href="index.html" title="previous page">
+      <i class="fas fa-angle-left"></i>
+      <div class="prev-next-info">
+          <p class="prev-next-subtitle">previous</p>
+          <p class="prev-next-title">Examples</p>
+      </div>
+  </a>
+  <a class='right-next' id="next-link" href="../modules.html" title="next page">
+  <div class="prev-next-info">
+      <p class="prev-next-subtitle">next</p>
+      <p class="prev-next-title">fulcheranalyzer</p>
+  </div>
+  <i class="fas fa-angle-right"></i>
+  </a>
+</div>
+              </footer>
+              
+          </div>
+          
+      </div>
+    </div>
+
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
+    &copy; Copyright 2022, A.K..<br>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br>
+</p>
+  </div>
+  
+</div>
+</footer>
+  </body>
+</html>

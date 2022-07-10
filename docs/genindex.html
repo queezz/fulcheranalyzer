@@ -1,0 +1,537 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Index &#8212; Fulcher Analyzer  documentation</title>
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
+
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/thebelab-helper.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <link rel="index" title="Index" href="#" />
+    <link rel="search" title="Search" href="search.html" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="None">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
+
+    
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Fulcher Analyzer</p>
+  
+</a>
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="fas fa-bars"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="examples/index.html">
+  Examples
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="modules.html">
+  fulcheranalyzer
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
+          
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
+
+          
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+</div>
+
+
+          
+          
+          <div class="bd-content col-12 col-md-9 col-xl-7">
+              
+              <article class="bd-article" role="main">
+                
+
+<h1 id="index">Index</h1>
+
+<div class="genindex-jumpbox">
+ <a href="#A"><strong>A</strong></a>
+ | <a href="#B"><strong>B</strong></a>
+ | <a href="#C"><strong>C</strong></a>
+ | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
+ | <a href="#F"><strong>F</strong></a>
+ | <a href="#G"><strong>G</strong></a>
+ | <a href="#L"><strong>L</strong></a>
+ | <a href="#M"><strong>M</strong></a>
+ | <a href="#P"><strong>P</strong></a>
+ | <a href="#R"><strong>R</strong></a>
+ | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
+ | <a href="#W"><strong>W</strong></a>
+ 
+</div>
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.BoltzmannPlot.about_var">about_var() (fulcheranalyzer.coronalmodel.BoltzmannPlot method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.MolecularConstants.acoeff">acoeff() (fulcheranalyzer.coronalmodel.MolecularConstants method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.BoltzmannPlot.autofit">autofit() (fulcheranalyzer.coronalmodel.BoltzmannPlot method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="B">B</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.BoltzmannPlot">BoltzmannPlot (class in fulcheranalyzer.coronalmodel)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.BoltzmannPlot.bplot_constants">bplot_constants() (fulcheranalyzer.coronalmodel.BoltzmannPlot method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.branching">branching() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="C">C</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.BoltzmannPlot.calc_all_rot_temp">calc_all_rot_temp() (fulcheranalyzer.coronalmodel.BoltzmannPlot method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.calc_branching_matrix">calc_branching_matrix() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.calc_delta">calc_delta() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.calc_errorbars">calc_errorbars() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.calc_nd">calc_nd() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.BoltzmannPlot.calc_nd_const">calc_nd_const() (fulcheranalyzer.coronalmodel.BoltzmannPlot method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.BoltzmannPlot.calc_nd_synth">calc_nd_synth() (fulcheranalyzer.coronalmodel.BoltzmannPlot method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.calc_ndx">calc_ndx() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.calc_nx">calc_nx() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.calc_rtp">calc_rtp() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.calc_X_bp">calc_X_bp() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.MolecularConstants.calculate_all_E_rot">calculate_all_E_rot() (fulcheranalyzer.coronalmodel.MolecularConstants method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.BoltzmannPlot.calculate_boltzmann">calculate_boltzmann() (fulcheranalyzer.coronalmodel.BoltzmannPlot method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.calculate_e_cross">calculate_e_cross() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.MolecularConstants.calculate_E_rot">calculate_E_rot() (fulcheranalyzer.coronalmodel.MolecularConstants method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.MolecularConstants.calculate_E_vib">calculate_E_vib() (fulcheranalyzer.coronalmodel.MolecularConstants method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.MolecularConstants.calculate_spin_multiplicity">calculate_spin_multiplicity() (fulcheranalyzer.coronalmodel.MolecularConstants method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.MolecularConstants.calculate_tfrac">calculate_tfrac() (fulcheranalyzer.coronalmodel.MolecularConstants method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.ccs_formula">ccs_formula() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.check_rmatrix_indexing">check_rmatrix_indexing() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.coronal_autofit">coronal_autofit() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.coronal_fit_formula">coronal_fit_formula() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel">CoronaModel (class in fulcheranalyzer.coronalmodel)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.MolecularConstants.create_dataframes">create_dataframes() (fulcheranalyzer.coronalmodel.MolecularConstants method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="D">D</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.delta_kro">delta_kro() (in module fulcheranalyzer.coronalmodel)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.MolecularConstants.E_rot_formula">E_rot_formula() (fulcheranalyzer.coronalmodel.MolecularConstants method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.MolecularConstants.E_vib_formula">E_vib_formula() (fulcheranalyzer.coronalmodel.MolecularConstants method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.expsum">expsum() (in module fulcheranalyzer.coronalmodel)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.f_vibro">f_vibro() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.figsize">figsize() (in module fulcheranalyzer.coronalmodel)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.BoltzmannPlot.fit_boltzmann">fit_boltzmann() (fulcheranalyzer.coronalmodel.BoltzmannPlot method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.fit_vibro_ishi">fit_vibro_ishi() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.fittext">fittext() (in module fulcheranalyzer.coronalmodel)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.flatdf">flatdf() (in module fulcheranalyzer.coronalmodel)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.flatdf_1">flatdf_1() (in module fulcheranalyzer.coronalmodel)</a>
+</li>
+      <li>
+    fulcheranalyzer
+
+      <ul>
+        <li><a href="fulcheranalyzer.html#module-fulcheranalyzer">module</a>
+</li>
+      </ul></li>
+      <li>
+    fulcheranalyzer.coronalmodel
+
+      <ul>
+        <li><a href="fulcheranalyzer.coronalmodel.html#module-fulcheranalyzer.coronalmodel">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="G">G</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.g_as">g_as() (in module fulcheranalyzer.coronalmodel)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.g_as_vector">g_as_vector() (in module fulcheranalyzer.coronalmodel)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.MolecularConstants.general_constants">general_constants() (fulcheranalyzer.coronalmodel.MolecularConstants method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.get_nxbp">get_nxbp() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.MolecularConstants.load_corona_constants">load_corona_constants() (fulcheranalyzer.coronalmodel.MolecularConstants method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.BoltzmannPlot.load_wavelength_data">load_wavelength_data() (fulcheranalyzer.coronalmodel.BoltzmannPlot method)</a>
+
+      <ul>
+        <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.MolecularConstants.load_wavelength_data">(fulcheranalyzer.coronalmodel.MolecularConstants method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="M">M</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.make_rmatrix">make_rmatrix() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.make_rmatrix_2d">make_rmatrix_2d() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li>
+    module
+
+      <ul>
+        <li><a href="fulcheranalyzer.html#module-fulcheranalyzer">fulcheranalyzer</a>
+</li>
+        <li><a href="fulcheranalyzer.coronalmodel.html#module-fulcheranalyzer.coronalmodel">fulcheranalyzer.coronalmodel</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.MolecularConstants">MolecularConstants (class in fulcheranalyzer.coronalmodel)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.MolecularConstants.parse_data">parse_data() (fulcheranalyzer.coronalmodel.MolecularConstants method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.BoltzmannPlot.plot_boltzmannn">plot_boltzmannn() (fulcheranalyzer.coronalmodel.BoltzmannPlot method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.plot_ccs">plot_ccs() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.plot_contribution">plot_contribution() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.plot_coronal_result">plot_coronal_result() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.plot_fcf">plot_fcf() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.BoltzmannPlot.plot_fit">plot_fit() (fulcheranalyzer.coronalmodel.BoltzmannPlot method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.plot_fit_ishi">plot_fit_ishi() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.BoltzmannPlot.plot_fit_nice">plot_fit_nice() (fulcheranalyzer.coronalmodel.BoltzmannPlot method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.plot_n_all_v">plot_n_all_v() (in module fulcheranalyzer.coronalmodel)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.BoltzmannPlot.plot_nd">plot_nd() (fulcheranalyzer.coronalmodel.BoltzmannPlot method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.plot_paper_compare">plot_paper_compare() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.BoltzmannPlot.plot_popd_paper">plot_popd_paper() (fulcheranalyzer.coronalmodel.BoltzmannPlot method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.plot_popx_paper">plot_popx_paper() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.plot_R">plot_R() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.plot_rmatrix">plot_rmatrix() (in module fulcheranalyzer.coronalmodel)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.plot_rtp">plot_rtp() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.plot_xd">plot_xd() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.plot_xd_flat">plot_xd_flat() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.prep_constants">prep_constants() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.prep_corona_fit">prep_corona_fit() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.BoltzmannPlot.prep_fit">prep_fit() (fulcheranalyzer.coronalmodel.BoltzmannPlot method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.BoltzmannPlot.prep_mol">prep_mol() (fulcheranalyzer.coronalmodel.BoltzmannPlot method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.prep_style">prep_style() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.print_coronal_fit_result">print_coronal_fit_result() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.BoltzmannPlot.print_fit_result">print_fit_result() (fulcheranalyzer.coronalmodel.BoltzmannPlot method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.print_pop_shape">print_pop_shape() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.R_formula">R_formula() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.read_intensities">read_intensities() (in module fulcheranalyzer.coronalmodel)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.reshape_4d2d">reshape_4d2d() (in module fulcheranalyzer.coronalmodel)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="S">S</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.CoronaModel.set_pop_shape">set_pop_shape() (fulcheranalyzer.coronalmodel.CoronaModel method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.BoltzmannPlot.set_style">set_style() (fulcheranalyzer.coronalmodel.BoltzmannPlot method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.set_tick_size">set_tick_size() (in module fulcheranalyzer.coronalmodel)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.MolecularConstants.tfrac">tfrac() (fulcheranalyzer.coronalmodel.MolecularConstants method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.tjpo_vector">tjpo_vector() (in module fulcheranalyzer.coronalmodel)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.BoltzmannPlot.trim_wavelength">trim_wavelength() (fulcheranalyzer.coronalmodel.BoltzmannPlot method)</a>
+</li>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.two_t_all_v">two_t_all_v() (in module fulcheranalyzer.coronalmodel)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fulcheranalyzer.coronalmodel.html#fulcheranalyzer.coronalmodel.write_intensities">write_intensities() (in module fulcheranalyzer.coronalmodel)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+
+
+              </article>
+              
+
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              </footer>
+              
+          </div>
+          
+      </div>
+    </div>
+
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
+    &copy; Copyright 2022, A.K..<br>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br>
+</p>
+  </div>
+  
+</div>
+</footer>
+  </body>
+</html>

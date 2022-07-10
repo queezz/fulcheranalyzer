@@ -1,0 +1,985 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>fulcheranalyzer.coronalmodel module &#8212; Fulcher Analyzer  documentation</title>
+<script>
+  document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+  document.documentElement.dataset.theme = localStorage.getItem("theme") || "light"
+</script>
+
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=92025949c220c2e29695" rel="stylesheet">
+
+
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/thebelab-helper.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="fulcheranalyzer package" href="fulcheranalyzer.html" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="docsearch:language" content="None">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+    <div class="bd-header-announcement container-fluid" id="banner">
+      
+
+    </div>
+
+    
+    <nav class="bd-header navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="bd-header__inner container-xl">
+
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Fulcher Analyzer</p>
+  
+</a>
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="fas fa-bars"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="examples/index.html">
+  Examples
+ </a>
+</li>
+
+<li class="toctree-l1 current active nav-item">
+ <a class="reference internal nav-link" href="modules.html">
+  fulcheranalyzer
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <span id="theme-switch" class="btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="bd-container container-xl">
+      <div class="bd-container__inner row">
+          
+
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="bd-sidebar-primary col-12 col-md-3 bd-sidebar">
+  <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="fulcheranalyzer.html">
+   fulcheranalyzer package
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     fulcheranalyzer.coronalmodel module
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+  </div>
+</nav>
+  </div>
+  <div class="sidebar-end-items">
+  </div>
+</div>
+
+
+          
+
+
+<div class="bd-sidebar-secondary d-none d-xl-block col-xl-2 bd-toc">
+  
+    
+    <div class="toc-item">
+      
+
+<nav id="bd-toc-nav">
+    
+</nav>
+    </div>
+    
+    <div class="toc-item">
+      
+    </div>
+    
+  
+</div>
+
+
+          
+          
+          <div class="bd-content col-12 col-md-9 col-xl-7">
+              
+              <article class="bd-article" role="main">
+                
+  <div class="section" id="module-fulcheranalyzer.coronalmodel">
+<span id="fulcheranalyzer-coronalmodel-module"></span><h1>fulcheranalyzer.coronalmodel module<a class="headerlink" href="#module-fulcheranalyzer.coronalmodel" title="Permalink to this headline">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.BoltzmannPlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fulcheranalyzer.coronalmodel.</span></span><span class="sig-name descname"><span class="pre">BoltzmannPlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inte</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isotop</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#BoltzmannPlot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.BoltzmannPlot" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>”
+Analysis of Boltzmann distribution</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.BoltzmannPlot.about_var">
+<span class="sig-name descname"><span class="pre">about_var</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#BoltzmannPlot.about_var"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.BoltzmannPlot.about_var" title="Permalink to this definition">#</a></dt>
+<dd><p>Print info about variables.
+TODO: improve names to reduce confusion</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.BoltzmannPlot.autofit">
+<span class="sig-name descname"><span class="pre">autofit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#BoltzmannPlot.autofit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.BoltzmannPlot.autofit" title="Permalink to this definition">#</a></dt>
+<dd><p>A shortcut function to run required fits with default parameters</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.BoltzmannPlot.bplot_constants">
+<span class="sig-name descname"><span class="pre">bplot_constants</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#BoltzmannPlot.bplot_constants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.BoltzmannPlot.bplot_constants" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculated 2J+1, g_as, and Franck-Condon vectors</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.BoltzmannPlot.calc_all_rot_temp">
+<span class="sig-name descname"><span class="pre">calc_all_rot_temp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#BoltzmannPlot.calc_all_rot_temp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.BoltzmannPlot.calc_all_rot_temp" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate Trot for d- and X-states for all v
+put them into DataFrame</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.BoltzmannPlot.calc_nd_const">
+<span class="sig-name descname"><span class="pre">calc_nd_const</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#BoltzmannPlot.calc_nd_const"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.BoltzmannPlot.calc_nd_const" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate constant for synthetic nd_synth to match with nd
+c_nd - multiplier constant for synthetic nd
+c_nd_err - error for these constants for each vibrational q.n.
+nd_sc - nd synthetic (s) constant (c) - synthetic upper statat population with correct constant</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.BoltzmannPlot.calc_nd_synth">
+<span class="sig-name descname"><span class="pre">calc_nd_synth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#BoltzmannPlot.calc_nd_synth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.BoltzmannPlot.calc_nd_synth" title="Permalink to this definition">#</a></dt>
+<dd><p>Afer successfull boltzmann plot fit, calculate synthetic ro-vib population.
+This will “fill” the missing lines intensities.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.BoltzmannPlot.calculate_boltzmann">
+<span class="sig-name descname"><span class="pre">calculate_boltzmann</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#BoltzmannPlot.calculate_boltzmann"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.BoltzmannPlot.calculate_boltzmann" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate population from intensity.
+nd: population of the upper state d3
+nd_bol: nd/(2J+1)/g_as for Boltzmann plot
+nd_rel: nd_bol/nd_bol[0][0]</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.BoltzmannPlot.fit_boltzmann">
+<span class="sig-name descname"><span class="pre">fit_boltzmann</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#BoltzmannPlot.fit_boltzmann"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.BoltzmannPlot.fit_boltzmann" title="Permalink to this definition">#</a></dt>
+<dd><p>Fit boltzmann distribution with 2-temp and
+all vibrational quantum numbers at onece.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.BoltzmannPlot.load_wavelength_data">
+<span class="sig-name descname"><span class="pre">load_wavelength_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#BoltzmannPlot.load_wavelength_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.BoltzmannPlot.load_wavelength_data" title="Permalink to this definition">#</a></dt>
+<dd><p>Load wavelength data for Q-branch for H and D</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.BoltzmannPlot.plot_boltzmannn">
+<span class="sig-name descname"><span class="pre">plot_boltzmannn</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#BoltzmannPlot.plot_boltzmannn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.BoltzmannPlot.plot_boltzmannn" title="Permalink to this definition">#</a></dt>
+<dd><p>Plto Boltzmann plot</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.BoltzmannPlot.plot_fit">
+<span class="sig-name descname"><span class="pre">plot_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#BoltzmannPlot.plot_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.BoltzmannPlot.plot_fit" title="Permalink to this definition">#</a></dt>
+<dd><p>plot nd_rel and resuls for initial guess</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>init</strong> (<em>bool</em>) – True - use initial data, False - use fitting result.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.BoltzmannPlot.plot_fit_nice">
+<span class="sig-name descname"><span class="pre">plot_fit_nice</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#BoltzmannPlot.plot_fit_nice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.BoltzmannPlot.plot_fit_nice" title="Permalink to this definition">#</a></dt>
+<dd><p>plot fit result
+plot Boltzamnn distribution with preformated output using plot_n_all
+data: nd_rel(Ed) here rel for relative, defined up to a multiplier constant
+fit: ns(Ed), s for synthetic</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.BoltzmannPlot.plot_nd">
+<span class="sig-name descname"><span class="pre">plot_nd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#BoltzmannPlot.plot_nd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.BoltzmannPlot.plot_nd" title="Permalink to this definition">#</a></dt>
+<dd><p>Plot nd experimental and synthetic</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.BoltzmannPlot.plot_popd_paper">
+<span class="sig-name descname"><span class="pre">plot_popd_paper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stylename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bw'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fontsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">11</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#BoltzmannPlot.plot_popd_paper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.BoltzmannPlot.plot_popd_paper" title="Permalink to this definition">#</a></dt>
+<dd><p>Plot d-state population with errors and fit results
+fontsize = 11, image width = 8cm (for WORD document)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.BoltzmannPlot.prep_fit">
+<span class="sig-name descname"><span class="pre">prep_fit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#BoltzmannPlot.prep_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.BoltzmannPlot.prep_fit" title="Permalink to this definition">#</a></dt>
+<dd><p>prep 2-temperature fit for all vibrational q.n. at the same time</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.BoltzmannPlot.prep_mol">
+<span class="sig-name descname"><span class="pre">prep_mol</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#BoltzmannPlot.prep_mol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.BoltzmannPlot.prep_mol" title="Permalink to this definition">#</a></dt>
+<dd><p>load molecular data class and adjust DataFrame shapes</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.BoltzmannPlot.print_fit_result">
+<span class="sig-name descname"><span class="pre">print_fit_result</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#BoltzmannPlot.print_fit_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.BoltzmannPlot.print_fit_result" title="Permalink to this definition">#</a></dt>
+<dd><p>Print fit result</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.BoltzmannPlot.set_style">
+<span class="sig-name descname"><span class="pre">set_style</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#BoltzmannPlot.set_style"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.BoltzmannPlot.set_style" title="Permalink to this definition">#</a></dt>
+<dd><p>Define plot sytles for “standard” plot outputs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.BoltzmannPlot.trim_wavelength">
+<span class="sig-name descname"><span class="pre">trim_wavelength</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#BoltzmannPlot.trim_wavelength"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.BoltzmannPlot.trim_wavelength" title="Permalink to this definition">#</a></dt>
+<dd><p>Match wavelength DataFrame shape with Intensities Dataframe shape.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fulcheranalyzer.coronalmodel.</span></span><span class="sig-name descname"><span class="pre">CoronaModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#fulcheranalyzer.coronalmodel.BoltzmannPlot" title="fulcheranalyzer.coronalmodel.BoltzmannPlot"><span class="pre">fulcheranalyzer.coronalmodel.BoltzmannPlot</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Coronal Model class
+Based on the Ishihara-s code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>isotop</strong> (<em>string</em>) – ‘d’ or ‘h’</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.R_formula">
+<span class="sig-name descname"><span class="pre">R_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vX</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">JX</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Jdind</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.R_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.R_formula" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate electron impact excitation rate coefficient</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vX</strong> (<em>int</em>) – X-state vibrational quantum number</p></li>
+<li><p><strong>JX</strong> (<em>int</em>) – X-state rotational quantum number</p></li>
+<li><p><strong>vd</strong> (<em>int</em>) – d-state vibrational quantum number</p></li>
+<li><p><strong>Jdind</strong> (<em>int</em>) – index for d-state rotational quantum number
+Jdind = Jd-1, Jd starts from 1 in <cite>self.rtp</cite></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.branching">
+<span class="sig-name descname"><span class="pre">branching</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">JX</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Jd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.branching"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.branching" title="Permalink to this definition">#</a></dt>
+<dd><p>branching ratio</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>JX</strong> (<em>int</em>) – X-state rotational quantum number</p></li>
+<li><p><strong>Jd</strong> (<em>int</em>) – d-state rotational quantum number</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.calc_X_bp">
+<span class="sig-name descname"><span class="pre">calc_X_bp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Tvib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Trot1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Trot2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.calc_X_bp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.calc_X_bp" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate synthetic Boltzmann plot of the X-state (nx*g_as*(2J+1))
+with one Tvib and two Trot
+Jmax is limited by the Franck-Condon data
+higher vmax have smaller contribution to d-state population.
+Temperatures in K</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Tvib</strong> (<em>float</em>) – X-state vibrational temperature</p></li>
+<li><p><strong>Trot1</strong> (<em>float</em>) – X-state low rotational temperature</p></li>
+<li><p><strong>Trot2</strong> (<em>float</em>) – X-state high rotational temperature</p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – exponent mixing coefficient for v=0</p></li>
+<li><p><strong>beta</strong> (<em>float</em>) – exponent mixing coefficient for v&gt;0</p></li>
+<li><p><strong>const</strong> (<em>float</em>) – constant multiplyer for the distribution</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.calc_branching_matrix">
+<span class="sig-name descname"><span class="pre">calc_branching_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">JXmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Jdmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.calc_branching_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.calc_branching_matrix" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate branching ratio matrix, <cite>axd</cite>
+Jd = index + 1 (start from 1, not 0, range(1,Jdmax))
+Jx = index</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>JXmax</strong> (<em>int</em>) – Maximum value for X-state rotational quantum number</p></li>
+<li><p><strong>Jdmax</strong> (<em>int</em>) – Maximum value for d-state rotational quantum number</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.calc_delta">
+<span class="sig-name descname"><span class="pre">calc_delta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.calc_delta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.calc_delta" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate Kronecker-s delta matrix,
+isotop = [‘d’,’h’]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axd</strong> (<em>array</em>) – </p></li>
+<li><p><strong>isotop</strong> (<em>string</em>) – ‘d’ or ‘h’</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.calc_errorbars">
+<span class="sig-name descname"><span class="pre">calc_errorbars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Tvib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.calc_errorbars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.calc_errorbars" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate error bars for flat and full population plots</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.calc_nd">
+<span class="sig-name descname"><span class="pre">calc_nd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.calc_nd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.calc_nd" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate d-state population using Corona Model
+X-state population must be calculated first
+Using numpy matrix multiplication for this, same as Ishihara.
+This is ~ 100 times faster compared to using formula in loops,
+as in Niihama-kun-s code.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.calc_ndx">
+<span class="sig-name descname"><span class="pre">calc_ndx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Tvib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Trot1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Trot2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.calc_ndx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.calc_ndx" title="Permalink to this definition">#</a></dt>
+<dd><p>Construct synthetic population of X-state with calc_nx()
+Calculate population of d-state from nX using Corona model calc_nd()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.calc_nx">
+<span class="sig-name descname"><span class="pre">calc_nx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.calc_nx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.calc_nx" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate X-state population</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>arg</strong> (<em>list</em>) – arg = [5000,200,1000,0.1,1,3,15]
+list of parameters for <code class="xref py py-func docutils literal notranslate"><span class="pre">calc_X_bp()</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.calc_rtp">
+<span class="sig-name descname"><span class="pre">calc_rtp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.calc_rtp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.calc_rtp" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate rtp (radiation transition probability), like in Ishihara-s code</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.calculate_e_cross">
+<span class="sig-name descname"><span class="pre">calculate_e_cross</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Te</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.calculate_e_cross"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.calculate_e_cross" title="Permalink to this definition">#</a></dt>
+<dd><p>Dublicate of self.ccs_formula().
+For fitting vibro population, which is calculated from simulated rot. pop. and summed up.</p>
+<p>Calculate electron impact crossections for given electron temperature Te [eV]
+Here Ee_vib is excited state vibrational energy,the d-state.
+E_vib is X-state vibrational energy.
+Matrix shape is same as Franck-Condon data shape.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>Te</strong> (<em>float</em>) – electron temperature for Coronal Model</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.ccs_formula">
+<span class="sig-name descname"><span class="pre">ccs_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vX</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Te</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.ccs_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.ccs_formula" title="Permalink to this definition">#</a></dt>
+<dd><p>Collisional cross section formula
+Te in [eV]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vX</strong> (<em>int</em>) – X-state vibrational quantum number</p></li>
+<li><p><strong>vd</strong> (<em>int</em>) – d-state vibrational quantum number</p></li>
+<li><p><strong>Te</strong> (<em>float</em>) – electron temperature [eV]</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.check_rmatrix_indexing">
+<span class="sig-name descname"><span class="pre">check_rmatrix_indexing</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.check_rmatrix_indexing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.check_rmatrix_indexing" title="Permalink to this definition">#</a></dt>
+<dd><p>Check Rmatrix indexing</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.coronal_autofit">
+<span class="sig-name descname"><span class="pre">coronal_autofit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.coronal_autofit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.coronal_autofit" title="Permalink to this definition">#</a></dt>
+<dd><p>Run all the neccessary steps with default settings</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.coronal_fit_formula">
+<span class="sig-name descname"><span class="pre">coronal_fit_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tvib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.57</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.33</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Trot1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Trot2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.coronal_fit_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.coronal_fit_formula" title="Permalink to this definition">#</a></dt>
+<dd><p>Fit formula for Coronal Model.
+Updates nxbp based on the input, returns flat array with d-state population
+for avaliable Q-branch lines.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Tvib</strong> (<em>float</em>) – X-state vibrational temperature</p></li>
+<li><p><strong>Trot1</strong> (<em>float</em>) – X-state low rotational temperature</p></li>
+<li><p><strong>Trot2</strong> (<em>float</em>) – X-state high rotational temperature</p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – exponent mixing coefficient for v=0</p></li>
+<li><p><strong>beta</strong> (<em>float</em>) – exponent mixing coefficient for v&gt;0</p></li>
+<li><p><strong>const</strong> (<em>float</em>) – constant multiplyer for the distribution</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.f_vibro">
+<span class="sig-name descname"><span class="pre">f_vibro</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T_vib</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.f_vibro"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.f_vibro" title="Permalink to this definition">#</a></dt>
+<dd><p>Function for fitting vibrational population.
+This is Coronal Model, used by Ishihara
+(but population is summed by rotational quantum number).
+Second variable “_” is for independent variable,
+required by scipy.optimize.curve_fit. In this case it is not needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T_vib</strong> (<em>float</em>) – vibrational temperature</p></li>
+<li><p><strong>fit</strong> (<em>bool</em>) – True - return normalized population, False - return nv</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.fit_vibro_ishi">
+<span class="sig-name descname"><span class="pre">fit_vibro_ishi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.fit_vibro_ishi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.fit_vibro_ishi" title="Permalink to this definition">#</a></dt>
+<dd><p>Ishihara-s vibro fit
+Fit vibrational population, ignoring rotational distribuiton to get Tvib.
+See formula (4.5) from Ishihara-s Master thesis, page 36. There R-coefficient
+is not rotationally resolved and hence does not include the branching ratio.</p>
+<p><span class="math notranslate nohighlight">\(n_{dv'} \sum{A^{dv'}_{av''}} \propto \sum_{v=0}^{vmax} R_{Xv}^{dv'}
+\exp{\left( -\frac{E_{vib}^{X}(v)}{kT_{vib}^{X}} \right)}\)</span></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.get_nxbp">
+<span class="sig-name descname"><span class="pre">get_nxbp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Tvib</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.get_nxbp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.get_nxbp" title="Permalink to this definition">#</a></dt>
+<dd><p>Updated CoronaModelIshihara-s nxbp for given Tvib, return it</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.make_rmatrix">
+<span class="sig-name descname"><span class="pre">make_rmatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.make_rmatrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.make_rmatrix" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate R matrix for given isotop
+If formula changed, RECALCULATE! argument <cite>load = False</cite></p>
+<p>NOTE! Jd starts from 1. Index 0 in Jd axis corresponds to Jd=1</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>load</strong> (<em>bool</em>) – True - load previously calculated matrix, False - recalculate.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.make_rmatrix_2d">
+<span class="sig-name descname"><span class="pre">make_rmatrix_2d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.make_rmatrix_2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.make_rmatrix_2d" title="Permalink to this definition">#</a></dt>
+<dd><p>Reshape R matrix (electron impact excitation rate)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.plot_R">
+<span class="sig-name descname"><span class="pre">plot_R</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.plot_R"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.plot_R" title="Permalink to this definition">#</a></dt>
+<dd><p>plot R-matrix</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.plot_ccs">
+<span class="sig-name descname"><span class="pre">plot_ccs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.plot_ccs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.plot_ccs" title="Permalink to this definition">#</a></dt>
+<dd><p>Plot ccs</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.plot_contribution">
+<span class="sig-name descname"><span class="pre">plot_contribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Tvib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.plot_contribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.plot_contribution" title="Permalink to this definition">#</a></dt>
+<dd><p>Plot contribution of X-state to d-state population</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.plot_coronal_result">
+<span class="sig-name descname"><span class="pre">plot_coronal_result</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.plot_coronal_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.plot_coronal_result" title="Permalink to this definition">#</a></dt>
+<dd><p>Plot two panels with synthetic population and with data only</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.plot_fcf">
+<span class="sig-name descname"><span class="pre">plot_fcf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.plot_fcf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.plot_fcf" title="Permalink to this definition">#</a></dt>
+<dd><p>Plot FCF</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.plot_fit_ishi">
+<span class="sig-name descname"><span class="pre">plot_fit_ishi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kws</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.plot_fit_ishi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.plot_fit_ishi" title="Permalink to this definition">#</a></dt>
+<dd><p>“Nice” plot of the vibro fit and ‘gauge’ for Ishihara-s fit</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.plot_paper_compare">
+<span class="sig-name descname"><span class="pre">plot_paper_compare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kws</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.plot_paper_compare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.plot_paper_compare" title="Permalink to this definition">#</a></dt>
+<dd><p>Plot comparison of experimental population of d-state
+with Corona-Model reconstructed one (p.39 fig. 4.24 Ishihara-s thesis)
+(or Figures 11 and 12 from JQSRT-2021 paper)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.plot_popx_paper">
+<span class="sig-name descname"><span class="pre">plot_popx_paper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fontsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">11</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.plot_popx_paper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.plot_popx_paper" title="Permalink to this definition">#</a></dt>
+<dd><p>Plot X-state population (figs 9-10)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.plot_rtp">
+<span class="sig-name descname"><span class="pre">plot_rtp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.plot_rtp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.plot_rtp" title="Permalink to this definition">#</a></dt>
+<dd><p>Plot rtp</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.plot_xd">
+<span class="sig-name descname"><span class="pre">plot_xd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.plot_xd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.plot_xd" title="Permalink to this definition">#</a></dt>
+<dd><p>plot synthetic nX and nd</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.plot_xd_flat">
+<span class="sig-name descname"><span class="pre">plot_xd_flat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kws</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.plot_xd_flat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.plot_xd_flat" title="Permalink to this definition">#</a></dt>
+<dd><p>Plot flattened X and d populations</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.prep_constants">
+<span class="sig-name descname"><span class="pre">prep_constants</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.prep_constants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.prep_constants" title="Permalink to this definition">#</a></dt>
+<dd><p>Prepare the nessecary constanst</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.prep_corona_fit">
+<span class="sig-name descname"><span class="pre">prep_corona_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.prep_corona_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.prep_corona_fit" title="Permalink to this definition">#</a></dt>
+<dd><p>Prep proper corona.
+setup X and d states shapes, calculate R-matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>load</strong> (<em>bool</em>) – True try to load previously calculated matrix to save time.
+CAUTION: must recalculate this matrix if the model changed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.prep_style">
+<span class="sig-name descname"><span class="pre">prep_style</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.prep_style"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.prep_style" title="Permalink to this definition">#</a></dt>
+<dd><p>Prepare standard plot styles</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.print_coronal_fit_result">
+<span class="sig-name descname"><span class="pre">print_coronal_fit_result</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.print_coronal_fit_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.print_coronal_fit_result" title="Permalink to this definition">#</a></dt>
+<dd><p>Print coronal fit result</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.print_pop_shape">
+<span class="sig-name descname"><span class="pre">print_pop_shape</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.print_pop_shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.print_pop_shape" title="Permalink to this definition">#</a></dt>
+<dd><p>Print vx, jx, vd, jd</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.CoronaModel.set_pop_shape">
+<span class="sig-name descname"><span class="pre">set_pop_shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limits</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#CoronaModel.set_pop_shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.CoronaModel.set_pop_shape" title="Permalink to this definition">#</a></dt>
+<dd><p>Set population shape for d and X levels
+NOTE: jd here is an index. Actual JD is JD+1
+There is no Jd=0 for d-state. But numpy matrix indexing starts from 0.
+That is why max(jx) &gt;= max(jd) + 1</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>limits</strong> (<em>array</em>) – limits = [‘vx’,’jx’]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.MolecularConstants">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fulcheranalyzer.coronalmodel.</span></span><span class="sig-name descname"><span class="pre">MolecularConstants</span></span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#MolecularConstants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.MolecularConstants" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Hydrogen Isotopolouges molecular constants</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.MolecularConstants.E_rot_formula">
+<span class="sig-name descname"><span class="pre">E_rot_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">J</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isotop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'d3'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#MolecularConstants.E_rot_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.MolecularConstants.E_rot_formula" title="Permalink to this definition">#</a></dt>
+<dd><p>Rotational energy formula</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.MolecularConstants.E_vib_formula">
+<span class="sig-name descname"><span class="pre">E_vib_formula</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#MolecularConstants.E_vib_formula"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.MolecularConstants.E_vib_formula" title="Permalink to this definition">#</a></dt>
+<dd><p>Vibrational energy formula</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.MolecularConstants.acoeff">
+<span class="sig-name descname"><span class="pre">acoeff</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#MolecularConstants.acoeff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.MolecularConstants.acoeff" title="Permalink to this definition">#</a></dt>
+<dd><p>Populate Acoeff for D2 and H2</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.MolecularConstants.calculate_E_rot">
+<span class="sig-name descname"><span class="pre">calculate_E_rot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vlen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Jlen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isotop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'d3'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#MolecularConstants.calculate_E_rot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.MolecularConstants.calculate_E_rot" title="Permalink to this definition">#</a></dt>
+<dd><p>Fill DataFrame with rotational energies for given isotope and state
+[En] isotope [Ru] isotop
+NOTE:
+For d-state: J starts from 1.
+For X-state: J must start from 0.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.MolecularConstants.calculate_E_vib">
+<span class="sig-name descname"><span class="pre">calculate_E_vib</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'d3'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isotop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'d'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#MolecularConstants.calculate_E_vib"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.MolecularConstants.calculate_E_vib" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate an array of vibrational energy
+vmax - maximum vibrational q.n. in the array
+state - electronic state, ‘X’, ‘d3’, ‘a3’
+isotop - isotopologue, ‘d’ - D2, ‘h’ - H2</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.MolecularConstants.calculate_all_E_rot">
+<span class="sig-name descname"><span class="pre">calculate_all_E_rot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vlen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Jlen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">14</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#MolecularConstants.calculate_all_E_rot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.MolecularConstants.calculate_all_E_rot" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate rotational energy arrays for X, d states for H and D</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.MolecularConstants.calculate_spin_multiplicity">
+<span class="sig-name descname"><span class="pre">calculate_spin_multiplicity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Jmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">13</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#MolecularConstants.calculate_spin_multiplicity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.MolecularConstants.calculate_spin_multiplicity" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate spin multiplicity vectors for D2 and H2</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.MolecularConstants.calculate_tfrac">
+<span class="sig-name descname"><span class="pre">calculate_tfrac</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#MolecularConstants.calculate_tfrac"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.MolecularConstants.calculate_tfrac" title="Permalink to this definition">#</a></dt>
+<dd><p>Temperature ratios DataFrame for H and D</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.MolecularConstants.create_dataframes">
+<span class="sig-name descname"><span class="pre">create_dataframes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#MolecularConstants.create_dataframes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.MolecularConstants.create_dataframes" title="Permalink to this definition">#</a></dt>
+<dd><p>Data from Ishihara-s thesis
+[16]:  NIST Chemistry WebBook ( <a class="reference external" href="https://webbook.nist.gov/chemistry/form-ser/">https://webbook.nist.gov/chemistry/form-ser/</a> )
+All constants have same energy unit: [1/cm].</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.MolecularConstants.general_constants">
+<span class="sig-name descname"><span class="pre">general_constants</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#MolecularConstants.general_constants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.MolecularConstants.general_constants" title="Permalink to this definition">#</a></dt>
+<dd><p>Populate class with useful constants</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.MolecularConstants.load_corona_constants">
+<span class="sig-name descname"><span class="pre">load_corona_constants</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#MolecularConstants.load_corona_constants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.MolecularConstants.load_corona_constants" title="Permalink to this definition">#</a></dt>
+<dd><p>Load constants for cornal model</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.MolecularConstants.load_wavelength_data">
+<span class="sig-name descname"><span class="pre">load_wavelength_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#MolecularConstants.load_wavelength_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.MolecularConstants.load_wavelength_data" title="Permalink to this definition">#</a></dt>
+<dd><p>Load wavelength data for Q-branch for H and D</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.MolecularConstants.parse_data">
+<span class="sig-name descname"><span class="pre">parse_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#MolecularConstants.parse_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.MolecularConstants.parse_data" title="Permalink to this definition">#</a></dt>
+<dd><p>Parse file with rotational constants</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.MolecularConstants.tfrac">
+<span class="sig-name descname"><span class="pre">tfrac</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isotop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'d'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#MolecularConstants.tfrac"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.MolecularConstants.tfrac" title="Permalink to this definition">#</a></dt>
+<dd><p>Temperature ratio for given vibrational number for d3 level
+calculated as ratio of rotational constants</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.delta_kro">
+<span class="sig-prename descclassname"><span class="pre">fulcheranalyzer.coronalmodel.</span></span><span class="sig-name descname"><span class="pre">delta_kro</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#delta_kro"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.delta_kro" title="Permalink to this definition">#</a></dt>
+<dd><p>Kronecker-s delta  <a class="reference external" href="https://en.wikipedia.org/wiki/Kronecker_delta">https://en.wikipedia.org/wiki/Kronecker_delta</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.expsum">
+<span class="sig-prename descclassname"><span class="pre">fulcheranalyzer.coronalmodel.</span></span><span class="sig-name descname"><span class="pre">expsum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">e</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constant</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#expsum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.expsum" title="Permalink to this definition">#</a></dt>
+<dd><p>Mixing of two Boltzman distributions</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.figsize">
+<span class="sig-prename descclassname"><span class="pre">fulcheranalyzer.coronalmodel.</span></span><span class="sig-name descname"><span class="pre">figsize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8333333333333334</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#figsize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.figsize" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate image size from width in cm</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.fittext">
+<span class="sig-prename descclassname"><span class="pre">fulcheranalyzer.coronalmodel.</span></span><span class="sig-name descname"><span class="pre">fittext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#fittext"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.fittext" title="Permalink to this definition">#</a></dt>
+<dd><p>Return text for matplotlib plot with fitting parameters, a,b,T1,T2 from two_t_all_v()</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.flatdf">
+<span class="sig-prename descclassname"><span class="pre">fulcheranalyzer.coronalmodel.</span></span><span class="sig-name descname"><span class="pre">flatdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'f'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#flatdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.flatdf" title="Permalink to this definition">#</a></dt>
+<dd><p>Flatten a DataFrame with nans into np.array()</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>order</strong> (<em>list</em>) – order = [‘f’,’c’], see numpy.ndarray.flatten</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.flatdf_1">
+<span class="sig-prename descclassname"><span class="pre">fulcheranalyzer.coronalmodel.</span></span><span class="sig-name descname"><span class="pre">flatdf_1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'val'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#flatdf_1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.flatdf_1" title="Permalink to this definition">#</a></dt>
+<dd><p>Flatten DataFrame, remove nans, reset index. Good for fitting.
+Consistently returns 1d array. Order is Column-wise, or ‘f’.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.g_as">
+<span class="sig-prename descclassname"><span class="pre">fulcheranalyzer.coronalmodel.</span></span><span class="sig-name descname"><span class="pre">g_as</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">J</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isotop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'d'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#g_as"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.g_as" title="Permalink to this definition">#</a></dt>
+<dd><p>Spin multiplicity, or stat. weight,
+formula for rotational q.n. J for H2 or D2</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.g_as_vector">
+<span class="sig-prename descclassname"><span class="pre">fulcheranalyzer.coronalmodel.</span></span><span class="sig-name descname"><span class="pre">g_as_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Jlen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isotop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transpose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#g_as_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.g_as_vector" title="Permalink to this definition">#</a></dt>
+<dd><p>calculate g_as vector</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.plot_n_all_v">
+<span class="sig-prename descclassname"><span class="pre">fulcheranalyzer.coronalmodel.</span></span><span class="sig-name descname"><span class="pre">plot_n_all_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kws</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#plot_n_all_v"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.plot_n_all_v" title="Permalink to this definition">#</a></dt>
+<dd><p>input: experimental populations in [2D] DataFrame with missing values as NaN
+Energy - full DataFrame with theoretical rotational energy E
+cycles through columns in n (corresponding to vibrational level), removes nans,
+and plots</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.plot_rmatrix">
+<span class="sig-prename descclassname"><span class="pre">fulcheranalyzer.coronalmodel.</span></span><span class="sig-name descname"><span class="pre">plot_rmatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Rm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shapes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'R-matrix'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#plot_rmatrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.plot_rmatrix" title="Permalink to this definition">#</a></dt>
+<dd><p>Plot 2d R matrix for inspection
+vdl, jdl, vxl, jxl = shapes</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.read_intensities">
+<span class="sig-prename descclassname"><span class="pre">fulcheranalyzer.coronalmodel.</span></span><span class="sig-name descname"><span class="pre">read_intensities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#read_intensities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.read_intensities" title="Permalink to this definition">#</a></dt>
+<dd><p>Read intensities</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.reshape_4d2d">
+<span class="sig-prename descclassname"><span class="pre">fulcheranalyzer.coronalmodel.</span></span><span class="sig-name descname"><span class="pre">reshape_4d2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#reshape_4d2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.reshape_4d2d" title="Permalink to this definition">#</a></dt>
+<dd><p>Reshape 4d numpy array into 2d</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.set_tick_size">
+<span class="sig-prename descclassname"><span class="pre">fulcheranalyzer.coronalmodel.</span></span><span class="sig-name descname"><span class="pre">set_tick_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#set_tick_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.set_tick_size" title="Permalink to this definition">#</a></dt>
+<dd><p>Set matplotlib axis tick sizes
+For some reason the length from style is ignored.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.tjpo_vector">
+<span class="sig-prename descclassname"><span class="pre">fulcheranalyzer.coronalmodel.</span></span><span class="sig-name descname"><span class="pre">tjpo_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Jlen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transpose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#tjpo_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.tjpo_vector" title="Permalink to this definition">#</a></dt>
+<dd><p>vector (2(Jind+1)+1)
+d-state: j0=1
+X-state: j0=0</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.two_t_all_v">
+<span class="sig-prename descclassname"><span class="pre">fulcheranalyzer.coronalmodel.</span></span><span class="sig-name descname"><span class="pre">two_t_all_v</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Erot</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kws</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#two_t_all_v"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.two_t_all_v" title="Permalink to this definition">#</a></dt>
+<dd><p>Constract two exponent distribution for all vibrational transitions
+populate DataFrame
+a, b - exponent multiplyers for v=0 and others, v&gt;0 assumed to have same multiplier
+T1, T2 - temperatures of the two exponents
+cs - tuple of constants for all v.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fulcheranalyzer.coronalmodel.write_intensities">
+<span class="sig-prename descclassname"><span class="pre">fulcheranalyzer.coronalmodel.</span></span><span class="sig-name descname"><span class="pre">write_intensities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inte</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fulcheranalyzer/coronalmodel.html#write_intensities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fulcheranalyzer.coronalmodel.write_intensities" title="Permalink to this definition">#</a></dt>
+<dd><p>Save intensites for a given shot and given frame
+in a <cite>*.csv</cite> file in <cite>DATA_FOLDER</cite> subfolder
+intensities in pandas.DataFrame, columns: v-v (vibrational q.n.),
+rows: J (rotational q.n.).</p>
+</dd></dl>
+
+</div>
+
+
+              </article>
+              
+
+              
+              <footer class="bd-footer-article">
+                  <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+  <a class='left-prev' id="prev-link" href="fulcheranalyzer.html" title="previous page">
+      <i class="fas fa-angle-left"></i>
+      <div class="prev-next-info">
+          <p class="prev-next-subtitle">previous</p>
+          <p class="prev-next-title">fulcheranalyzer package</p>
+      </div>
+  </a>
+</div>
+              </footer>
+              
+          </div>
+          
+      </div>
+    </div>
+
+  
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=92025949c220c2e29695"></script>
+
+<footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    <p class="copyright">
+    &copy; Copyright 2022, A.K..<br>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.4.0.<br>
+</p>
+  </div>
+  
+</div>
+</footer>
+  </body>
+</html>
