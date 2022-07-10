@@ -1,0 +1,20 @@
+# Vibrational energy of X-state for H2 [ev]
+# From INDC(NDS)-457 U. Fantz 2004, page 24
+# https://inis.iaea.org/collection/NCLCollectionStore/_Public/37/088/37088524.pdf
+# E_vib[v] 0<=v<=14
+
+0.27504  
+0.79104   
+1.27809   
+1.73664   
+2.16685   
+2.56873   
+2.94214   
+3.28667   
+3.60148   
+3.88512   
+4.13553   
+4.34985   
+4.52401   
+4.65343   
+4.72986
