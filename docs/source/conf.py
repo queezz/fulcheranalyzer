@@ -89,12 +89,12 @@ html_theme = (
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
-# html_logo = "_static/echelle.png"
+html_logo = "_static/h2icon.png"
 
 html_theme_options = {
     "logo": {"text": "Fulcher Analyzer"},
     "pygment_light_style": "tango",
     "pygment_dark_style": "native",
-    # "favicons": [{"rel": "icon", "sizes": "32x32", "href": "echelle.ico",},],
+    "favicons": [{"rel": "icon", "sizes": "32x32", "href": "h2icon.png",},],
 }
 

@@ -3,7 +3,7 @@
 Fulcher-alpha analysis.
 =================================
 
-`github.com/queezz/aklab <https://github.com/queezz/aklab>`_
+`github.com/queezz/fulcheranalyzer <https://github.com/queezz/fulcheranalyzer>`_
 
 .. toctree::
    :glob:
