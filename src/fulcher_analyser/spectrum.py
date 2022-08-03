@@ -11,7 +11,7 @@ import xarray as xr
 #                               HELPER FUNCTIONS                               #
 ################################################################################
 
-
+# fmt: off
 def read_spectrum_headers(spec_path: Path) -> Dict[str, Union[str, List[str]]]:
     """
     Helper function for reading headers form echelle_spectra spectrum files
@@ -115,3 +115,5 @@ def plot_spectrum(spectrum: xr.Dataset, frame: int, hspace: float = 0.05, bsize:
     fig.suptitle(f"Shot number: {spectrum.attrs['ShotNo']}; Frame number: {frame}")
     fig.tight_layout()
     plt.show()
+# fmt: on
+

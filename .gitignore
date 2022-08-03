@@ -8,6 +8,7 @@ queleeconvert.ipynb
 quelee_binary.ipynb
 convertquelee.py
 *.pdf
+echelle_spectra
 
 # Microsoft Office
 *.tmp
