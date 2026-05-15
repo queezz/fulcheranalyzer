@@ -3,13 +3,12 @@ CoronaModel class and its dedicated plotting helper plot_rmatrix.
 """
 import numpy as np
 import pandas as pd
-from os.path import join, abspath
+from importlib.resources import files
 
-from ._constants import package_directory
 from .boltzmann import BoltzmannPlot, ABSOLUTESIGMA
 from ._utils import flatdf, figsize, delta_kro, g_as, g_as_vector, tjpo_vector, reshape_4d2d
 
-MOLECULAR_DATA_FOLDER = abspath(join(package_directory, "..", "..", "data_molecular"))
+MOLECULAR_DATA_FOLDER = files("fulcher_analyzer.data_molecular")
 
 
 def plot_rmatrix(Rm, shapes, text="R-matrix"):
@@ -540,10 +539,11 @@ class CoronaModel:
         jdmax = self.popshape["jdmax"]
 
         fname = f"Rmatrix_{vxmax}_{jxmax}_{vdmax}_{jdmax}_{self.isotop}.npy"
-        fpth = join(MOLECULAR_DATA_FOLDER, f"{fname}")
+        rmatrix_resource = MOLECULAR_DATA_FOLDER.joinpath(fname)
         if load:
             try:
-                self.Rm = np.load(fpth)
+                with rmatrix_resource.open("rb") as f:
+                    self.Rm = np.load(f)
                 print("saved R-matrix found, loaded")
                 self.make_rmatrix_2d()
                 return
@@ -563,7 +563,9 @@ class CoronaModel:
                         )
 
         self.Rm = Rmatrix
-        np.save(fpth, Rmatrix)
+        # TODO: move regenerated R-matrix cache to a user cache directory (e.g. platformdirs)
+        # For editable installs the resource path is a real filesystem path and np.save works.
+        np.save(str(rmatrix_resource), Rmatrix)
         self.make_rmatrix_2d()
 
     def make_rmatrix_2d(self):

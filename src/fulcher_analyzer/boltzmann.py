@@ -3,14 +3,13 @@ Free helper functions and BoltzmannPlot class for two-temperature Boltzmann anal
 """
 import numpy as np
 import pandas as pd
-from os.path import join, abspath
+from importlib.resources import files
 
-from ._constants import package_directory
 from .molecular_constants import MolecularConstants
 from ._utils import flatdf, figsize
 
 ABSOLUTESIGMA = False
-MOLECULAR_DATA_FOLDER = abspath(join(package_directory, "..", "..", "data_molecular"))
+MOLECULAR_DATA_FOLDER = files("fulcher_analyzer.data_molecular")
 
 
 def expsum(e, T1, T2, a, constant):
@@ -142,15 +141,13 @@ class BoltzmannPlot:
         Load wavelength data for Q-branch for H and D 
         """
         # Deuterium, data in the file is in [cm^{-1}], 800 is nan
-        wld = np.loadtxt(
-            join(MOLECULAR_DATA_FOLDER, "fulcher-α_band_wavenumber_D2.txt")
-        )
+        with MOLECULAR_DATA_FOLDER.joinpath("fulcher-α_band_wavenumber_D2.txt").open("r") as f:
+            wld = np.loadtxt(f)
         wld = pd.DataFrame(1 / (wld * 1e-7))  # wavenumber [cm-1] -> wavelength [nm]
         wld[wld > 800] = np.nan
         self.wld = wld
-        wlh = pd.DataFrame(
-            np.loadtxt(join(MOLECULAR_DATA_FOLDER, "fulcher-α_band_wavelength.txt"))
-        )
+        with MOLECULAR_DATA_FOLDER.joinpath("fulcher-α_band_wavelength.txt").open("r") as f:
+            wlh = pd.DataFrame(np.loadtxt(f))
         self.wlh = wlh
 
     def trim_wavelength(self):

@@ -53,7 +53,7 @@ def test_data_folders_exist():
     from fulcher_analyzer.coronalmodel import MOLECULAR_DATA_FOLDER, DATA_FOLDER
     import os
 
-    assert os.path.isdir(MOLECULAR_DATA_FOLDER), (
+    assert MOLECULAR_DATA_FOLDER.is_dir(), (
         f"MOLECULAR_DATA_FOLDER not found: {MOLECULAR_DATA_FOLDER}"
     )
     assert os.path.isdir(DATA_FOLDER), (
@@ -63,7 +63,6 @@ def test_data_folders_exist():
 
 def test_molecular_data_files():
     from fulcher_analyzer.coronalmodel import MOLECULAR_DATA_FOLDER
-    import os
 
     required = [
         "franck_condon_factor.txt",
@@ -77,8 +76,8 @@ def test_molecular_data_files():
         "spectroscopic_constants.csv",
     ]
     for fname in required:
-        path = os.path.join(MOLECULAR_DATA_FOLDER, fname)
-        assert os.path.isfile(path), f"Missing molecular data file: {path}"
+        resource = MOLECULAR_DATA_FOLDER.joinpath(fname)
+        assert resource.is_file(), f"Missing molecular data file: {fname}"
 
 
 def test_spectroscopic_constants_values():

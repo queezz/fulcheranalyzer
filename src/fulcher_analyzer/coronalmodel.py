@@ -14,6 +14,7 @@ continues to work without modification.
 """
 import numpy as np, pandas as pd  # noqa: F401  (kept for any downstream star-imports)
 from os.path import join, abspath
+from importlib.resources import files
 
 from ._constants import package_directory
 from .molecular_constants import MolecularConstants  # noqa: F401
@@ -38,7 +39,7 @@ from ._utils import (  # noqa: F401
 )
 from .coronal_model import CoronaModel, plot_rmatrix  # noqa: F401
 
-MOLECULAR_DATA_FOLDER = abspath(join(package_directory, "..", "..", "data_molecular"))
+MOLECULAR_DATA_FOLDER = files("fulcher_analyzer.data_molecular")
 DATA_FOLDER = abspath(join(package_directory, "..", "..", "data"))
 
 

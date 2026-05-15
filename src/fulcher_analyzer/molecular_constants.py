@@ -3,11 +3,9 @@ Molecular constants for hydrogen isotopologues (H2, D2).
 """
 import numpy as np
 import pandas as pd
-from os.path import join, abspath
+from importlib.resources import files
 
-from ._constants import package_directory
-
-MOLECULAR_DATA_FOLDER = abspath(join(package_directory, "..", "..", "data_molecular"))
+MOLECULAR_DATA_FOLDER = files("fulcher_analyzer.data_molecular")
 
 
 class MolecularConstants:
@@ -38,10 +36,10 @@ class MolecularConstants:
         [16]: NIST Chemistry WebBook (https://webbook.nist.gov/chemistry/form-ser/)
         All constants in [1/cm].
         """
-        df = pd.read_csv(
-            join(MOLECULAR_DATA_FOLDER, "spectroscopic_constants.csv"),
-            comment="#",
-        )
+        with MOLECULAR_DATA_FOLDER.joinpath("spectroscopic_constants.csv").open(
+            "r", encoding="utf-8"
+        ) as f:
+            df = pd.read_csv(f, comment="#")
         cols = ["we", "wexe", "Be", "ae", "De"]
         self.h2 = (
             df[df["isotope"] == "h"].set_index("state")[cols].loc[["d3", "a3", "X"]]
@@ -86,15 +84,13 @@ class MolecularConstants:
         Load wavelength data for Q-branch for H and D
         """
         # Deuterium, data in the file is in [cm^{-1}], 800 is nan
-        wld = np.loadtxt(
-            join(MOLECULAR_DATA_FOLDER, "fulcher-α_band_wavenumber_D2.txt")
-        )
+        with MOLECULAR_DATA_FOLDER.joinpath("fulcher-α_band_wavenumber_D2.txt").open("r") as f:
+            wld = np.loadtxt(f)
         wld = pd.DataFrame(1 / (wld * 1e-7))  # wavenumber [cm-1] -> wavelength [nm]
         wld[wld > 800] = np.nan
         self.wld = wld
-        wlh = pd.DataFrame(
-            np.loadtxt(join(MOLECULAR_DATA_FOLDER, "fulcher-α_band_wavelength.txt"))
-        )
+        with MOLECULAR_DATA_FOLDER.joinpath("fulcher-α_band_wavelength.txt").open("r") as f:
+            wlh = pd.DataFrame(np.loadtxt(f))
         self.wlh = wlh
         self.wlh[self.wlh < 1] = np.nan
 
@@ -282,24 +278,26 @@ class MolecularConstants:
         """
         # Deuterium
         # vibrational energy
-        E_vib = np.loadtxt(join(MOLECULAR_DATA_FOLDER, "vibrational_energy_D2.txt"))
+        with MOLECULAR_DATA_FOLDER.joinpath("vibrational_energy_D2.txt").open("r") as f:
+            E_vib = np.loadtxt(f)
         # excitation energy for vibrational levels
-        Ee_vib = np.loadtxt(
-            join(MOLECULAR_DATA_FOLDER, "excitation_vibrational_energy_D2.txt")
-        )
+        with MOLECULAR_DATA_FOLDER.joinpath("excitation_vibrational_energy_D2.txt").open("r") as f:
+            Ee_vib = np.loadtxt(f)
         # Franck-Condon factors
-        fcf = np.loadtxt(join(MOLECULAR_DATA_FOLDER, "franck_condon_factor_D2.txt"))
+        with MOLECULAR_DATA_FOLDER.joinpath("franck_condon_factor_D2.txt").open("r") as f:
+            fcf = np.loadtxt(f)
         self.corona_constants_d = [E_vib, Ee_vib, fcf]
         self.fcfd = pd.DataFrame(fcf)
 
         # Hydrogen
         # vibrational energy
-        E_vib = np.loadtxt(join(MOLECULAR_DATA_FOLDER, "vibrational_energy.txt"))
+        with MOLECULAR_DATA_FOLDER.joinpath("vibrational_energy.txt").open("r") as f:
+            E_vib = np.loadtxt(f)
         # excitation energy for vibrational levels
-        Ee_vib = np.loadtxt(
-            join(MOLECULAR_DATA_FOLDER, "excitation_vibrational_energy.txt")
-        )
+        with MOLECULAR_DATA_FOLDER.joinpath("excitation_vibrational_energy.txt").open("r") as f:
+            Ee_vib = np.loadtxt(f)
         # Franck-Condon factors
-        fcf = np.loadtxt(join(MOLECULAR_DATA_FOLDER, "franck_condon_factor.txt"))
+        with MOLECULAR_DATA_FOLDER.joinpath("franck_condon_factor.txt").open("r") as f:
+            fcf = np.loadtxt(f)
         self.corona_constants_h = [E_vib, Ee_vib, fcf]
         self.fcfh = pd.DataFrame(fcf)
