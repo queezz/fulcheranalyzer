@@ -3,21 +3,34 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "cnlecture"
-version = "0.0.1"
+name = "fulcher-analyzer"
+version = "0.1.0"
 authors = [
   { name="A. K.", email="queezz@gmail.com" },
 ]
-description = "A small package to visualize some of the mathematics of complex numbers."
-readme = "README.md"
+description = "Molecular hydrogen Fulcher-alpha emission analyzer: line extraction, Boltzmann fitting, and coronal model reconstruction."
+readme = "Readme.md"
 license = { file="LICENSE" }
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+dependencies = [
+    "numpy",
+    "pandas",
+    "scipy",
+    "matplotlib",
+    "sympy",
 ]
 
+[project.optional-dependencies]
+spectrum = ["xarray"]
+
 [project.urls]
-"Homepage" = ""
-"Bug Tracker" = ""
+"Homepage" = "https://github.com/queezz/fulcheranalyzer"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/fulcher_analyzer"]
