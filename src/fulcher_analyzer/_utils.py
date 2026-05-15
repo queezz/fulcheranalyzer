@@ -84,3 +84,14 @@ def flatdf_1(df, name="val"):
     del df["variable"]
     df = df.reset_index(drop=True)
     return df[name].values
+
+
+def figsize(width=8, ratio=5 / 6):
+    """
+    Calculate image size from width in cm
+    """
+    cm_to_inch = 1 / 2.54
+    # -0.05 - adjust for padding when saving.
+    # For some reason savefig adds more padding, then savefig.pad_inches: 0.05
+    pad = -0.2
+    return (width * cm_to_inch + pad, (width * cm_to_inch + pad) * ratio)
