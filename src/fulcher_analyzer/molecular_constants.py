@@ -31,33 +31,23 @@ class MolecularConstants:
         """
         self.eV_cm = 1.23984e-4  # eV/cm-1 wavenumber to eV
 
-    def parse_data(self, s):
-        """
-        Parse file with rotational constants
-        """
-        return pd.DataFrame(
-            np.array([i.strip().split(" ") for i in s.split("\n")]).astype(np.float64),
-            ["d3", "a3", "X"],
-            ["we", "wexe", "Be", "ae", "De"],
-        )
-
-    # TODO: Move data to datafiles.
     def create_dataframes(self):
-        """ 
-        Data from Ishihara-s thesis 
-        [16]:  NIST Chemistry WebBook ( https://webbook.nist.gov/chemistry/form-ser/ )
-        All constants have same energy unit: [1/cm].
         """
-
-        self.h2 = self.parse_data(
-            """2371.57 66.27 30.364 1.545 0.0191
-               2664.83 71.65 34.216 1.671 0.0216
-               4401.21 121.33 60.853 3.062 0.0471"""
+        Load spectroscopic constants (we, wexe, Be, ae, De) for H2 and D2.
+        Data from Ishihara thesis;
+        [16]: NIST Chemistry WebBook (https://webbook.nist.gov/chemistry/form-ser/)
+        All constants in [1/cm].
+        """
+        df = pd.read_csv(
+            join(MOLECULAR_DATA_FOLDER, "spectroscopic_constants.csv"),
+            comment="#",
         )
-        self.d2 = self.parse_data(
-            """1678.22 32.94 15.200 0.5520 0.0049
-               1885.84 35.96 17.109 0.606 0.0055
-               3115.50 61.82 30.443 1.0786 0.01141"""
+        cols = ["we", "wexe", "Be", "ae", "De"]
+        self.h2 = (
+            df[df["isotope"] == "h"].set_index("state")[cols].loc[["d3", "a3", "X"]]
+        )
+        self.d2 = (
+            df[df["isotope"] == "d"].set_index("state")[cols].loc[["d3", "a3", "X"]]
         )
 
     def tfrac(self, v, isotop="d"):

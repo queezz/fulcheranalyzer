@@ -74,10 +74,32 @@ def test_molecular_data_files():
         "excitation_vibrational_energy_D2.txt",
         "fulcher-\u03b1_band_wavelength.txt",
         "fulcher-\u03b1_band_wavenumber_D2.txt",
+        "spectroscopic_constants.csv",
     ]
     for fname in required:
         path = os.path.join(MOLECULAR_DATA_FOLDER, fname)
         assert os.path.isfile(path), f"Missing molecular data file: {path}"
+
+
+def test_spectroscopic_constants_values():
+    """Selected constants must match NIST/Ishihara source values exactly."""
+    from fulcher_analyzer import MolecularConstants
+
+    mc = MolecularConstants()
+
+    # H2 d3 state
+    assert mc.h2.loc["d3", "we"] == pytest.approx(2371.57)
+    assert mc.h2.loc["d3", "Be"] == pytest.approx(30.364)
+    assert mc.h2.loc["X", "we"] == pytest.approx(4401.21)
+
+    # D2 d3 state
+    assert mc.d2.loc["d3", "we"] == pytest.approx(1678.22)
+    assert mc.d2.loc["d3", "Be"] == pytest.approx(15.200)
+    assert mc.d2.loc["X", "De"] == pytest.approx(0.01141)
+
+    # DataFrame index order must be preserved
+    assert list(mc.h2.index) == ["d3", "a3", "X"]
+    assert list(mc.d2.index) == ["d3", "a3", "X"]
 
 
 def test_read_intensities_d2():
@@ -125,6 +147,7 @@ if __name__ == "__main__":
         test_public_api_same_objects,
         test_data_folders_exist,
         test_molecular_data_files,
+        test_spectroscopic_constants_values,
         test_read_intensities_d2,
         test_read_intensities_h2,
         test_boltzmann_init_d2,
