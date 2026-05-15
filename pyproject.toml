@@ -27,6 +27,13 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+dev = [
+    "ipython",
+    "ipykernel",
+    "jinja2",
+    "jupyter",
+    "pytest",
+]
 spectrum = ["xarray"]
 
 [project.urls]
