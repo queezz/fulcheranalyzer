@@ -1,0 +1,21 @@
+# shotnumber: 150482
+# frame : 7
+# gas : Deuterium
+# Columns: vibrational quantum number
+# Rows: rotational quantum number
+# Values: Q-branch line intensities [unit]
+# [Data]
+,,,
+0.0442912,0.0286894,0.0215917,0.0134149
+,0.0193036,,
+0.0530291,0.0374624,0.0227958,0.0150819
+,0.0148636,,
+0.0603561,0.0295525,,
+0.0281625,,,
+0.0520435,,0.0162677,
+,,,
+0.0461528,0.0238575,,
+,,,
+,,,
+,,,
+0.0189271,0.0075107,,

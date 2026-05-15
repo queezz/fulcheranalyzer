@@ -37,7 +37,12 @@ data file is accidentally changed.
 ```python
 from fulcher_analyzer import BoltzmannPlot, CoronaModel, read_intensities
 
-inte = read_intensities(shot, frame)          # (intensity_df, error_df)
+# Uses bundled example data (shot 150482 = D2, 152478 = H2):
+inte = read_intensities(150482, 7)            # (intensity_df, error_df)
+
+# Or load from a custom directory:
+# inte = read_intensities(shot, frame, data_folder="/path/to/data")
+
 bp   = BoltzmannPlot(inte, isotop="d")        # "d" or "h"
 bp.autofit()
 

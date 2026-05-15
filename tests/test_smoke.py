@@ -50,14 +50,14 @@ def test_public_api_same_objects():
 
 
 def test_data_folders_exist():
-    from fulcher_analyzer.coronalmodel import MOLECULAR_DATA_FOLDER, DATA_FOLDER
-    import os
+    from fulcher_analyzer.coronalmodel import MOLECULAR_DATA_FOLDER
+    from fulcher_analyzer.intensity_io import INTENSITY_DATA
 
     assert MOLECULAR_DATA_FOLDER.is_dir(), (
         f"MOLECULAR_DATA_FOLDER not found: {MOLECULAR_DATA_FOLDER}"
     )
-    assert os.path.isdir(DATA_FOLDER), (
-        f"DATA_FOLDER not found: {DATA_FOLDER}"
+    assert INTENSITY_DATA.is_dir(), (
+        f"INTENSITY_DATA not found: {INTENSITY_DATA}"
     )
 
 

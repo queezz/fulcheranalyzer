@@ -1,0 +1,18 @@
+# shotnumber: 152478
+# frame : 10
+# gas : Hydrogen
+# Columns: vibrational quantum number
+# Rows: rotational quantum number
+# Values: Q-branch line intensities [unit]
+# [Data]
+0.1470036,0.0943347,0.0824163
+0.0656883,,
+,0.1903784,0.0961927
+0.085683,,0.0295896
+0.2377643,,
+,,
+0.1843479,0.0913015,0.0555396
+,,
+0.1134438,0.0618843,
+,,
+0.0668006,,
