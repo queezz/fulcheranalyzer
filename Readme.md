@@ -64,6 +64,25 @@ All names previously available as `fcm.*` remain accessible through
 `coronalmodel.py`, which is now a thin backward-compatibility facade.
 
 
+## Documentation
+
+Install the docs dependencies and serve locally:
+
+```bash
+python -m pip install -e ".[docs]"
+mkdocs serve
+```
+
+Then open <http://127.0.0.1:8000> in a browser.
+
+Build static HTML:
+
+```bash
+mkdocs build
+```
+
+Output goes to `site/`.
+
 ## VENV
 
 ### Create virtual environment

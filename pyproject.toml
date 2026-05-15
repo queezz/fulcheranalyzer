@@ -35,6 +35,10 @@ dev = [
     "pytest",
 ]
 spectrum = ["xarray"]
+docs = [
+    "mkdocs",
+    "mkdocs-material",
+]
 
 [project.urls]
 "Homepage" = "https://github.com/queezz/fulcheranalyzer"
