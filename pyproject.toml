@@ -41,3 +41,7 @@ spectrum = ["xarray"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/fulcher_analyzer"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
