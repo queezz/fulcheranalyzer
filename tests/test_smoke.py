@@ -1,5 +1,5 @@
 """
-Smoke test — Phase 2a.
+Smoke test — Phase 2a / 2i.
 
 Verifies that:
 1. The package imports cleanly from the src-layout.
@@ -7,6 +7,7 @@ Verifies that:
 3. Both canonical datasets load and produce DataFrames of the right shape.
 4. BoltzmannPlot initialises for both D2 and H2 (instantiates MolecularConstants,
    loads molecular data, runs the Boltzmann calculation — no fit yet).
+5. The new top-level public API works and is identical to the legacy facade.
 
 Run with:
     pip install -e .
@@ -24,6 +25,28 @@ def test_import():
     assert hasattr(fcm, "CoronaModel")
     assert hasattr(fcm, "MolecularConstants")
     assert hasattr(fcm, "read_intensities")
+
+
+def test_public_api():
+    """Top-level package exposes the canonical public names."""
+    import fulcher_analyzer as fa
+
+    assert hasattr(fa, "BoltzmannPlot")
+    assert hasattr(fa, "CoronaModel")
+    assert hasattr(fa, "MolecularConstants")
+    assert hasattr(fa, "read_intensities")
+    assert hasattr(fa, "write_intensities")
+
+
+def test_public_api_same_objects():
+    """Top-level names are the same objects as the legacy facade names."""
+    import fulcher_analyzer as fa
+    from fulcher_analyzer import coronalmodel as fcm
+
+    assert fa.BoltzmannPlot is fcm.BoltzmannPlot
+    assert fa.CoronaModel is fcm.CoronaModel
+    assert fa.MolecularConstants is fcm.MolecularConstants
+    assert fa.read_intensities is fcm.read_intensities
 
 
 def test_data_folders_exist():
@@ -98,6 +121,8 @@ if __name__ == "__main__":
 
     tests = [
         test_import,
+        test_public_api,
+        test_public_api_same_objects,
         test_data_folders_exist,
         test_molecular_data_files,
         test_read_intensities_d2,

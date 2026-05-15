@@ -30,6 +30,39 @@ R-matrix cache. They will fail if any physics constant, formula, or
 data file is accidentally changed.
 
 
+## Usage
+
+### Canonical import (recommended)
+
+```python
+from fulcher_analyzer import BoltzmannPlot, CoronaModel, read_intensities
+
+inte = read_intensities(shot, frame)          # (intensity_df, error_df)
+bp   = BoltzmannPlot(inte, isotop="d")        # "d" or "h"
+bp.autofit()
+
+cm   = CoronaModel(bp)
+cm.coronal_autofit()
+```
+
+### Legacy compatibility import (still fully supported)
+
+Notebooks and scripts written against the old monolithic module continue
+to work without modification:
+
+```python
+from fulcher_analyzer import coronalmodel as fcm
+
+inte = fcm.read_intensities(shot, frame)
+bp   = fcm.BoltzmannPlot(inte, "d")
+bp.autofit()
+
+cm   = fcm.CoronaModel(bp)
+```
+
+All names previously available as `fcm.*` remain accessible through
+`coronalmodel.py`, which is now a thin backward-compatibility facade.
+
 
 ## VENV
 
