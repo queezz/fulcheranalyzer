@@ -610,7 +610,7 @@ class BoltzmannPlot:
 
         plot_n_all_v(self.nd_rel, self.Ed[self.mask], log=False)
         plt.xlabel("E, ev")
-        plt.ylabel("$n/(2J+1)/g_{as}$")
+        plt.ylabel(r"$n/(2J+1)/g_{as}$")
         plt.legend()
         plt.yscale("log")
 
@@ -651,7 +651,7 @@ class BoltzmannPlot:
         ax = plt.gca()
         ax.text(0, 1.05, fittext(param), transform=ax.transAxes)
         plt.xlabel("E, ev")
-        plt.ylabel("$\ln{\left( n/(2J+1)/g_{as}\\right)}$, a.u.")
+        plt.ylabel(r"$\ln{\left( n/(2J+1)/g_{as}\right)}$, a.u.")
 
     def print_fit_result(self):
         """
@@ -720,7 +720,7 @@ class BoltzmannPlot:
         plot_n_all_v(self.nd_rel, self.Ed, log=False, noline=True)
         plt.yscale("log")
         plt.xlabel("E, ev")
-        plt.ylabel("$n/(2J+1)/g_{as}$, a.u.")
+        plt.ylabel(r"$n/(2J+1)/g_{as}$, a.u.")
 
     def calc_nd_const(self):
         """ 
@@ -875,7 +875,7 @@ class BoltzmannPlot:
         plt.yscale("log")
         plt.xlabel("Rotational Energy [eV]")
         plt.ylabel(
-            "$\mathdefault{\mathrm{\\frac{ n_{dv'N'}}{(2N'+1)g^{N'}_{as}}}}$ [a.u.]",
+            r"$\mathrm{\frac{n_{d v' N'}}{(2N'+1)\,g_{\mathrm{as}}^{N'}}}$ [a.u.]",
             fontsize=fontsize + 2,
         )
         plt.ylim(0.01, 1.5)
@@ -1607,7 +1607,7 @@ class CoronaModel:
         nms = self.bp.qnames[self.bp.mask]
         ax.set_xticklabels(flatdf(nms), rotation=90)
         ax.set_xlabel("Q-branch transition [QN'(v'-v'')]")
-        ax.set_ylabel("$\mathdefault{\mathrm{n_{dv\mathrm{'}N\mathrm{'}}}}$ [a.u.]")
+        ax.set_ylabel(r"$\mathrm{n_{d v^{\prime} N^{\prime}}}$ [a.u.]")
 
     def plot_rtp(self):
         """ 
@@ -1880,7 +1880,7 @@ class CoronaModel:
         plt.yscale("log")
         plt.xlabel("Rotational Energy [eV]")
         plt.ylabel(
-            "$\\mathdefault{\mathrm{\\frac{n_{XvN}}{(2N+1)g_{as}^{N}}}}}$ [a.u.]",
+            r"$\mathrm{\frac{n_{XvN}}{(2N+1)\,g_{\mathrm{as}}^{N}}}$ [a.u.]",
             fontsize=fontsize + 2,
         )
 
