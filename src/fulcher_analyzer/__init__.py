@@ -9,13 +9,6 @@ Canonical public API
 --------------------
 
     from fulcher_analyzer import BoltzmannPlot, CoronaModel, read_intensities
-
-Legacy compatibility import (still fully supported)
----------------------------------------------------
-
-    from fulcher_analyzer import coronalmodel as fcm
-    bp = fcm.BoltzmannPlot(...)
-    cm = fcm.CoronaModel(bp)
 """
 __version__ = "0.0.1"
 

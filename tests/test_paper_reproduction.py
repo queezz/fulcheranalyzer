@@ -33,12 +33,12 @@ def d2_workflow():
     """Run the full D2 canonical workflow once per test module."""
     import matplotlib
     matplotlib.use("Agg")
-    from fulcher_analyzer import coronalmodel as fcm
+    from fulcher_analyzer import BoltzmannPlot, CoronaModel, read_intensities
 
-    inte = fcm.read_intensities(150482, 7)
-    bp = fcm.BoltzmannPlot(inte, "d")
+    inte = read_intensities(150482, 7)
+    bp = BoltzmannPlot(inte, "d")
     bp.autofit()
-    como = fcm.CoronaModel(bp)
+    como = CoronaModel(bp)
     como.coronal_autofit()
     return bp, como
 
@@ -48,28 +48,31 @@ def h2_workflow():
     """Run the full H2 canonical workflow once per test module."""
     import matplotlib
     matplotlib.use("Agg")
-    from fulcher_analyzer import coronalmodel as fcm
+    from fulcher_analyzer import BoltzmannPlot, CoronaModel, read_intensities
 
-    inte = fcm.read_intensities(152478, 10)
-    bp = fcm.BoltzmannPlot(inte, "h")
+    inte = read_intensities(152478, 10)
+    bp = BoltzmannPlot(inte, "h")
     bp.autofit()
-    como = fcm.CoronaModel(bp)
+    como = CoronaModel(bp)
     como.coronal_autofit()
     return bp, como
 
 
 # ── basic import ────────────────────────────────────────────────────────────
 
-def test_import_coronalmodel():
-    from fulcher_analyzer import coronalmodel as fcm
-    assert fcm.__name__.endswith("coronalmodel")
+def test_import_canonical():
+    from fulcher_analyzer import BoltzmannPlot, CoronaModel, read_intensities, MolecularConstants
+    assert callable(BoltzmannPlot)
+    assert callable(CoronaModel)
+    assert callable(read_intensities)
+    assert callable(MolecularConstants)
 
 
 # ── D2 data shapes ──────────────────────────────────────────────────────────
 
 def test_d2_intensity_shape():
-    from fulcher_analyzer import coronalmodel as fcm
-    inte, interr = fcm.read_intensities(150482, 7)
+    from fulcher_analyzer import read_intensities
+    inte, interr = read_intensities(150482, 7)
     assert inte.shape == (14, 4)
     assert interr.shape == (14, 4)
 
@@ -137,8 +140,8 @@ def test_d2_tviberr(d2_workflow):
 # ── H2 data shapes ──────────────────────────────────────────────────────────
 
 def test_h2_intensity_shape():
-    from fulcher_analyzer import coronalmodel as fcm
-    inte, interr = fcm.read_intensities(152478, 10)
+    from fulcher_analyzer import read_intensities
+    inte, interr = read_intensities(152478, 10)
     assert inte.shape == (11, 3)
     assert interr.shape == (11, 3)
 

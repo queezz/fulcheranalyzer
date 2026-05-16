@@ -11,7 +11,7 @@ from __future__ import annotations
 import numpy as np
 from typing import TYPE_CHECKING
 
-from ._utils import flatdf, figsize
+from ._utils import flatdf
 
 if TYPE_CHECKING:
     from .coronal_model import CoronaModel
@@ -418,3 +418,37 @@ def plot_popx_paper(model: "CoronaModel", fontsize: int = 11, ms: int = 4) -> No
     plt.xlim(-0.05, 1.0)
 
     plt.gcf().set_size_inches(figsize(8))
+
+
+def figsize(width=8, ratio=5 / 6):
+    """
+    Calculate image size from width in cm.
+    """
+    cm_to_inch = 1 / 2.54
+    # -0.05 - adjust for padding when saving.
+    # For some reason savefig adds more padding, then savefig.pad_inches: 0.05
+    pad = -0.2
+    return (width * cm_to_inch + pad, (width * cm_to_inch + pad) * ratio)
+
+
+# ---------------------------------------------------------------------------
+# Axis utilities
+# ---------------------------------------------------------------------------
+
+def set_tick_size(ax, *size) -> None:
+    """
+    Set matplotlib axis tick sizes.
+
+    Parameters
+    ----------
+    ax:
+        Matplotlib ``Axes`` instance.
+    *size:
+        Four values in order: width_major, length_major, width_minor, length_minor.
+    """
+    width_major, length_major, width_minor, length_minor = size
+    ax.xaxis.set_tick_params(width=width_major, length=length_major, which="major")
+    ax.xaxis.set_tick_params(width=width_minor, length=length_minor, which="minor")
+    ax.yaxis.set_tick_params(width=width_major, length=length_major, which="major")
+    ax.yaxis.set_tick_params(width=width_minor, length=length_minor, which="minor")
+

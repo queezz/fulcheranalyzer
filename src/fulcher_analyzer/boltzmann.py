@@ -6,7 +6,8 @@ import pandas as pd
 from importlib.resources import files
 
 from .molecular_constants import MolecularConstants
-from ._utils import flatdf, figsize
+from ._utils import flatdf
+from .plotting import figsize
 
 ABSOLUTESIGMA = False
 MOLECULAR_DATA_FOLDER = files("fulcher_analyzer.data_molecular")

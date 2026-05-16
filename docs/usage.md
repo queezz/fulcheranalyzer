@@ -48,27 +48,6 @@ intensities, errors = read_intensities(my_shot, my_frame, data_folder="/path/to/
 
 ---
 
-## Legacy compatibility import
-
-Notebooks and scripts written against the original monolithic `coronalmodel`
-module continue to work without modification:
-
-```python
-from fulcher_analyzer import coronalmodel as fcm
-
-inte = fcm.read_intensities(shot, frame)
-bp   = fcm.BoltzmannPlot(inte, "d")
-bp.autofit()
-
-cm = fcm.CoronaModel(bp)
-cm.coronal_autofit()
-```
-
-`coronalmodel.py` is a thin backward-compatibility facade that re-exports all
-names that were previously available through the old monolithic module.
-
----
-
 ## Accessing molecular constants directly
 
 ```python

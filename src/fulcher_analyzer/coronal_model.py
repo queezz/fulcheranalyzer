@@ -7,7 +7,7 @@ import pandas as pd
 from importlib.resources import files
 
 from .boltzmann import BoltzmannPlot, ABSOLUTESIGMA
-from ._utils import flatdf, figsize, delta_kro, g_as, g_as_vector, tjpo_vector, reshape_4d2d
+from ._utils import flatdf, delta_kro, g_as, g_as_vector, tjpo_vector, reshape_4d2d
 from .plotting import plot_rmatrix  # re-export so existing callers still work
 
 MOLECULAR_DATA_FOLDER = files("fulcher_analyzer.data_molecular")

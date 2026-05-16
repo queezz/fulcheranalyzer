@@ -52,22 +52,6 @@ cm.coronal_autofit()
 
 ### Legacy compatibility import (still fully supported)
 
-Notebooks and scripts written against the old monolithic module continue
-to work without modification:
-
-```python
-from fulcher_analyzer import coronalmodel as fcm
-
-inte = fcm.read_intensities(shot, frame)
-bp   = fcm.BoltzmannPlot(inte, "d")
-bp.autofit()
-
-cm   = fcm.CoronaModel(bp)
-```
-
-All names previously available as `fcm.*` remain accessible through
-`coronalmodel.py`, which is now a thin backward-compatibility facade.
-
 
 ## Documentation
 

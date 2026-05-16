@@ -7,7 +7,7 @@ Verifies that:
 3. Both canonical datasets load and produce DataFrames of the right shape.
 4. BoltzmannPlot initialises for both D2 and H2 (instantiates MolecularConstants,
    loads molecular data, runs the Boltzmann calculation — no fit yet).
-5. The new top-level public API works and is identical to the legacy facade.
+5. The canonical public API is complete and consistent.
 
 Run with:
     pip install -e .
@@ -20,11 +20,11 @@ import pytest
 
 
 def test_import():
-    from fulcher_analyzer import coronalmodel as fcm  # noqa: F401
-    assert hasattr(fcm, "BoltzmannPlot")
-    assert hasattr(fcm, "CoronaModel")
-    assert hasattr(fcm, "MolecularConstants")
-    assert hasattr(fcm, "read_intensities")
+    import fulcher_analyzer as fa
+    assert hasattr(fa, "BoltzmannPlot")
+    assert hasattr(fa, "CoronaModel")
+    assert hasattr(fa, "MolecularConstants")
+    assert hasattr(fa, "read_intensities")
 
 
 def test_public_api():
@@ -38,19 +38,8 @@ def test_public_api():
     assert hasattr(fa, "write_intensities")
 
 
-def test_public_api_same_objects():
-    """Top-level names are the same objects as the legacy facade names."""
-    import fulcher_analyzer as fa
-    from fulcher_analyzer import coronalmodel as fcm
-
-    assert fa.BoltzmannPlot is fcm.BoltzmannPlot
-    assert fa.CoronaModel is fcm.CoronaModel
-    assert fa.MolecularConstants is fcm.MolecularConstants
-    assert fa.read_intensities is fcm.read_intensities
-
-
 def test_data_folders_exist():
-    from fulcher_analyzer.coronalmodel import MOLECULAR_DATA_FOLDER
+    from fulcher_analyzer.coronal_model import MOLECULAR_DATA_FOLDER
     from fulcher_analyzer.intensity_io import INTENSITY_DATA
 
     assert MOLECULAR_DATA_FOLDER.is_dir(), (
@@ -62,7 +51,7 @@ def test_data_folders_exist():
 
 
 def test_molecular_data_files():
-    from fulcher_analyzer.coronalmodel import MOLECULAR_DATA_FOLDER
+    from fulcher_analyzer.coronal_model import MOLECULAR_DATA_FOLDER
 
     required = [
         "franck_condon_factor.txt",
@@ -102,36 +91,36 @@ def test_spectroscopic_constants_values():
 
 
 def test_read_intensities_d2():
-    from fulcher_analyzer import coronalmodel as fcm
+    from fulcher_analyzer import read_intensities
 
-    inte, interr = fcm.read_intensities(150482, 7)
+    inte, interr = read_intensities(150482, 7)
     assert inte.shape == (14, 4), f"Unexpected D2 intensity shape: {inte.shape}"
     assert interr.shape == (14, 4), f"Unexpected D2 error shape: {interr.shape}"
 
 
 def test_read_intensities_h2():
-    from fulcher_analyzer import coronalmodel as fcm
+    from fulcher_analyzer import read_intensities
 
-    inte, interr = fcm.read_intensities(152478, 10)
+    inte, interr = read_intensities(152478, 10)
     assert inte.shape == (11, 3), f"Unexpected H2 intensity shape: {inte.shape}"
     assert interr.shape == (11, 3), f"Unexpected H2 error shape: {interr.shape}"
 
 
 def test_boltzmann_init_d2():
-    from fulcher_analyzer import coronalmodel as fcm
+    from fulcher_analyzer import BoltzmannPlot, read_intensities
 
-    inte = fcm.read_intensities(150482, 7)
-    bp = fcm.BoltzmannPlot(inte, "d")
+    inte = read_intensities(150482, 7)
+    bp = BoltzmannPlot(inte, "d")
     assert bp.isotop == "d"
     assert bp.nd.shape == (14, 4)
     assert bp.nd_rel.shape == (14, 4)
 
 
 def test_boltzmann_init_h2():
-    from fulcher_analyzer import coronalmodel as fcm
+    from fulcher_analyzer import BoltzmannPlot, read_intensities
 
-    inte = fcm.read_intensities(152478, 10)
-    bp = fcm.BoltzmannPlot(inte, "h")
+    inte = read_intensities(152478, 10)
+    bp = BoltzmannPlot(inte, "h")
     assert bp.isotop == "h"
     assert bp.nd.shape == (11, 3)
     assert bp.nd_rel.shape == (11, 3)
@@ -143,7 +132,6 @@ if __name__ == "__main__":
     tests = [
         test_import,
         test_public_api,
-        test_public_api_same_objects,
         test_data_folders_exist,
         test_molecular_data_files,
         test_spectroscopic_constants_values,

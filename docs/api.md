@@ -90,13 +90,14 @@ write_intensities(intensities, errors, shot, frame)
 
 ---
 
-## Legacy facade
+## `set_tick_size`
 
-The original monolithic API is still fully accessible:
+**Module:** `fulcher_analyzer.plotting`
+
+Utility to set matplotlib axis tick sizes (length and width for major and minor ticks).
 
 ```python
-from fulcher_analyzer import coronalmodel as fcm
-```
+from fulcher_analyzer.plotting import set_tick_size
 
-`coronalmodel.py` is a thin compatibility shim that re-exports all names that
-were previously available through the old module. No physics code lives there.
+set_tick_size(ax, width_major, length_major, width_minor, length_minor)
+```
