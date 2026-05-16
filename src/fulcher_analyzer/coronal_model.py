@@ -1,5 +1,6 @@
 """
-CoronaModel class and its dedicated plotting helper plot_rmatrix.
+CoronaModel: fitting/model logic.
+Plotting helpers live in ``.plotting`` and are exposed here as thin wrappers.
 """
 import numpy as np
 import pandas as pd
@@ -7,70 +8,9 @@ from importlib.resources import files
 
 from .boltzmann import BoltzmannPlot, ABSOLUTESIGMA
 from ._utils import flatdf, figsize, delta_kro, g_as, g_as_vector, tjpo_vector, reshape_4d2d
+from .plotting import plot_rmatrix  # re-export so existing callers still work
 
 MOLECULAR_DATA_FOLDER = files("fulcher_analyzer.data_molecular")
-
-
-def plot_rmatrix(Rm, shapes, text="R-matrix"):
-    """
-    Plot 2d R matrix for inspection 
-    vdl, jdl, vxl, jxl = shapes
-    """
-    import matplotlib as mpl
-    import matplotlib.pyplot as plt
-    from mpl_toolkits.axes_grid1 import make_axes_locatable
-
-    vdl, jdl, vxl, jxl = shapes
-    xticks = np.arange(vxl + 1) * jxl
-    yticks = np.arange(vdl + 1) * jdl
-    # Color Map with Under and Over defined
-    cm = plt.cm.seismic
-    cm.set_under("#736200")
-    cm.set_over("#15ad1a")
-
-    im = plt.imshow(Rm, origin="lower", cmap=cm, norm=mpl.colors.LogNorm())
-    ax = plt.gca()
-    # Colorbar in a divider axis
-    divider = make_axes_locatable(ax)
-    cax = divider.append_axes("right", size="5%", pad=0.5)
-    plt.colorbar(im, extend="both", cax=cax)
-
-    # Text
-    plt.sca(ax)
-    ax.set_aspect(1)
-    ax.set_facecolor("#a8a594")
-    ax.set_xticks(xticks)
-    ax.set_yticks(yticks)
-    plt.xlabel("$v\cdot J$ ($X^1\Sigma^+_g$)")
-    plt.ylabel("$v$'$\cdot (J$'$-1)$ ($d^3\Pi_{u}$)")
-    plt.xlim(-1, xticks[-1])
-    plt.ylim(-1, yticks[-1])
-    plt.grid(c="k")
-    ax.text(
-        -0.12,
-        0,
-        f"$vd\cdot Jd = {vdl}\cdot {jdl}$",
-        transform=ax.transAxes,
-        rotation=90,
-    )
-    ax.text(
-        -0.12,
-        0.75,
-        f"$\\nexists Jd = 0$, $Jd>0$!!!",
-        transform=ax.transAxes,
-        rotation=90,
-    )
-    ax.text(-0.12, -0.1, f"$vx\cdot Jx = {vxl}\cdot {jxl}$", transform=ax.transAxes)
-    ax.text(0.7, -0.1, f"{text}", transform=ax.transAxes)
-
-    [
-        ax.text(vxl * jxl + 2, j + jdl / 2, i, va="center", ha="center")
-        for i, j in enumerate(yticks[:-1])
-    ]
-    [
-        ax.text(j + jxl / 2, vdl * jdl + 2, i, va="center", ha="center")
-        for i, j in enumerate(xticks[:-1])
-    ]
 
 
 class CoronaModel:
@@ -101,49 +41,12 @@ class CoronaModel:
         # self.load_constants()
 
     def prep_style(self, ms=8):
-        """ 
-        Prepare standard plot styles 
         """
-        self.style_coronaplot = [
-            {
-                "capsize": 0.8 * ms,
-                "capthick": 0.4,
-                "elinewidth": 0.4,
-                "fmt": i,
-                "ecolor": j,
-                "markeredgecolor": j,
-                "color": j,
-                "label": k,
-                "ms": l,
-                "lw": 0.6,
-            }
-            for i, j, k, l in zip(
-                ["o-.", "s-."],
-                ["k", "r"],
-                ["experiment", "reconstructed"],
-                [ms, 0.7 * ms],
-            )
-        ]
-
-        self.style_rovib = [
-            {
-                "lw": 0.8,
-                "marker": i,
-                "mfc": j,
-                "c": "k",
-                "ls": "-.",
-                "ms": ms,
-                "mew": k,
-                "label": f"v={s}",
-            }
-            for s, (i, j, k) in enumerate(
-                zip(
-                    ["o", "o", "x", "s"],
-                    ["k", "w", "k", "k"],
-                    np.array([1, 2, 2, 1]) * 0.5,
-                )
-            )
-        ]
+        Prepare standard plot styles.
+        Thin wrapper — logic lives in :func:`~fulcher_analyzer.plotting.prep_corona_style`.
+        """
+        from .plotting import prep_corona_style
+        prep_corona_style(self, ms=ms)
 
     def prep_constants(self):
         """
@@ -267,46 +170,9 @@ class CoronaModel:
         print(f"Tvib = {tvib[0]:.0f} +- {self.tvib_err:.0f} K")
 
     def plot_fit_ishi(self, **kws):
-        """ 
-        "Nice" plot of the vibro fit and 'gauge' for Ishihara-s fit 
-        """
-        import matplotlib.pyplot as plt
-
-        fig = plt.gcf()
-        fig.set_size_inches([7, 6])
-
-        tvs = np.arange(1, 31) * 1000
-        colors = plt.cm.jet(np.linspace(0, 1, len(tvs)))
-        gls = []
-
-        for i, t in enumerate(tvs):
-            nv = self.f_vibro("", t, False)
-            (ll,) = plt.plot(nv.sum(axis=0), ".-", c=colors[i], label=f"{t//1000}")
-            gls.append(ll,)
-
-        try:
-            tvib = kws.get("tvib", self.tvib)
-        except:
-            tvib = kws.get("tvib", 1000)
-
-        nv = self.f_vibro("", tvib, False)
-
-        (l1,) = plt.plot(
-            nv.sum(axis=0), "s-", c="r", ms=10, label=f"$T_{{vib}} = {tvib:.0f}$K"
-        )
-        nde = self.bp.nd_vibrofit
-        (l2,) = plt.plot(nde / nde[0] * nv.sum(axis=0)[0], "ko-", label="data")
-
-        plt.locator_params(nbins=4)
-        ax = plt.gca()
-        ax.text(0.98, 1.02, "T/1000K", transform=ax.transAxes)
-        pl0 = plt.legend(
-            handles=gls, loc=1, prop={"size": 7}, bbox_to_anchor=[1.13, 1.01]
-        )
-        ax.add_artist(pl0)  # first legned we must add manually
-        pl1 = plt.legend(handles=[l1, l2])
-        plt.xlabel("vibrational q.n.")
-        plt.ylabel("relative pop. of $d^3\Pi_u$")
+        """Thin wrapper — see :func:`~fulcher_analyzer.plotting.plot_fit_ishi`."""
+        from .plotting import plot_fit_ishi
+        return plot_fit_ishi(self, **kws)
 
     # ==================================================
     #
@@ -697,219 +563,49 @@ class CoronaModel:
         self.calc_nd()
 
     def plot_xd(self):
-        """ plot synthetic nX and nd"""
-        import matplotlib.pyplot as plt
-
-        fig, axs = plt.subplots(2, 1)
-        fig.set_size_inches([5, 5])
-
-        [axs[0].plot(self.nx[i], label=f"v={i}") for i in range(self.nx.shape[1])]
-        [axs[1].plot(self.nd[i], label=f"v={i}") for i in range(self.nd.shape[1])]
-        [ax.legend(fontsize=10) for ax in axs]
-        axs[0].text(0.5, 0.8, "$X^1\Sigma^{+}_{g}$", transform=axs[0].transAxes)
-        axs[1].text(0.5, 0.8, "$d^3\Pi_{u}$", transform=axs[1].transAxes)
+        """Thin wrapper — see :func:`~fulcher_analyzer.plotting.plot_xd`."""
+        from .plotting import plot_xd
+        return plot_xd(self)
 
     def plot_xd_flat(self, **kws):
-        """
-        Plot flattened X and d populations
-        """
-        import matplotlib.pyplot as plt
-        from math import ceil
-
-        ax = kws.get("ax", plt.gca())
-
-        ndeflat = self.bp.nd_sc.values.flatten(order="f")
-        ndflat = self.nd.values.flatten(order="f")
-
-        mask = self.bp.mask.values.flatten(order="f")
-        x_ndem = np.arange(mask.shape[0])[mask]
-        ndemflat = ndeflat[mask]
-
-        plt.sca(ax)
-        plt.plot(ndeflat / ndeflat.sum(), "ko-", label="exp-synth")
-        plt.plot(x_ndem, ndemflat / ndeflat.sum(), "C3s", label="data")
-        plt.plot(ndflat / ndflat.sum(), "C2x-.", label="corona")
-        plt.legend()
-        ax.set_xlim(-1, ceil(self.nd.shape[0] * self.nd.shape[1] / 5) * 5)
+        """Thin wrapper — see :func:`~fulcher_analyzer.plotting.plot_xd_flat`."""
+        from .plotting import plot_xd_flat
+        return plot_xd_flat(self, **kws)
 
     def plot_paper_compare(self, **kws):
-        """
-        Plot comparison of experimental population of d-state
-        with Corona-Model reconstructed one (p.39 fig. 4.24 Ishihara-s thesis)
-        (or Figures 11 and 12 from JQSRT-2021 paper)
-        """
-        import matplotlib.pyplot as plt
-
-        ax = kws.get("ax", plt.gca())
-
-        "nd - n(d3), nde - nd experimental, ndes - nd experimental synthetic (fit)"
-        ndeflat = flatdf(self.bp.nd[self.bp.mask])  # experimental data
-        nd_err = flatdf(self.bp.nd_err)  # experimental error
-        ndesflat = flatdf(self.bp.nd_sc[self.bp.mask])  # boltzmann fit of d-state
-        ndflat = flatdf(self.nd[self.bp.mask])  # corona reconstruction of d-state
-        # normalize bu the sum()
-        ndflat = ndflat / ndflat.sum()  # corona
-        nd_err = nd_err / ndeflat.sum()  # experimental error, ORDER MATTERS!
-        ndeflat = ndeflat / ndeflat.sum()  # experiment
-        ndesflat = ndesflat / ndesflat.sum()  # boltzmann fit
-
-        plt.sca(ax)
-        # plt.plot(ndeflat, "ko-", label="exp-data")
-        ms = kws.get("ms", 4)
-        self.prep_style(ms=ms)
-        style = self.style_coronaplot
-        x = np.arange(len(ndeflat))
-        plt.errorbar(x, ndeflat, yerr=nd_err, **style[0])
-        showbp = kws.get("showbp", False)
-        if showbp:
-            plt.plot(ndesflat, "C1o-.", label="BP-fit")
-        yerr = kws.get("yerr", [])
-        if not len(yerr):
-            plt.plot(ndflat, "rs:", label="corona")
-        else:
-            plt.errorbar(x, ndflat, yerr=yerr, **style[1])
-
-        plt.legend()
-
-        plt.xticks(np.arange(0, len(ndflat), 1))
-        nms = self.bp.qnames[self.bp.mask]
-        ax.set_xticklabels(flatdf(nms), rotation=90)
-        ax.set_xlabel("Q-branch transition [QN'(v'-v'')]")
-        ax.set_ylabel(r"$\mathrm{n_{d v^{\prime} N^{\prime}}}$ [a.u.]")
+        """Thin wrapper — see :func:`~fulcher_analyzer.plotting.plot_paper_compare`."""
+        from .plotting import plot_paper_compare
+        return plot_paper_compare(self, **kws)
 
     def plot_rtp(self):
-        """ 
-        Plot rtp 
-        """
-        import matplotlib.pyplot as plt
-        import matplotlib as mpl
-
-        im = plt.imshow(
-            self.rtp, origin="lower", cmap=plt.cm.seismic, norm=mpl.colors.LogNorm()
-        )
-        plt.colorbar(im)
-        ax = plt.gca()
-        ax.set_xlabel("J'-1 (d)")
-        ax.set_ylabel("J (X)")
+        """Thin wrapper — see :func:`~fulcher_analyzer.plotting.plot_rtp`."""
+        from .plotting import plot_rtp
+        return plot_rtp(self)
 
     def plot_R(self):
-        """
-        plot R-matrix 
-        """
-        import matplotlib.pyplot as plt
-        import matplotlib as mpl
-
-        # shp = [self.popshape[f"{i}len"] for i in ["vd", "jd", "vx", "jx"]]
-        shp = self.rshapelist
-        plot_rmatrix(self.Rm2d, shp, text="R-matrix")
-        plt.gcf().set_size_inches([9, 9])
+        """Thin wrapper — see :func:`~fulcher_analyzer.plotting.plot_R`."""
+        from .plotting import plot_R
+        return plot_R(self)
 
     def plot_fcf(self):
-        """
-        Plot FCF 
-        """
-        import matplotlib.pyplot as plt
-        import matplotlib as mpl
-
-        fcf = self.fcf[:4, :4]
-        im = plt.imshow(
-            fcf, origin="lower", cmap=plt.cm.seismic, norm=mpl.colors.LogNorm()
-        )
-        plt.colorbar(im)
-        ax = plt.gca()
-        ax.set_xticks(range(fcf.shape[0]))
-        ax.set_yticks(range(fcf.shape[1]))
-        ax.set_xlabel("$v$'' ($a^3\Sigma_g^+$)")
-        ax.set_ylabel("$v$' ($d^3\Pi_u$)")
+        """Thin wrapper — see :func:`~fulcher_analyzer.plotting.plot_fcf`."""
+        from .plotting import plot_fcf
+        return plot_fcf(self)
 
     def plot_ccs(self):
-        """
-        Plot ccs 
-        """
-        import matplotlib.pyplot as plt
-        import matplotlib as mpl
-
-        ccs = self.ccs.values[:4, :4]
-        im = plt.imshow(ccs, origin="lower", cmap=plt.cm.seismic)
-        plt.colorbar(im)
-        ax = plt.gca()
-        ax.set_xticks(range(ccs.shape[0]))
-        ax.set_yticks(range(ccs.shape[1]))
-        ax.set_xlabel("$v$'' ($a^3\Sigma_g^+$)")
-        ax.set_ylabel("$v$' ($d^3\Pi_u$)")
+        """Thin wrapper — see :func:`~fulcher_analyzer.plotting.plot_ccs`."""
+        from .plotting import plot_ccs
+        return plot_ccs(self)
 
     def plot_coronal_result(self):
-        """
-        Plot two panels with synthetic population and with data only
-        """
-        import matplotlib.pyplot as plt
-        from math import ceil
-
-        self.coronal_fit_formula([], *self.fitres)  # update self.nxbp from self.fitres
-        fig, axs = plt.subplots(2, 1)
-        self.plot_xd_flat(ax=axs[0])
-        self.plot_paper_compare(ax=axs[1])
-        fig.set_size_inches([12, 10])
+        """Thin wrapper — see :func:`~fulcher_analyzer.plotting.plot_coronal_result`."""
+        from .plotting import plot_coronal_result
+        return plot_coronal_result(self)
 
     def plot_contribution(self, Tvib=7000):
-        """
-        Plot contribution of X-state to d-state population
-        """
-        import matplotlib.pyplot as plt
-        from math import ceil
-        from scipy.constants import Boltzmann, elementary_charge
-
-        kb = Boltzmann / elementary_charge
-
-        self.calculate_e_cross()
-        ccs = self.ccs.values
-        fcf = self.fcf
-        E_vib = self.E_vib
-
-        v_range = 15
-        vv_range = 4
-        nvv = np.zeros([v_range, vv_range])
-        for v in range(v_range):
-            for vv in range(vv_range):
-                nvv[v, vv] = (
-                    ccs[v, vv]
-                    * fcf[v, vv]
-                    * np.exp(-(E_vib[v] - E_vib[0]) / (Tvib * kb))
-                    / self.Asum[vv]
-                    * 1e9
-                )
-
-        mks = ["o", "s", "^", ">"]
-        for v in range(v_range):
-            if v < 4:
-                plt.plot(
-                    nvv[v],
-                    "-",
-                    color=plt.cm.hsv(v / 4),
-                    marker=mks[v],
-                    ms=10,
-                    label=f"v={v}",
-                )
-                # print(sum(nvv[v, :] / sum(nvv)))
-            else:
-                plt.plot(nvv[v], ".--", c="gray", alpha=0.5)
-                # print(sum(nvv[v, :] / sum(nvv)))
-        plt.plot(nvv[14], ".--", c="gray", label="v=4-14", alpha=0.5)
-
-        plt.xticks(np.arange(0, 4, 1))
-        plt.xlim(-0.1, 3.1)
-        plt.ylim(-0.3, ceil(nvv.max()) + 0.5)
-        plt.xlabel(r"Vibrational Number $v$'")
-        plt.ylabel(r"Contribution to $n_{d}(v$'$)$ from $n_{X}(v)$")
-        plt.legend(loc=1, bbox_to_anchor=[1, 0.85])
-        plt.gcf().set_size_inches([8, 5])
-        ax = plt.gca()
-        ax.text(
-            0,
-            1.03,
-            f"$T_{{vib}}$={Tvib}K, isotop={self.isotop}",
-            transform=ax.transAxes,
-        )
+        """Thin wrapper — see :func:`~fulcher_analyzer.plotting.plot_contribution`."""
+        from .plotting import plot_contribution
+        return plot_contribution(self, Tvib=Tvib)
 
     def coronal_fit_formula(
         self, _=[], Tvib=8000, alpha=0.57, beta=0.33, Trot1=200, Trot2=1000
@@ -1021,47 +717,6 @@ class CoronaModel:
         self.yerr_rot = {"plus": ep, "minus": em, "val": val}
 
     def plot_popx_paper(self, fontsize=11, ms=4):
-        """
-        Plot X-state population (figs 9-10)
-        """
-        import matplotlib.pylab as plt
-
-        self.prep_style(ms=ms)
-        kws = self.style_rovib
-        [
-            plt.fill_between(
-                self.EX[i],
-                self.yerr_rot["minus"][i] / self.nxbp[0][0],
-                self.yerr_rot["plus"][i] / self.nxbp[0][0],
-                color="gray",
-                alpha=0.5,
-                ec="none",
-            )
-            for i in self.yerr_rot["minus"]
-        ]
-        [
-            plt.plot(self.EX[i], self.nxbp[i] / self.nxbp[0][0], **kws[i])
-            for i in self.nxbp
-        ]
-        plt.fill_between([], [], [], color="gray", alpha=0.5, label="error", ec="none")
-
-        plt.yscale("log")
-        plt.xlabel("Rotational Energy [eV]")
-        plt.ylabel(
-            r"$\mathrm{\frac{n_{XvN}}{(2N+1)\,g_{\mathrm{as}}^{N}}}$ [a.u.]",
-            fontsize=fontsize + 2,
-        )
-
-        plt.legend()
-        ax = plt.gca()
-        ax.text(self.EX.values[0, 0] + 0.02, 0.95, "N=0", fontsize=fontsize - 2)
-        ax.text(
-            self.EX.values[-1, 0] * 1.05,
-            (self.yerr_rot["minus"][0] / self.nxbp[0][0]).values[-1] + 0.02,
-            f"N={self.popshape['jxmax']}",
-            ha="center",
-            fontsize=fontsize - 2,
-        )
-        plt.xlim(-0.05, 1.0)
-
-        plt.gcf().set_size_inches(figsize(8))
+        """Thin wrapper — see :func:`~fulcher_analyzer.plotting.plot_popx_paper`."""
+        from .plotting import plot_popx_paper
+        return plot_popx_paper(self, fontsize=fontsize, ms=ms)
