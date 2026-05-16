@@ -12,6 +12,19 @@ from fulcher_analyzer import (
 )
 ```
 
+Plotting helpers live in the `fulcher_analyzer.plotting` submodule:
+
+```python
+from fulcher_analyzer.plotting import (
+    plot_rmatrix,
+    figsize,
+    set_tick_size,
+)
+```
+
+For a physics-oriented description of how `BoltzmannPlot` and
+`CoronaModel` fit together, see the [Physics overview](physics/index.md).
+
 ---
 
 ## `MolecularConstants`
@@ -40,8 +53,16 @@ bp = BoltzmannPlot(intensities, isotop="d")
 bp.autofit()
 ```
 
-Key attributes after fitting: rotational temperature `T_rot`, vibrational
-temperature `T_vib`, and the population distribution over (v′, J′) levels.
+Key attributes after `bp.autofit()`:
+
+- `bp.alpha`, `bp.beta` — mixing weights of the two-temperature
+  rotational model.
+- `bp.trot1`, `bp.trot2` — fitted rotational temperatures (K).
+- `bp.popt` — full `curve_fit` parameter vector.
+- `bp.nd`, `bp.nd_err` — d-state population and its error on the
+  `(vd, Jd)` grid.
+
+These quantities are consumed downstream by `CoronaModel`.
 
 ---
 
@@ -49,13 +70,20 @@ temperature `T_vib`, and the population distribution over (v′, J′) levels.
 
 **Module:** `fulcher_analyzer.coronal_model`
 
-Applies the coronal model to reconstruct ground-state vibrational populations
-from the d-state Boltzmann fit.
+Applies the coronal model to reconstruct ground (X-) state rovibrational
+populations from the d-state Boltzmann fit. Only the X-state vibrational
+temperature `Tvib` is fitted; `alpha`, `beta`, `Trot1`, `Trot2` are
+inherited from the supplied `BoltzmannPlot` and held fixed.
 
 ```python
 model = CoronaModel(bp)
 model.coronal_autofit()
+
+print(model.tvib, model.tviberr)
 ```
+
+See the [Coronal model](physics/coronal_model.md) page for the workflow
+and load-bearing implementation details.
 
 ---
 
@@ -90,14 +118,42 @@ write_intensities(intensities, errors, shot, frame)
 
 ---
 
-## `set_tick_size`
+## Plotting helpers
 
 **Module:** `fulcher_analyzer.plotting`
 
-Utility to set matplotlib axis tick sizes (length and width for major and minor ticks).
+### `plot_rmatrix`
+
+Render a 2-D view of the (reshaped) R-matrix for inspection.
+
+```python
+from fulcher_analyzer.plotting import plot_rmatrix
+
+plot_rmatrix(model.Rm2d, model.rshape, text="R-matrix")
+```
+
+### `figsize`
+
+Convenience helper returning a `(width, height)` tuple at a fixed aspect
+ratio, used by the canonical notebook figures.
+
+```python
+from fulcher_analyzer.plotting import figsize
+
+fig = plt.figure(figsize=figsize(width=8, ratio=5/6))
+```
+
+### `set_tick_size`
+
+Utility to set matplotlib axis tick sizes (length and width for major and
+minor ticks).
 
 ```python
 from fulcher_analyzer.plotting import set_tick_size
 
 set_tick_size(ax, width_major, length_major, width_minor, length_minor)
 ```
+
+Additional `CoronaModel`-specific plotting helpers (`plot_coronal_result`,
+`plot_xd`, `plot_paper_compare`, `plot_contribution`, …) also live in
+this module and are exposed as thin method wrappers on `CoronaModel`.

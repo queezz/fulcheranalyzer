@@ -1,5 +1,14 @@
 # Fulcher Analyzer — Phase 1 Archaeology Report
 
+!!! note "Historical document"
+    This page describes the **pre-refactor** state of the repository
+    (single-file `fulcheranalyzer/coronalmodel.py`, the abandoned
+    `src/fulcher_analyser/` typo-branch, root `data/`, the old
+    `requirements.txt`, etc.). It is preserved as-is for provenance.
+    For the current package layout and public API, see
+    [Refactor Status](REFACTOR_STATUS.md) and the [Usage](usage.md) /
+    [API Overview](api.md) pages.
+
 > Scope: read-only mapping of the existing codebase. **No refactoring, no
 > deletions, no API changes.** This report defines what the working pipeline
 > is, where it lives, what is safe to extract later, and what is dangerous to

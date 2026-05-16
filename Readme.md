@@ -50,9 +50,6 @@ cm   = CoronaModel(bp)
 cm.coronal_autofit()
 ```
 
-### Legacy compatibility import (still fully supported)
-
-
 ## Documentation
 
 Install the docs dependencies and serve locally:

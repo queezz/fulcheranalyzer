@@ -30,9 +30,11 @@ model = CoronaModel(bp)
 model.coronal_autofit()
 ```
 
-See the [Usage](usage.md) page for the complete import style, and the
+See the [Usage](usage.md) page for the complete import style, the
 [Workflow](workflow.md) page for a high-level description of the analysis
-pipeline.
+pipeline, and the [Physics overview](physics/index.md) for a description
+of the d-state Boltzmann fit and the coronal-model projection used to
+recover `Tvib`.
 
 ## Key modules
 

@@ -75,6 +75,10 @@ nav:
   - Usage & workflow:
       - Usage: usage.md
       - Workflow: workflow.md
+  - Physics:
+      - Overview: physics/index.md
+      - Boltzmann population fit: physics/boltzmann.md
+      - Coronal model: physics/coronal_model.md
   - API Overview: api.md
   - Archaeology & refactor:
       - Archaeology Report: ARCHAEOLOGY.md

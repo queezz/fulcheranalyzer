@@ -59,21 +59,33 @@ transition energies, and degeneracy factors for either H₂ (`"h"`) or D₂
 
 ---
 
-## Step 3 — Coronal model (ground-state reconstruction)
+## Step 3 — Coronal model (X-state reconstruction)
 
-`CoronaModel` takes the fitted `BoltzmannPlot` and applies the coronal model
-to infer the ground-state vibrational population distribution.
+`CoronaModel` takes the fitted `BoltzmannPlot` and applies the coronal
+model to infer the X (ground) electronic state rovibrational population
+distribution.
 
 ```python
 from fulcher_analyzer import CoronaModel
 
 model = CoronaModel(bp)
 model.coronal_autofit()
+
+print(model.tvib, model.tviberr)
 ```
 
 The coronal model relates the measured d-state populations back to the
-ground-state populations through excitation cross-sections and the assumption
-of coronal equilibrium (low-density limit).
+X-state populations through Franck–Condon factors, electron-impact
+cross-sections, and a rotational-transition-probability matrix — all
+encoded in a 4-D R-matrix `R[vX, JX, vd, Jd]`. The second-stage fit
+varies **only** `Tvib`; the rotational parameters `alpha`, `beta`,
+`Trot1`, `Trot2` are inherited from the Boltzmann fit and held fixed.
+
+See [Physics → Coronal model](physics/coronal_model.md) for the workflow
+and load-bearing implementation details.
+
+Canonical notebook figures for these examples are written to
+`examples/figures/` by `examples/CoronalModel-D-H.ipynb`.
 
 ---
 
