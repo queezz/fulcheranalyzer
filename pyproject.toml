@@ -38,6 +38,10 @@ spectrum = ["xarray"]
 docs = [
     "mkdocs",
     "mkdocs-material",
+    "pymdown-extensions",
+    "mdx_truly_sane_lists",
+    "mkdocstrings[python]>=0.25",
+    "mkdocs-glightbox",
 ]
 
 [project.urls]
