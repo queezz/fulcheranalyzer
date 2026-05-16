@@ -7,13 +7,11 @@
       
       
       
-        <link rel="canonical" href="https://queezz.github.io/fulcheranalyzer/usage/">
+        <link rel="canonical" href="https://queezz.github.io/fulcheranalyzer/REFACTOR_STATUS/">
       
       
-        <link rel="prev" href="..">
+        <link rel="prev" href="../ARCHAEOLOGY/">
       
-      
-        <link rel="next" href="../workflow/">
       
       
         
@@ -24,7 +22,7 @@
     
     
       
-        <title>Usage - Fulcher Analyzer</title>
+        <title>Refactor Status - Fulcher Analyzer</title>
       
     
     
@@ -87,7 +85,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#usage" class="md-skip">
+        <a href="#refactor-status-checkpoint" class="md-skip">
           Skip to content
         </a>
       
@@ -121,7 +119,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Usage
+              Refactor Status
             
           </span>
         </div>
@@ -249,11 +247,9 @@
   
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="./" class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../usage/" class="md-tabs__link">
         
   
   
@@ -327,9 +323,11 @@
   
   
   
+    
   
-    <li class="md-tabs__item">
-      <a href="../REFACTOR_STATUS/" class="md-tabs__link">
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
         
   
   
@@ -418,37 +416,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Usage
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../usage/" class="md-nav__link">
         
   
   
@@ -464,76 +435,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
-      
-        <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Installation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#canonical-import-recommended" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Canonical import (recommended)
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Canonical import (recommended)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#bundled-example-data" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Bundled example data
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#accessing-molecular-constants-directly" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Accessing molecular constants directly
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -623,10 +524,37 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../REFACTOR_STATUS/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Refactor Status
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -642,6 +570,125 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scope
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#current-package-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current package layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#completed-cleanuprefactor-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Completed cleanup/refactor steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#current-canonical-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current canonical workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#regression-guardrails" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Regression guardrails
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#current-model-code-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current model-code status
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#known-high-risk-areas-still-unchanged" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Known high-risk areas still unchanged
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#current-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current checks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#suggested-next-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suggested next step
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -673,10 +720,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
+  <a href="#scope" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Installation
+        Scope
       
     </span>
   </a>
@@ -684,38 +731,87 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#canonical-import-recommended" class="md-nav__link">
+  <a href="#current-package-layout" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Canonical import (recommended)
+        Current package layout
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Canonical import (recommended)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#bundled-example-data" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Bundled example data
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#accessing-molecular-constants-directly" class="md-nav__link">
+  <a href="#completed-cleanuprefactor-steps" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Accessing molecular constants directly
+        Completed cleanup/refactor steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#current-canonical-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current canonical workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#regression-guardrails" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Regression guardrails
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#current-model-code-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current model-code status
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#known-high-risk-areas-still-unchanged" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Known high-risk areas still unchanged
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#current-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current checks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#suggested-next-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suggested next step
       
     </span>
   </a>
@@ -742,43 +838,106 @@
   
 
 
-<h1 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">¶</a></h1>
-<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[dev]"</span>
+<h1 id="refactor-status-checkpoint">Refactor Status Checkpoint<a class="headerlink" href="#refactor-status-checkpoint" title="Permanent link">¶</a></h1>
+<h2 id="scope">Scope<a class="headerlink" href="#scope" title="Permanent link">¶</a></h2>
+<p>This document records the current state of the repository after the
+mechanical cleanup and refactor that followed the initial archaeology
+report (<code>docs/ARCHAEOLOGY.md</code>). It is a checkpoint, not a redesign:
+no physics, fitting logic, constants, or expected regression values
+were intentionally changed.</p>
+<h2 id="current-package-layout">Current package layout<a class="headerlink" href="#current-package-layout" title="Permanent link">¶</a></h2>
+<p>The package now lives under a <code>src/</code> layout:</p>
+<ul>
+<li><code>src/fulcher_analyzer/</code><ul>
+<li><code>molecular_constants.py</code></li>
+<li><code>boltzmann.py</code></li>
+<li><code>coronal_model.py</code></li>
+<li><code>intensity_io.py</code></li>
+<li><code>plotting.py</code></li>
+<li><code>_utils.py</code></li>
+<li>packaged <code>data_molecular/</code> (spectroscopic constants, Franck–Condon
+  factors, vibrational energies, R-matrices, Fulcher band tables)</li>
+<li>packaged <code>example_data/intensities/</code> (paper-regression intensity
+  arrays for D2 and H2)</li>
+</ul>
+</li>
+</ul>
+<h2 id="completed-cleanuprefactor-steps">Completed cleanup/refactor steps<a class="headerlink" href="#completed-cleanuprefactor-steps" title="Permanent link">¶</a></h2>
+<ul>
+<li>migrated from old root package to <code>src/</code> layout</li>
+<li>removed obsolete root <code>fulcheranalyzer/</code> package</li>
+<li>removed legacy <code>coronalmodel.py</code> facade</li>
+<li>updated canonical notebook imports to the new public API</li>
+<li>moved bundled paper-regression intensities into package data</li>
+<li>removed stale <code>requirements.txt</code></li>
+<li>removed orphan root <code>data/</code> artifacts</li>
+<li>moved canonical notebook figures to <code>examples/figures/</code></li>
+<li>moved CoronaModel plotting helpers into <code>plotting.py</code></li>
+<li>moved <code>set_tick_size</code> and <code>figsize</code> plotting helpers into <code>plotting.py</code></li>
+<li>adopted MkDocs Material styling and a GitHub Pages deploy workflow</li>
+</ul>
+<h2 id="current-canonical-workflow">Current canonical workflow<a class="headerlink" href="#current-canonical-workflow" title="Permanent link">¶</a></h2>
+<p>The canonical example remains:</p>
+<ul>
+<li><code>examples/CoronalModel-D-H.ipynb</code></li>
+</ul>
+<p>It now uses canonical imports such as:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fulcher_analyzer</span><span class="w"> </span><span class="kn">import</span> <span class="n">BoltzmannPlot</span><span class="p">,</span> <span class="n">CoronaModel</span><span class="p">,</span> <span class="n">read_intensities</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fulcher_analyzer.plotting</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_tick_size</span><span class="p">,</span> <span class="n">figsize</span>
 </code></pre></div>
-<p>Activate the project venv first if needed:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">source</span><span class="w"> </span>~/.venvs/fulcher/bin/activate
-</code></pre></div>
-<hr>
-<h2 id="canonical-import-recommended">Canonical import (recommended)<a class="headerlink" href="#canonical-import-recommended" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fulcher_analyzer</span><span class="w"> </span><span class="kn">import</span> <span class="n">BoltzmannPlot</span><span class="p">,</span> <span class="n">CoronaModel</span><span class="p">,</span> <span class="n">read_intensities</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">intensities</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="n">read_intensities</span><span class="p">(</span><span class="mi">150482</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">bp</span> <span class="o">=</span> <span class="n">BoltzmannPlot</span><span class="p">(</span><span class="n">intensities</span><span class="p">,</span> <span class="s2">"d"</span><span class="p">)</span>   <span class="c1"># "d" for deuterium, "h" for hydrogen</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">bp</span><span class="o">.</span><span class="n">autofit</span><span class="p">()</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">model</span> <span class="o">=</span> <span class="n">CoronaModel</span><span class="p">(</span><span class="n">bp</span><span class="p">)</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">model</span><span class="o">.</span><span class="n">coronal_autofit</span><span class="p">()</span>
-</code></pre></div>
-<p><code>read_intensities</code> returns a tuple of <code>(intensity_df, error_df)</code> where each is
-a <code>pandas.DataFrame</code> indexed by spectral line.</p>
-<p><code>BoltzmannPlot</code> accepts either the tuple directly or just the intensity
-DataFrame; pass <code>isotop="h"</code> for hydrogen.</p>
-<h3 id="bundled-example-data">Bundled example data<a class="headerlink" href="#bundled-example-data" title="Permanent link">¶</a></h3>
-<p><code>read_intensities(150482, 7)</code> and <code>read_intensities(152478, 10)</code> load the two
-bundled example shots (D₂ and H₂) that ship with the package inside
-<code>fulcher_analyzer/example_data/intensities/</code>. No extra download is required.</p>
-<p>To load intensity CSV files from your own directory:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">intensities</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="n">read_intensities</span><span class="p">(</span><span class="n">my_shot</span><span class="p">,</span> <span class="n">my_frame</span><span class="p">,</span> <span class="n">data_folder</span><span class="o">=</span><span class="s2">"/path/to/my/data"</span><span class="p">)</span>
-</code></pre></div>
-<hr>
-<h2 id="accessing-molecular-constants-directly">Accessing molecular constants directly<a class="headerlink" href="#accessing-molecular-constants-directly" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fulcher_analyzer</span><span class="w"> </span><span class="kn">import</span> <span class="n">MolecularConstants</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">mc</span> <span class="o">=</span> <span class="n">MolecularConstants</span><span class="p">(</span><span class="s2">"d"</span><span class="p">)</span>   <span class="c1"># deuterium</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">transitions</span><span class="p">)</span>
-</code></pre></div>
+<h2 id="regression-guardrails">Regression guardrails<a class="headerlink" href="#regression-guardrails" title="Permanent link">¶</a></h2>
+<p>Numerical regression tests in <code>tests/test_paper_reproduction.py</code>
+continue to pin the published D2/H2 workflow against fixed inputs:</p>
+<ul>
+<li>D2: shot 150482, frame 7</li>
+<li>H2: shot 152478, frame 10</li>
+</ul>
+<p>Exact pinned values for <code>Trot1</code>, <code>Trot2</code>, <code>alpha</code>, <code>beta</code>, <code>Tvib</code>,
+and <code>Tvib_err</code> are kept in the test module and the original numbers
+are documented in <code>docs/ARCHAEOLOGY.md</code>. They are intentionally not
+duplicated here.</p>
+<h2 id="current-model-code-status">Current model-code status<a class="headerlink" href="#current-model-code-status" title="Permanent link">¶</a></h2>
+<ul>
+<li>Plotting has been extracted from <code>CoronaModel</code> into <code>plotting.py</code>.</li>
+<li><code>coronal_model.py</code> now mostly contains model and fitting logic
+  (X-state population construction, R-matrix projection, masked
+  d-state fit, Tvib fit on top of the Boltzmann result).</li>
+<li>The remaining logic is still side-effect based (results are stashed
+  on the model instance rather than returned) and will need
+  documentation and clarification before any deeper refactor.</li>
+<li>No physics behavior was intentionally changed during this checkpoint.</li>
+</ul>
+<h2 id="known-high-risk-areas-still-unchanged">Known high-risk areas still unchanged<a class="headerlink" href="#known-high-risk-areas-still-unchanged" title="Permanent link">¶</a></h2>
+<p>These are deliberately left untouched and should not be modified
+without dedicated regression review:</p>
+<ul>
+<li>R-matrix 4D/2D reshape and <code>flatten(order="f")</code></li>
+<li><code>frac(..., norm=True)</code></li>
+<li>D2 normalization constants in Boltzmann fitting</li>
+<li><code>Qr = [0.76, 0.122, 0.1, 0.014]</code></li>
+<li>R-matrix cache behavior</li>
+</ul>
+<h2 id="current-checks">Current checks<a class="headerlink" href="#current-checks" title="Permanent link">¶</a></h2>
+<p>At this checkpoint:</p>
+<ul>
+<li><code>pytest</code>: 30 passed</li>
+<li><code>mkdocs build --strict</code>: success (warning shown is a vendor notice
+  from Material for MkDocs about a future 2.0 release; the build
+  itself succeeds with no documentation warnings)</li>
+<li>current git short hash: <code>51eb51b</code></li>
+</ul>
+<h2 id="suggested-next-step">Suggested next step<a class="headerlink" href="#suggested-next-step" title="Permanent link">¶</a></h2>
+<p>The next safe step is a documentation and readability pass over
+<code>coronal_model.py</code>, with no behavioral changes. In particular it would
+help to clearly explain:</p>
+<ul>
+<li>how the X-state population is constructed</li>
+<li>how the R-matrix projection maps X-state populations onto d-state
+  rovibrational populations</li>
+<li>how the normalized, masked d-state fit is set up</li>
+<li>why the second-stage fit only varies <code>Tvib</code>, while inheriting
+  <code>alpha</code>, <code>beta</code>, <code>Trot1</code>, and <code>Trot2</code> from the Boltzmann fit</li>
+</ul>
 
 
 
