@@ -7,7 +7,8 @@ docs_dir: docs
 
 theme:
   name: material
-  # TODO: add logo/favicon once assets/favicon.svg is placed in docs/assets/
+  logo: assets/h2icon.svg
+  favicon: assets/h2icon.svg
   icon:
     repo: fontawesome/brands/github
   features:
@@ -71,8 +72,10 @@ extra_css:
 
 nav:
   - Home: index.md
-  - Usage: usage.md
-  - Workflow: workflow.md
+  - Usage & workflow:
+      - Usage: usage.md
+      - Workflow: workflow.md
   - API Overview: api.md
-  - Archaeology Report: ARCHAEOLOGY.md
-  - Refactor Status: REFACTOR_STATUS.md
+  - Archaeology & refactor:
+      - Archaeology Report: ARCHAEOLOGY.md
+      - Refactor Status: REFACTOR_STATUS.md
