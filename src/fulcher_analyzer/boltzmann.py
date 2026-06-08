@@ -528,6 +528,16 @@ class BoltzmannPlot:
 
         plt.gcf().set_size_inches(figsize(8))
 
+    def plot_qc(self, points=None, **kwargs):
+        """
+        Plot Boltzmann populations with the QC inspection style.
+
+        Call after ``autofit()`` to include the fitted double-exponent curves.
+        """
+        from .boltzmann_qc import plot_boltzmann_qc
+
+        return plot_boltzmann_qc(self, points=points, **kwargs)
+
     def about_var(self):
         """ 
         Print info about variables.

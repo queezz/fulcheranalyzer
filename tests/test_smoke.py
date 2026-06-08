@@ -32,6 +32,9 @@ def test_public_api():
     import fulcher_analyzer as fa
 
     assert hasattr(fa, "BoltzmannPlot")
+    assert hasattr(fa, "boltzmann_qc_points")
+    assert hasattr(fa, "plot_boltzmann_qc")
+    assert hasattr(fa, "apply_boltzmann_qc_mask")
     assert hasattr(fa, "CoronaModel")
     assert hasattr(fa, "MolecularConstants")
     assert hasattr(fa, "read_intensities")
@@ -126,6 +129,65 @@ def test_boltzmann_init_h2():
     assert bp.nd_rel.shape == (11, 3)
 
 
+def test_boltzmann_qc_plotter_renders(tmp_path):
+    import matplotlib.pyplot as plt
+
+    from fulcher_analyzer import (
+        BoltzmannPlot,
+        apply_boltzmann_qc_mask,
+        boltzmann_qc_points,
+        read_intensities,
+    )
+
+    inte = read_intensities(152478, 10)
+    bp = BoltzmannPlot(inte, "h")
+    points = boltzmann_qc_points(bp)
+
+    assert {"band", "N", "energy_eV", "nd_rel", "relerr", "fit_mask"}.issubset(
+        points.columns
+    )
+    assert not points.empty
+
+    apply_boltzmann_qc_mask(bp, points)
+    bp.autofit()
+    fig = bp.plot_qc(points, title="Synthetic QC")
+    output = tmp_path / "boltzmann_qc.png"
+    fig.savefig(output)
+
+    assert output.exists()
+    assert output.stat().st_size > 0
+    assert fig.axes[0].get_yscale() == "log"
+    plt.close(fig)
+
+
+def test_boltzmann_qc_points_follow_fit_report_exclusion():
+    import pandas as pd
+
+    from fulcher_analyzer import BoltzmannPlot, boltzmann_qc_points, read_intensities
+
+    inte = read_intensities(152478, 10)
+    bp = BoltzmannPlot(inte, "h")
+    fit_report = pd.DataFrame(
+        [
+            {
+                "line_id": "H2_Q3_1-1",
+                "N": 3,
+                "band": "1-1",
+                "boltzmann_fit_action": "exclude",
+                "boltzmann_fit_reason": "Peak too wide; suspected contamination.",
+            }
+        ]
+    )
+
+    points = boltzmann_qc_points(bp, fit_report=fit_report)
+    excluded = points.loc[(points["band"] == "1-1") & (points["N"] == 3)].iloc[0]
+
+    assert excluded["relerr"] <= 1.0
+    assert bool(excluded["fit_mask"]) is False
+    assert excluded["boltzmann_fit_action"] == "exclude"
+    assert "wide" in excluded["boltzmann_fit_reason"]
+
+
 if __name__ == "__main__":
     import sys
 
@@ -139,6 +201,8 @@ if __name__ == "__main__":
         test_read_intensities_h2,
         test_boltzmann_init_d2,
         test_boltzmann_init_h2,
+        test_boltzmann_qc_plotter_renders,
+        test_boltzmann_qc_points_follow_fit_report_exclusion,
     ]
     failed = 0
     for t in tests:
