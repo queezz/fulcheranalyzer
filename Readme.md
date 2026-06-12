@@ -50,6 +50,54 @@ cm   = CoronaModel(bp)
 cm.coronal_autofit()
 ```
 
+### Batch analysis from extracted intensities
+
+After `fulcher-extractor` has written `intensities/` and `fit_reports/`, run
+the saved tables through the analyzer without reopening SpectroCubes:
+
+```bash
+fulcher-analyze-batch --input-dir /path/to/run/dataset/intensities
+```
+
+For paper or batch work, prefer a TOML plan:
+
+```bash
+fulcher-analyze-batch --plan h2_dataset_plan.toml
+```
+
+The analyzer reads `[analyze]` from the plan. CLI flags override plan values
+when supplied.
+
+By default, summaries are written next to the `intensities/` directory:
+
+```text
+dataset/boltzmann_summary.csv
+dataset/coronal_summary.csv
+dataset/tables/*_boltzmann_qc_points.csv
+dataset/plots/boltzmann/*_boltzmann_qc.png
+dataset/plots/coronal/*_coronal_tvib_*K_qc.png
+```
+
+By default, `fulcher-analyze-batch` shows a `tqdm` progress bar and writes one
+Boltzmann and coronal/Tvib QC PNG per frame. Use `--qc-every N` to thin plots,
+or `--qc-every 0` for tables only.
+
+Useful rerun patterns:
+
+```bash
+# Continue a stopped run, keeping successful rows from existing summaries.
+fulcher-analyze-batch --plan h2_dataset_plan.toml --resume
+
+# Regenerate only Boltzmann QC plots while still refreshing summaries.
+fulcher-analyze-batch --plan h2_dataset_plan.toml --plot-kind boltzmann
+
+# Write only tables and summary CSVs.
+fulcher-analyze-batch --plan h2_dataset_plan.toml --plot-kind none
+```
+
+Summary CSVs are checkpointed after each frame by default, so interrupted runs
+can be continued with `--resume`.
+
 ## Documentation
 
 Install the docs dependencies and serve locally:

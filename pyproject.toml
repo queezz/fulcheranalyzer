@@ -8,7 +8,7 @@ version = "0.1.0"
 authors = [
   { name="A. K.", email="queezz@gmail.com" },
 ]
-description = "Molecular hydrogen Fulcher-alpha emission analyzer: line extraction, Boltzmann fitting, and coronal model reconstruction."
+description = "Molecular hydrogen Fulcher-alpha emission analyzer: intensity-table I/O, Boltzmann fitting, and coronal model reconstruction."
 readme = "Readme.md"
 license = { file="LICENSE" }
 requires-python = ">=3.9"
@@ -24,6 +24,7 @@ dependencies = [
     "scipy",
     "matplotlib",
     "sympy",
+    "tqdm",
 ]
 
 [project.optional-dependencies]
@@ -46,6 +47,9 @@ docs = [
 
 [project.urls]
 "Homepage" = "https://github.com/queezz/fulcheranalyzer"
+
+[project.scripts]
+fulcher-analyze-batch = "fulcher_analyzer.batch_cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/fulcher_analyzer"]

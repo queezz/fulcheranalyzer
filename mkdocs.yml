@@ -81,6 +81,7 @@ nav:
       - Boltzmann population fit: physics/boltzmann.md
       - Coronal model: physics/coronal_model.md
   - API Overview: api.md
+  - Changelog: changelog.md
   - Archaeology & refactor:
       - Archaeology Report: ARCHAEOLOGY.md
       - Refactor Status: REFACTOR_STATUS.md

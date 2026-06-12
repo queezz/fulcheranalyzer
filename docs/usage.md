@@ -48,6 +48,54 @@ intensities, errors = read_intensities(my_shot, my_frame, data_folder="/path/to/
 
 ---
 
+## Batch analysis from extractor outputs
+
+Use `fulcher-analyze-batch` after `fulcher-extractor` has written a dataset
+with `intensities/` and, when available, `fit_reports/`:
+
+```bash
+fulcher-analyze-batch --input-dir /path/to/run/dataset/intensities
+```
+
+For PSI-style runs, keep the paths in a TOML plan and add an `[analyze]`
+section:
+
+```toml
+[analyze]
+input_dir = "dataset/intensities"
+output_dir = "dataset"
+fit_report_dir = "dataset/fit_reports"
+manifest = "scan/selected_frames.csv"
+isotopologue = "h"
+qc_every = 1
+plot_kind = "all"
+```
+
+CLI flags override plan values. The batch command writes:
+
+```text
+dataset/boltzmann_summary.csv
+dataset/coronal_summary.csv
+dataset/tables/*_boltzmann_qc_points.csv
+dataset/plots/boltzmann/*_boltzmann_qc.png
+dataset/plots/coronal/*_coronal_tvib_*K_qc.png
+```
+
+Rerun controls:
+
+```bash
+fulcher-analyze-batch --plan h2_dataset_plan.toml --resume
+fulcher-analyze-batch --plan h2_dataset_plan.toml --plot-kind boltzmann
+fulcher-analyze-batch --plan h2_dataset_plan.toml --plot-kind coronal
+fulcher-analyze-batch --plan h2_dataset_plan.toml --plot-kind none
+```
+
+`--resume` skips frames already marked `ok` in both summary CSVs. Summaries are
+checkpointed after each processed frame by default; use `--checkpoint-every N`
+to reduce write frequency on very large runs.
+
+---
+
 ## Accessing molecular constants directly
 
 ```python

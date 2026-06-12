@@ -7,6 +7,9 @@ from fulcher_analyzer import (
     MolecularConstants,
     BoltzmannPlot,
     CoronaModel,
+    boltzmann_qc_points,
+    plot_boltzmann_qc,
+    plot_coronal_qc,
     read_intensities,
     write_intensities,
 )
@@ -84,6 +87,19 @@ print(model.tvib, model.tviberr)
 
 See the [Coronal model](physics/coronal_model.md) page for the workflow
 and load-bearing implementation details.
+
+---
+
+## QC helpers
+
+**Modules:** `fulcher_analyzer.boltzmann_qc`, `fulcher_analyzer.coronal_qc`
+
+`boltzmann_qc_points` returns the tidy point table used for fit masks and
+review plots. `plot_boltzmann_qc` and `plot_coronal_qc` return matplotlib
+figures, so callers can save them to PNG or PDF as needed.
+
+The command-line batch runner uses these helpers to write per-frame QC outputs
+under `dataset/tables/` and `dataset/plots/`.
 
 ---
 

@@ -10,7 +10,7 @@ Canonical public API
 
     from fulcher_analyzer import BoltzmannPlot, CoronaModel, read_intensities
 """
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 
 from .molecular_constants import MolecularConstants
 from .boltzmann import BoltzmannPlot
@@ -20,6 +20,7 @@ from .boltzmann_qc import (
     plot_boltzmann_qc,
 )
 from .coronal_model import CoronaModel
+from .coronal_qc import plot_coronal_qc
 from .intensity_io import read_intensities, write_intensities
 
 __all__ = [
@@ -29,6 +30,7 @@ __all__ = [
     "boltzmann_qc_points",
     "CoronaModel",
     "plot_boltzmann_qc",
+    "plot_coronal_qc",
     "read_intensities",
     "write_intensities",
 ]

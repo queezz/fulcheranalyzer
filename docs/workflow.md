@@ -89,6 +89,31 @@ Canonical notebook figures for these examples are written to
 
 ---
 
+## Batch workflow for extracted datasets
+
+For extractor-produced datasets, the command-line workflow is:
+
+```text
+dataset/intensities/*.csv
+        |
+        v
+  fulcher-analyze-batch
+        |
+        +--> dataset/boltzmann_summary.csv
+        +--> dataset/coronal_summary.csv
+        +--> dataset/tables/*_boltzmann_qc_points.csv
+        +--> dataset/plots/boltzmann/*_boltzmann_qc.png
+        +--> dataset/plots/coronal/*_coronal_tvib_*K_qc.png
+```
+
+The batch command reuses extractor `fit_reports/` when present so lines marked
+for Boltzmann exclusion stay excluded in the downstream fit. QC plots are
+separated by stage with `--plot-kind all|boltzmann|coronal|none`, and summary
+CSVs are checkpointed during the run. Use `--resume` to skip frames already
+marked `ok` in both summary files.
+
+---
+
 ## Regression tests
 
 The test suite pins the full pipeline against the published D₂ and H₂
