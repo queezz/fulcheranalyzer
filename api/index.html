@@ -13,7 +13,7 @@
         <link rel="prev" href="../physics/coronal_model/">
       
       
-        <link rel="next" href="../ARCHAEOLOGY/">
+        <link rel="next" href="../changelog/">
       
       
         
@@ -299,6 +299,25 @@
     
   
   API Overview
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../changelog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Changelog
 
       </a>
     </li>
@@ -778,6 +797,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#qc-helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        QC helpers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#read_intensities" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -863,6 +893,33 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     
     
     
@@ -875,10 +932,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5">
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6">
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
             
   
   
@@ -896,8 +953,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1030,6 +1087,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#qc-helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        QC helpers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#read_intensities" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1127,9 +1195,12 @@
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">MolecularConstants</span><span class="p">,</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">BoltzmannPlot</span><span class="p">,</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">CoronaModel</span><span class="p">,</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">read_intensities</span><span class="p">,</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">write_intensities</span><span class="p">,</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">)</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">boltzmann_qc_points</span><span class="p">,</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">plot_boltzmann_qc</span><span class="p">,</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">plot_coronal_qc</span><span class="p">,</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">read_intensities</span><span class="p">,</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">write_intensities</span><span class="p">,</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="p">)</span>
 </code></pre></div>
 <p>Plotting helpers live in the <code>fulcher_analyzer.plotting</code> submodule:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fulcher_analyzer.plotting</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
@@ -1180,6 +1251,14 @@ inherited from the supplied <code>BoltzmannPlot</code> and held fixed.</p>
 </code></pre></div>
 <p>See the <a href="../physics/coronal_model/">Coronal model</a> page for the workflow
 and load-bearing implementation details.</p>
+<hr>
+<h2 id="qc-helpers">QC helpers<a class="headerlink" href="#qc-helpers" title="Permanent link">¶</a></h2>
+<p><strong>Modules:</strong> <code>fulcher_analyzer.boltzmann_qc</code>, <code>fulcher_analyzer.coronal_qc</code></p>
+<p><code>boltzmann_qc_points</code> returns the tidy point table used for fit masks and
+review plots. <code>plot_boltzmann_qc</code> and <code>plot_coronal_qc</code> return matplotlib
+figures, so callers can save them to PNG or PDF as needed.</p>
+<p>The command-line batch runner uses these helpers to write per-frame QC outputs
+under <code>dataset/tables/</code> and <code>dataset/plots/</code>.</p>
 <hr>
 <h2 id="read_intensities"><code>read_intensities</code><a class="headerlink" href="#read_intensities" title="Permanent link">¶</a></h2>
 <p><strong>Module:</strong> <code>fulcher_analyzer.intensity_io</code></p>

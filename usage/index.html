@@ -310,6 +310,25 @@
   
   
   
+    <li class="md-tabs__item">
+      <a href="../changelog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
     
     
       <li class="md-tabs__item">
@@ -553,6 +572,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#batch-analysis-from-extractor-outputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Batch analysis from extractor outputs
+      
+    </span>
+  </a>
   
 </li>
       
@@ -813,6 +843,33 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     
     
     
@@ -825,10 +882,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5">
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6">
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
             
   
   
@@ -846,8 +903,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -986,6 +1043,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#batch-analysis-from-extractor-outputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Batch analysis from extractor outputs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#accessing-molecular-constants-directly" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1047,11 +1115,54 @@ bundled example shots (D₂ and H₂) that ship with the package inside
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">intensities</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="n">read_intensities</span><span class="p">(</span><span class="n">my_shot</span><span class="p">,</span> <span class="n">my_frame</span><span class="p">,</span> <span class="n">data_folder</span><span class="o">=</span><span class="s2">"/path/to/my/data"</span><span class="p">)</span>
 </code></pre></div>
 <hr>
+<h2 id="batch-analysis-from-extractor-outputs">Batch analysis from extractor outputs<a class="headerlink" href="#batch-analysis-from-extractor-outputs" title="Permanent link">¶</a></h2>
+<p>Use <code>fulcher-analyze-batch</code> after <code>fulcher-extractor</code> has written a dataset
+with <code>intensities/</code> and, when available, <code>fit_reports/</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>fulcher-analyze-batch<span class="w"> </span>--input-dir<span class="w"> </span>/path/to/run/dataset/intensities
+</code></pre></div>
+<p>For PSI-style runs, keep the paths in a TOML plan and add an <code>[analyze]</code>
+section:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">[analyze]</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">input_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"dataset/intensities"</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">output_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"dataset"</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">fit_report_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"dataset/fit_reports"</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">manifest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"scan/selected_frames.csv"</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="n">isotopologue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"h"</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="n">qc_every</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="n">plot_kind</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"none"</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="n">workers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">11</span>
+</code></pre></div>
+<p>CLI flags override plan values. The batch command writes:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>dataset/boltzmann_summary.csv
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>dataset/coronal_summary.csv
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>dataset/tables/*_boltzmann_qc_points.csv
+</code></pre></div>
+<p>No figures are rendered during fitting. The plot pass reads the saved QC
+tables and writes:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>dataset/plots/boltzmann/*_boltzmann_qc.png
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>dataset/plots/coronal/*_coronal_tvib_*K_qc.png
+</code></pre></div>
+<p>Rerun controls:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>fulcher-analyze-batch<span class="w"> </span>--plan<span class="w"> </span>h2_dataset_plan.toml<span class="w"> </span>--resume
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>fulcher-analyze-batch<span class="w"> </span>--plan<span class="w"> </span>h2_dataset_plan.toml<span class="w"> </span>--plot
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>fulcher-analyze-batch<span class="w"> </span>--plan<span class="w"> </span>h2_dataset_plan.toml<span class="w"> </span>--plot<span class="w"> </span>--plot-kind<span class="w"> </span>boltzmann
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>fulcher-analyze-batch<span class="w"> </span>--plan<span class="w"> </span>h2_dataset_plan.toml<span class="w"> </span>--plot<span class="w"> </span>--plot-kind<span class="w"> </span>coronal
+</code></pre></div>
+<p><code>--resume</code> skips frames already marked <code>ok</code> in both summary CSVs. Summaries are
+checkpointed after each processed frame by default; use <code>--checkpoint-every N</code>
+to reduce write frequency on very large runs.</p>
+<p><code>--plot</code> regenerates analyzer QC plots from saved QC tables as a separate
+pass, analogous to the extractor <code>plot</code> stage. It does not refit frames or
+rewrite summary CSVs. <code>--workers N</code> runs independent frames in parallel worker
+processes. Summary CSVs are still merged in manifest/discovery order, so
+blink-review filenames and tables remain deterministic even when frames finish
+out of order.</p>
+<hr>
 <h2 id="accessing-molecular-constants-directly">Accessing molecular constants directly<a class="headerlink" href="#accessing-molecular-constants-directly" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fulcher_analyzer</span><span class="w"> </span><span class="kn">import</span> <span class="n">MolecularConstants</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">mc</span> <span class="o">=</span> <span class="n">MolecularConstants</span><span class="p">(</span><span class="s2">"d"</span><span class="p">)</span>   <span class="c1"># deuterium</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">transitions</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">fulcher_analyzer</span><span class="w"> </span><span class="kn">import</span> <span class="n">MolecularConstants</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">mc</span> <span class="o">=</span> <span class="n">MolecularConstants</span><span class="p">(</span><span class="s2">"d"</span><span class="p">)</span>   <span class="c1"># deuterium</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">transitions</span><span class="p">)</span>
 </code></pre></div>
 
 

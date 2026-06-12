@@ -310,6 +310,25 @@
   
   
   
+    <li class="md-tabs__item">
+      <a href="../changelog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
     
     
       <li class="md-tabs__item">
@@ -590,6 +609,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#batch-workflow-for-extracted-datasets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Batch workflow for extracted datasets
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#regression-tests" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -818,6 +848,33 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     
     
     
@@ -830,10 +887,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5">
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6">
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
             
   
   
@@ -851,8 +908,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -996,6 +1053,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#batch-workflow-for-extracted-datasets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Batch workflow for extracted datasets
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#regression-tests" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1091,6 +1159,34 @@ and load-bearing implementation details.</p>
 <p>Canonical notebook figures for these examples are written to
 <code>examples/figures/</code> by <code>examples/CoronalModel-D-H.ipynb</code>.</p>
 <hr>
+<h2 id="batch-workflow-for-extracted-datasets">Batch workflow for extracted datasets<a class="headerlink" href="#batch-workflow-for-extracted-datasets" title="Permanent link">¶</a></h2>
+<p>For extractor-produced datasets, the command-line workflow is:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>dataset/intensities/*.csv
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>        |
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>        v
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>  fulcher-analyze-batch
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>        |
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>        +--&gt; dataset/boltzmann_summary.csv
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>        +--&gt; dataset/coronal_summary.csv
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>        +--&gt; dataset/tables/*_boltzmann_qc_points.csv
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>        |
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>        v
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>  fulcher-analyze-batch --plot
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>        |
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>        +--&gt; dataset/plots/boltzmann/*_boltzmann_qc.png
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>        +--&gt; dataset/plots/coronal/*_coronal_tvib_*K_qc.png
+</code></pre></div>
+<p>The batch command reuses extractor <code>fit_reports/</code> when present so lines marked
+for Boltzmann exclusion stay excluded in the downstream fit. The analysis pass
+writes summaries and plot-ready QC data tables; it does not render figures.
+Plot rendering is a separate <code>--plot</code> pass that reads those saved tables.
+QC plots are separated by stage with
+<code>--plot-kind all|boltzmann|coronal|none</code>, and summary CSVs are checkpointed
+during analysis. Use <code>--resume</code> to skip frames already marked <code>ok</code> in both
+summary files.</p>
+<p>Frame analysis can run in parallel with <code>--workers N</code>; summaries are merged back
+in the original record order after each worker returns.</p>
+<hr>
 <h2 id="regression-tests">Regression tests<a class="headerlink" href="#regression-tests" title="Permanent link">¶</a></h2>
 <p>The test suite pins the full pipeline against the published D₂ and H₂
 reference outputs from Kuzmin <em>et al.</em> (JQSRT 2021):</p>
@@ -1113,7 +1209,7 @@ reference outputs from Kuzmin <em>et al.</em> (JQSRT 2021):</p>
 </tbody>
 </table>
 <p>Run the full suite with:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>pytest
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>pytest
 </code></pre></div>
 <p>The regression tests exercise the complete pipeline end-to-end and will fail
 if any physics constant, formula, or data file is accidentally modified.</p>
