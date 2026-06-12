@@ -74,13 +74,32 @@ By default, summaries are written next to the `intensities/` directory:
 dataset/boltzmann_summary.csv
 dataset/coronal_summary.csv
 dataset/tables/*_boltzmann_qc_points.csv
+```
+
+By default, `fulcher-analyze-batch` fits frames only: it writes summary CSVs
+plus plot-ready QC data tables, but it does not render figures. Plot rendering
+is a separate pass that reads those saved tables:
+
+```bash
+fulcher-analyze-batch --plan h2_dataset_plan.toml --plot-only
+```
+
+The plot-only pass writes:
+
+```text
 dataset/plots/boltzmann/*_boltzmann_qc.png
 dataset/plots/coronal/*_coronal_tvib_*K_qc.png
 ```
 
-By default, `fulcher-analyze-batch` shows a `tqdm` progress bar and writes one
-Boltzmann and coronal/Tvib QC PNG per frame. Use `--qc-every N` to thin plots,
-or `--qc-every 0` for tables only.
+Use `--qc-every N` to thin plot output, `--plot-kind boltzmann` or
+`--plot-kind coronal` for one QC stage, or `--plot-kind none` for tables only.
+
+Frame analysis is serial by default. Use `--workers N` for process-based
+parallel analysis when running large datasets:
+
+```bash
+fulcher-analyze-batch --plan h2_dataset_plan.toml --workers 11
+```
 
 Useful rerun patterns:
 
@@ -88,11 +107,11 @@ Useful rerun patterns:
 # Continue a stopped run, keeping successful rows from existing summaries.
 fulcher-analyze-batch --plan h2_dataset_plan.toml --resume
 
-# Regenerate only Boltzmann QC plots while still refreshing summaries.
-fulcher-analyze-batch --plan h2_dataset_plan.toml --plot-kind boltzmann
+# Regenerate only Boltzmann QC plots.
+fulcher-analyze-batch --plan h2_dataset_plan.toml --plot-only --plot-kind boltzmann
 
 # Write only tables and summary CSVs.
-fulcher-analyze-batch --plan h2_dataset_plan.toml --plot-kind none
+fulcher-analyze-batch --plan h2_dataset_plan.toml
 ```
 
 Summary CSVs are checkpointed after each frame by default, so interrupted runs

@@ -212,7 +212,7 @@ def test_batch_cli_discovers_intensity_records(tmp_path):
 def test_batch_cli_qc_schedule_defaults_to_every_frame():
     from argparse import Namespace
 
-    from fulcher_analyzer.batch_cli import _plot_kinds, _should_write_qc
+    from fulcher_analyzer.batch_cli import _build_parser, _plot_kinds, _should_write_qc
 
     assert _should_write_qc(1, 1)
     assert _should_write_qc(10, 5)
@@ -222,6 +222,9 @@ def test_batch_cli_qc_schedule_defaults_to_every_frame():
     assert _plot_kinds(Namespace(qc_every=1, plot_kind="boltzmann")) == {"boltzmann"}
     assert _plot_kinds(Namespace(qc_every=1, plot_kind="none")) == set()
     assert _plot_kinds(Namespace(qc_every=0, plot_kind="all")) == set()
+    args = _build_parser().parse_args([])
+    assert args.qc_every == 0
+    assert args.plot_kind == "none"
 
 
 def test_batch_cli_plan_applies_analyze_section(tmp_path):
@@ -242,6 +245,7 @@ def test_batch_cli_plan_applies_analyze_section(tmp_path):
                 'manifest = "scan/selected_frames.csv"',
                 'isotopologue = "h"',
                 "qc_every = 2",
+                "workers = 3",
                 "max_fit_relerr = 0.5",
             ]
         ),
@@ -259,6 +263,7 @@ def test_batch_cli_plan_applies_analyze_section(tmp_path):
     assert str(args.output_dir).endswith("Fulcher-runs\\demo\\dataset") or str(args.output_dir).endswith("Fulcher-runs/demo/dataset")
     assert args.progress_every == 7
     assert args.qc_every == 0
+    assert args.workers == 3
     assert args.max_fit_relerr == 0.5
 
 
@@ -287,9 +292,11 @@ def test_batch_cli_writes_coronal_qc_and_closes_figures(tmp_path):
             isotopologue="h",
             max_fit_relerr=1.0,
             max_frames=None,
-            qc_every=1,
-            plot_kind="all",
+            qc_every=0,
+            plot_kind="none",
+            plot_only=False,
             resume=False,
+            workers=1,
             checkpoint_every=1,
             progress_every=10,
             no_progress=True,
@@ -297,12 +304,37 @@ def test_batch_cli_writes_coronal_qc_and_closes_figures(tmp_path):
         )
     )
     after = set(plt.get_fignums())
+    assert not (output_dir / "plots").exists()
+    assert (output_dir / "tables" / "152478_fr_10_coronal_qc_points.csv").exists()
+    assert after == before
+
+    analyze_batch(
+        Namespace(
+            input_dir=input_dir,
+            output_dir=output_dir,
+            fit_report_dir=None,
+            manifest=None,
+            isotopologue="h",
+            max_fit_relerr=1.0,
+            max_frames=None,
+            qc_every=1,
+            plot_kind="coronal",
+            plot_only=True,
+            resume=False,
+            workers=1,
+            checkpoint_every=1,
+            progress_every=10,
+            no_progress=True,
+            show_model_output=False,
+        )
+    )
+    final = set(plt.get_fignums())
 
     coronal_plots = list((output_dir / "plots" / "coronal").glob("*_coronal_tvib_*K_qc.png"))
     assert len(coronal_plots) == 1
     assert coronal_plots[0].name.startswith("152478_fr_10_h2_coronal_tvib_")
     assert coronal_plots[0].stat().st_size > 0
-    assert after == before
+    assert final == before
 
 
 def test_batch_cli_plot_kind_limits_qc_outputs(tmp_path):
@@ -329,10 +361,32 @@ def test_batch_cli_plot_kind_limits_qc_outputs(tmp_path):
             isotopologue="h",
             max_fit_relerr=1.0,
             max_frames=None,
-            qc_every=1,
-            plot_kind="boltzmann",
+            qc_every=0,
+            plot_kind="none",
+            plot_only=False,
             resume=False,
             checkpoint_every=1,
+            workers=1,
+            progress_every=10,
+            no_progress=True,
+            show_model_output=False,
+        )
+    )
+    analyze_batch(
+        Namespace(
+            input_dir=input_dir,
+            output_dir=output_dir,
+            fit_report_dir=None,
+            manifest=None,
+            isotopologue="h",
+            max_fit_relerr=1.0,
+            max_frames=None,
+            qc_every=1,
+            plot_kind="boltzmann",
+            plot_only=True,
+            resume=False,
+            checkpoint_every=1,
+            workers=1,
             progress_every=10,
             no_progress=True,
             show_model_output=False,
@@ -343,8 +397,258 @@ def test_batch_cli_plot_kind_limits_qc_outputs(tmp_path):
     assert not (output_dir / "plots" / "coronal").exists()
     boltzmann_summary = pd.read_csv(output_dir / "boltzmann_summary.csv")
     coronal_summary = pd.read_csv(output_dir / "coronal_summary.csv")
-    assert "boltzmann_qc_plot" in boltzmann_summary.columns
+    assert "boltzmann_qc_plot" not in boltzmann_summary.columns
     assert "coronal_qc_plot" not in coronal_summary.columns
+
+
+def test_saved_qc_plotters_use_stable_geometry(tmp_path, monkeypatch):
+    import pandas as pd
+    from matplotlib.figure import Figure
+
+    from fulcher_analyzer.batch_cli import (
+        _plot_saved_boltzmann_qc,
+        _plot_saved_coronal_qc,
+    )
+
+    captured = []
+
+    def capture_savefig(self, path, *args, **kwargs):
+        ax = self.axes[0]
+        captured.append(
+            {
+                "path": str(path),
+                "position": tuple(round(value, 6) for value in ax.get_position().bounds),
+                "xlim": tuple(round(value, 6) for value in ax.get_xlim()),
+                "ylim": tuple(round(value, 6) for value in ax.get_ylim()),
+            }
+        )
+
+    monkeypatch.setattr(Figure, "savefig", capture_savefig)
+
+    def write_boltzmann(frame, scale):
+        points = pd.DataFrame(
+            {
+                "band": ["0-0", "0-0", "1-1", "1-1", "2-2", "2-2"],
+                "fit_mask": [True, True, True, True, True, True],
+                "energy_eV": [0.0, 0.42, 0.02, 0.39, 0.01, 0.36],
+                "nd_rel": [1.0 * scale, 0.07 * scale, 0.8 * scale, 0.05 * scale, 0.9 * scale, 0.04 * scale],
+                "relerr": [0.05] * 6,
+            }
+        )
+        curve = pd.DataFrame(
+            {
+                "band": ["0-0", "0-0", "1-1", "1-1", "2-2", "2-2"],
+                "energy_eV": [0.0, 0.43, 0.02, 0.41, 0.01, 0.40],
+                "nd_bol_synth": [0.95 * scale, 0.06 * scale, 0.75 * scale, 0.045 * scale, 0.85 * scale, 0.035 * scale],
+            }
+        )
+        points_path = tmp_path / f"boltzmann_{frame}_points.csv"
+        curve_path = tmp_path / f"boltzmann_{frame}_fit.csv"
+        points.to_csv(points_path, index=False)
+        curve.to_csv(curve_path, index=False)
+        _plot_saved_boltzmann_qc(
+            points_path=points_path,
+            fit_curve_path=curve_path,
+            output_path=tmp_path / f"boltzmann_{frame}.png",
+            title=f"H2 frame {frame}: d-state Boltzmann fit",
+        )
+
+    def write_coronal(frame, scale):
+        points = pd.DataFrame(
+            {
+                "index": [0, 1, 2, 3],
+                "label": ["Q1(0-0)", "Q2(0-0)", "Q1(1-1)", "Q2(1-1)"],
+                "measured_norm": [0.08 * scale, 0.04 * scale, 0.13 * scale, 0.06 * scale],
+                "measured_err_norm": [0.004] * 4,
+                "model_norm": [0.075 * scale, 0.045 * scale, 0.12 * scale, 0.065 * scale],
+                "model_err_norm": [0.006] * 4,
+                "Tvib": [6500 * scale] * 4,
+                "Tvib_stderr": [200] * 4,
+            }
+        )
+        points_path = tmp_path / f"coronal_{frame}_points.csv"
+        points.to_csv(points_path, index=False)
+        _plot_saved_coronal_qc(
+            points_path=points_path,
+            output_path=tmp_path / f"coronal_{frame}.png",
+            title=f"H2 frame {frame}: coronal fit Tvib={6500 * scale:.0f} K",
+        )
+
+    write_boltzmann(10, 1.0)
+    write_boltzmann(11, 0.9)
+    write_coronal(10, 1.0)
+    write_coronal(11, 0.9)
+
+    assert captured[0]["position"] == captured[1]["position"]
+    assert captured[0]["xlim"] == captured[1]["xlim"]
+    assert captured[0]["ylim"] == captured[1]["ylim"]
+    assert captured[2]["position"] == captured[3]["position"]
+    assert captured[2]["xlim"] == captured[3]["xlim"]
+    assert captured[2]["ylim"] == captured[3]["ylim"]
+
+
+def test_plot_only_preflight_uses_shared_y_limits(tmp_path):
+    import pandas as pd
+
+    from fulcher_analyzer.batch_cli import _shared_qc_plot_limits
+
+    tables_dir = tmp_path / "tables"
+    tables_dir.mkdir()
+    pending = [
+        (1, {"stem": "152478_fr_10"}),
+        (2, {"stem": "152478_fr_11"}),
+    ]
+
+    for stem, scale in [("152478_fr_10", 1.0), ("152478_fr_11", 0.9)]:
+        pd.DataFrame(
+            {
+                "band": ["0-0", "0-0", "1-1", "1-1"],
+                "fit_mask": [True, True, True, True],
+                "energy_eV": [0.0, 0.42, 0.02, 0.39],
+                "nd_rel": [1.0 * scale, 0.07 * scale, 0.8 * scale, 0.05 * scale],
+                "relerr": [0.05] * 4,
+            }
+        ).to_csv(tables_dir / f"{stem}_boltzmann_qc_points.csv", index=False)
+        pd.DataFrame(
+            {
+                "band": ["0-0", "0-0", "1-1", "1-1"],
+                "energy_eV": [0.0, 0.43, 0.02, 0.41],
+                "nd_bol_synth": [0.95 * scale, 0.06 * scale, 0.75 * scale, 0.045 * scale],
+            }
+        ).to_csv(tables_dir / f"{stem}_boltzmann_qc_fit.csv", index=False)
+        labels = (
+            ["Q1(0-0)", "Q2(0-0)", "Q1(1-1)", "Q4(1-1)"]
+            if stem.endswith("_10")
+            else ["Q1(0-0)", "Q2(0-0)", "Q1(1-1)", "Q6(1-1)"]
+        )
+        pd.DataFrame(
+            {
+                "index": [0, 1, 2, 3],
+                "label": labels,
+                "measured_norm": [0.08 * scale, 0.04 * scale, 0.13 * scale, 0.06 * scale],
+                "measured_err_norm": [0.004] * 4,
+                "model_norm": [0.075 * scale, 0.045 * scale, 0.12 * scale, 0.065 * scale],
+                "model_err_norm": [0.006] * 4,
+                "Tvib": [6500 * scale] * 4,
+                "Tvib_stderr": [200] * 4,
+            }
+        ).to_csv(tables_dir / f"{stem}_coronal_qc_points.csv", index=False)
+
+    limits = _shared_qc_plot_limits(
+        tables_dir=tables_dir,
+        pending=pending,
+        plot_kinds={"boltzmann", "coronal"},
+        qc_every=1,
+    )
+
+    assert limits["boltzmann_y_limits"] == (0.01, 1.25)
+    assert limits["coronal_y_limit"] == 0.16
+    assert limits["coronal_labels"] == ["Q1(0-0)", "Q2(0-0)", "Q1(1-1)", "Q4(1-1)", "Q6(1-1)"]
+
+
+def test_batch_cli_rejects_qc_flags_during_fit(tmp_path):
+    from argparse import Namespace
+
+    from fulcher_analyzer.batch_cli import analyze_batch
+
+    input_dir = tmp_path / "dataset" / "intensities"
+    output_dir = tmp_path / "dataset"
+    input_dir.mkdir(parents=True)
+    (input_dir / "193809_fr_9.csv").write_text("not,a,real,intensity,table\n", encoding="utf-8")
+
+    with pytest.raises(SystemExit, match="QC plotting is separated from fitting"):
+        analyze_batch(
+            Namespace(
+                input_dir=input_dir,
+                output_dir=output_dir,
+                fit_report_dir=None,
+                manifest=None,
+                isotopologue="h",
+                max_fit_relerr=1.0,
+                max_frames=None,
+                qc_every=1,
+                plot_kind="all",
+                plot_only=False,
+                resume=False,
+                checkpoint_every=1,
+                workers=1,
+                progress_every=10,
+                no_progress=True,
+                show_model_output=False,
+            )
+        )
+
+
+def test_batch_cli_plot_only_uses_saved_qc_tables(tmp_path):
+    import shutil
+    from argparse import Namespace
+
+    import pandas as pd
+
+    from fulcher_analyzer.batch_cli import analyze_batch
+    from fulcher_analyzer.intensity_io import INTENSITY_DATA
+
+    input_dir = tmp_path / "dataset" / "intensities"
+    output_dir = tmp_path / "dataset"
+    input_dir.mkdir(parents=True)
+    for name in ("152478_fr_10.csv", "152478_fr_10_err.csv"):
+        shutil.copyfile(INTENSITY_DATA.joinpath(name), input_dir / name)
+
+    analyze_batch(
+        Namespace(
+            input_dir=input_dir,
+            output_dir=output_dir,
+            fit_report_dir=None,
+            manifest=None,
+            isotopologue="h",
+            max_fit_relerr=1.0,
+            max_frames=None,
+            qc_every=0,
+            plot_kind="none",
+            plot_only=False,
+            resume=False,
+            checkpoint_every=1,
+            workers=1,
+            progress_every=10,
+            no_progress=True,
+            show_model_output=False,
+        )
+    )
+    boltzmann_before = pd.read_csv(output_dir / "boltzmann_summary.csv")
+    coronal_before = pd.read_csv(output_dir / "coronal_summary.csv")
+    for path in input_dir.glob("*.csv"):
+        path.write_text("corrupted,on,purpose\n", encoding="utf-8")
+
+    analyze_batch(
+        Namespace(
+            input_dir=input_dir,
+            output_dir=output_dir,
+            fit_report_dir=None,
+            manifest=None,
+            isotopologue="h",
+            max_fit_relerr=1.0,
+            max_frames=None,
+            qc_every=1,
+            plot_kind="coronal",
+            plot_only=True,
+            resume=False,
+            checkpoint_every=1,
+            workers=1,
+            progress_every=10,
+            no_progress=True,
+            show_model_output=False,
+        )
+    )
+
+    assert list((output_dir / "plots" / "coronal").glob("*_coronal_tvib_*K_qc.png"))
+    pd.testing.assert_frame_equal(
+        boltzmann_before,
+        pd.read_csv(output_dir / "boltzmann_summary.csv"),
+    )
+    pd.testing.assert_frame_equal(
+        coronal_before,
+        pd.read_csv(output_dir / "coronal_summary.csv"),
+    )
 
 
 def test_batch_cli_resume_skips_completed_summary_rows(tmp_path):
@@ -377,10 +681,12 @@ def test_batch_cli_resume_skips_completed_summary_rows(tmp_path):
             isotopologue="h",
             max_fit_relerr=1.0,
             max_frames=None,
-            qc_every=1,
-            plot_kind="all",
+            qc_every=0,
+            plot_kind="none",
+            plot_only=False,
             resume=True,
             checkpoint_every=1,
+            workers=1,
             progress_every=10,
             no_progress=True,
             show_model_output=False,
@@ -391,6 +697,52 @@ def test_batch_cli_resume_skips_completed_summary_rows(tmp_path):
     assert summary.to_dict(orient="records") == [
         {"frame": 9, "shot": 193809, "status": "ok", "stem": "193809_fr_9"}
     ]
+
+
+def test_batch_cli_parallel_workers_merge_summaries(tmp_path):
+    import shutil
+    from argparse import Namespace
+
+    import pandas as pd
+
+    from fulcher_analyzer.batch_cli import analyze_batch
+    from fulcher_analyzer.intensity_io import INTENSITY_DATA
+
+    input_dir = tmp_path / "dataset" / "intensities"
+    output_dir = tmp_path / "dataset"
+    input_dir.mkdir(parents=True)
+    for frame in ("10", "11"):
+        shutil.copyfile(INTENSITY_DATA / "152478_fr_10.csv", input_dir / f"152478_fr_{frame}.csv")
+        shutil.copyfile(INTENSITY_DATA / "152478_fr_10_err.csv", input_dir / f"152478_fr_{frame}_err.csv")
+
+    analyze_batch(
+        Namespace(
+            input_dir=input_dir,
+            output_dir=output_dir,
+            fit_report_dir=None,
+            manifest=None,
+            isotopologue="h",
+            max_fit_relerr=1.0,
+            max_frames=None,
+            qc_every=0,
+            plot_kind="none",
+            plot_only=False,
+            resume=False,
+            checkpoint_every=1,
+            workers=2,
+            progress_every=10,
+            no_progress=True,
+            show_model_output=False,
+        )
+    )
+
+    boltzmann_summary = pd.read_csv(output_dir / "boltzmann_summary.csv")
+    coronal_summary = pd.read_csv(output_dir / "coronal_summary.csv")
+
+    assert boltzmann_summary["stem"].tolist() == ["152478_fr_10", "152478_fr_11"]
+    assert coronal_summary["stem"].tolist() == ["152478_fr_10", "152478_fr_11"]
+    assert boltzmann_summary["status"].tolist() == ["ok", "ok"]
+    assert coronal_summary["status"].tolist() == ["ok", "ok"]
 
 
 if __name__ == "__main__":
@@ -413,7 +765,9 @@ if __name__ == "__main__":
         test_batch_cli_plan_applies_analyze_section,
         test_batch_cli_writes_coronal_qc_and_closes_figures,
         test_batch_cli_plot_kind_limits_qc_outputs,
+        test_batch_cli_plot_only_uses_saved_qc_tables,
         test_batch_cli_resume_skips_completed_summary_rows,
+        test_batch_cli_parallel_workers_merge_summaries,
     ]
     failed = 0
     for t in tests:

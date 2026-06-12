@@ -7,9 +7,11 @@ import contextlib
 import csv
 import io
 import math
+import os
 import sys
 import time
 import traceback
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
 try:
@@ -31,16 +33,56 @@ except ImportError:  # pragma: no cover - exercised only in minimal installs.
 from .boltzmann import BoltzmannPlot
 from .boltzmann_qc import (
     apply_boltzmann_qc_mask,
+    band_style,
     boltzmann_qc_points,
-    plot_boltzmann_qc,
 )
 from .coronal_model import CoronaModel
-from .coronal_qc import plot_coronal_qc
+from ._utils import flatdf
 from .intensity_io import read_intensities
 
 
 PLAN_PATH_KEYS = {"input_dir", "output_dir", "fit_report_dir", "manifest"}
 PLOT_KINDS = {"all", "boltzmann", "coronal", "none"}
+BOLTZMANN_FIGSIZE = (7.4, 5.0)
+BOLTZMANN_SUBPLOTS = {"left": 0.14, "right": 0.96, "bottom": 0.15, "top": 0.88}
+CORONAL_FIGSIZE = (8.2, 5.2)
+CORONAL_SUBPLOTS = {"left": 0.10, "right": 0.96, "bottom": 0.22, "top": 0.92}
+
+
+def _color_enabled() -> bool:
+    if os.environ.get("NO_COLOR"):
+        return False
+    setting = os.environ.get("FULCHER_COLOR", "").lower()
+    if setting in {"1", "true", "yes", "on"}:
+        return True
+    if setting in {"0", "false", "no", "off"}:
+        return False
+    return sys.stdout.isatty()
+
+
+USE_COLOR = _color_enabled()
+
+
+def _c(text: str, code: str) -> str:
+    if not USE_COLOR:
+        return text
+    return f"\033[{code}m{text}\033[0m"
+
+
+def _bold(text: str) -> str:
+    return _c(text, "1")
+
+
+def _dim(text: str) -> str:
+    return _c(text, "2")
+
+
+def _green(text: str) -> str:
+    return _c(text, "32")
+
+
+def _cyan(text: str) -> str:
+    return _c(text, "36")
 
 
 def _provided_destinations(parser: argparse.ArgumentParser, argv: list[str]) -> set[str]:
@@ -214,12 +256,16 @@ def _format_temperature(value: object) -> str:
 
 
 def _progress_label(stem: str, *, trot1: object = None, trot2: object = None, tvib: object = None) -> str:
-    return (
-        f"{stem} "
-        f"T1={_format_temperature(trot1)} "
-        f"T2={_format_temperature(trot2)} "
-        f"Tv={_format_temperature(tvib)}"
-    )
+    return f"{stem} T2={_format_temperature(trot2)}"
+
+
+def _short_progress_label(label: str, width: int = 26) -> str:
+    text = " ".join(str(label).split())
+    if len(text) <= width:
+        return text
+    keep_left = max(8, width // 2 - 1)
+    keep_right = max(8, width - keep_left - 3)
+    return f"{text[:keep_left]}...{text[-keep_right:]}"
 
 
 def _should_write_qc(index: int, qc_every: int) -> bool:
@@ -243,12 +289,622 @@ def _display_path(path: Path) -> str:
         return str(path)
 
 
+def _relative_display_path(path: Path, base: Path) -> str:
+    resolved_path = path.expanduser().resolve()
+    resolved_base = base.expanduser().resolve()
+    try:
+        return resolved_path.relative_to(resolved_base).as_posix()
+    except ValueError:
+        return str(resolved_path)
+
+
+def _print_analysis_summary(
+    *,
+    title: str,
+    input_dir: Path,
+    output_dir: Path,
+    artifacts: list[tuple[str, str, Path]],
+    analyzed_frames: int,
+    skipped_frames: int,
+    workers: int,
+    workdir: Path | None = None,
+) -> None:
+    workdir = workdir or Path.cwd()
+    print()
+    print(_bold(f"=== {title} ==="))
+    print(f"workdir   : {_dim(str(workdir.resolve()))}")
+    print(f"input     : {_cyan(_relative_display_path(input_dir, workdir))}")
+    print(f"output    : {_cyan(_relative_display_path(output_dir, workdir))}")
+    print("artifacts :")
+    for action, label, path in artifacts:
+        action_style = _green if action == "WRITE" else _cyan
+        print(f"  {action_style(f'{action:<5}')} {label:<13} {_relative_display_path(path, output_dir)}")
+    print(f"frames    : {_cyan(analyzed_frames)}")
+    if skipped_frames:
+        print(f"skipped   : {_cyan(skipped_frames)}")
+    print(f"workers   : {_cyan(workers)}")
+
+
+def _analyze_record(
+    index: int,
+    record: dict[str, object],
+    config: dict[str, object],
+) -> dict[str, object]:
+    input_dir = Path(str(config["input_dir"]))
+    output_dir = Path(str(config["output_dir"]))
+    fit_report_dir = (
+        Path(str(config["fit_report_dir"]))
+        if config.get("fit_report_dir") not in (None, "")
+        else None
+    )
+    tables_dir = output_dir / "tables"
+    isotopologue = str(config["isotopologue"])
+    max_fit_relerr = float(config.get("max_fit_relerr", 1.0))
+    show_model_output = bool(config.get("show_model_output", False))
+
+    shot = str(record["shot"])
+    frame = str(record["frame"])
+    stem = str(record["stem"])
+    model_stdout = io.StringIO()
+    stdout_context = (
+        contextlib.nullcontext()
+        if show_model_output
+        else contextlib.redirect_stdout(model_stdout)
+    )
+    try:
+        with stdout_context:
+            fit_report = _fit_report_path(
+                stem,
+                input_dir=input_dir,
+                fit_report_dir=fit_report_dir,
+            )
+            intensities = read_intensities(shot, frame, data_folder=input_dir)
+            bp = BoltzmannPlot(intensities, isotopologue)
+            points = boltzmann_qc_points(
+                bp,
+                max_fit_relerr=max_fit_relerr,
+                fit_report=fit_report,
+            )
+            apply_boltzmann_qc_mask(bp, points)
+            bp.autofit()
+            points = boltzmann_qc_points(
+                bp,
+                max_fit_relerr=max_fit_relerr,
+                fit_report=fit_report,
+            )
+            qc_points_path = tables_dir / f"{stem}_boltzmann_qc_points.csv"
+            points.to_csv(qc_points_path, index=False)
+            boltzmann_fit_curve_path = tables_dir / f"{stem}_boltzmann_qc_fit.csv"
+            _write_boltzmann_fit_curve(boltzmann_fit_curve_path, bp)
+            boltzmann_row = {
+                "shot": shot,
+                "frame": frame,
+                "stem": stem,
+                "isotopologue": isotopologue,
+                "alpha": bp.alpha,
+                "beta": bp.beta,
+                "Trot1": bp.trot1,
+                "Trot2": bp.trot2,
+                "alpha_stderr": bp.err[0],
+                "beta_stderr": bp.err[1],
+                "Trot1_stderr": bp.err[2],
+                "Trot2_stderr": bp.err[3],
+                "n_boltzmann_points": int(points["fit_mask"].sum()) if "fit_mask" in points else "",
+                "fit_report": str(fit_report or ""),
+                "qc_points": str(qc_points_path),
+                "qc_fit_curve": str(boltzmann_fit_curve_path),
+                "status": "ok",
+            }
+
+            cm = CoronaModel(bp)
+            cm.coronal_autofit()
+            progress_label = _progress_label(
+                stem,
+                trot1=bp.trot1,
+                trot2=bp.trot2,
+                tvib=cm.tvib,
+            )
+            coronal_row = {
+                "shot": shot,
+                "frame": frame,
+                "stem": stem,
+                "isotopologue": isotopologue,
+                "Tvib": cm.tvib,
+                "Tvib_stderr": cm.tviberr,
+                "status": "ok",
+            }
+            coronal_qc_points_path = tables_dir / f"{stem}_coronal_qc_points.csv"
+            _write_coronal_qc_points(coronal_qc_points_path, cm)
+            coronal_row["qc_points"] = str(coronal_qc_points_path)
+            return {
+                "stem": stem,
+                "status": "ok",
+                "progress_label": progress_label,
+                "boltzmann_row": boltzmann_row,
+                "coronal_row": coronal_row,
+            }
+    except Exception as exc:
+        boltzmann_row = {"shot": shot, "frame": frame, "stem": stem, "status": "failed", "error": repr(exc)}
+        if not show_model_output and model_stdout.getvalue():
+            boltzmann_row["captured_stdout"] = model_stdout.getvalue()
+        boltzmann_row["traceback"] = traceback.format_exc()
+        return {
+            "stem": stem,
+            "status": "failed",
+            "error": repr(exc),
+            "progress_label": f"{stem} failed",
+            "boltzmann_row": boltzmann_row,
+            "coronal_row": {"shot": shot, "frame": frame, "stem": stem, "status": "failed", "error": repr(exc)},
+        }
+
+
+def _plot_record(
+    index: int,
+    record: dict[str, object],
+    config: dict[str, object],
+) -> dict[str, object]:
+    output_dir = Path(str(config["output_dir"]))
+    tables_dir = output_dir / "tables"
+    boltzmann_plot_dir = output_dir / "plots" / "boltzmann"
+    coronal_plot_dir = output_dir / "plots" / "coronal"
+    plot_kinds = set(config.get("plot_kinds", ()))
+    isotopologue = str(config["isotopologue"])
+    molecule_label = "H2" if isotopologue == "h" else "D2"
+    qc_every = int(config.get("qc_every", 1))
+    shot = str(record["shot"])
+    frame = str(record["frame"])
+    stem = str(record["stem"])
+
+    try:
+        if _should_write_qc(index, qc_every):
+            if "boltzmann" in plot_kinds:
+                _plot_saved_boltzmann_qc(
+                    points_path=tables_dir / f"{stem}_boltzmann_qc_points.csv",
+                    fit_curve_path=tables_dir / f"{stem}_boltzmann_qc_fit.csv",
+                    output_path=boltzmann_plot_dir / f"{stem}_boltzmann_qc.png",
+                    title=f"{molecule_label} {shot} frame {frame}: d-state Boltzmann fit",
+                    y_limits=config.get("boltzmann_y_limits"),
+                )
+            if "coronal" in plot_kinds:
+                coronal_points = tables_dir / f"{stem}_coronal_qc_points.csv"
+                points = pd.read_csv(coronal_points)
+                tvib = float(points["Tvib"].iloc[0]) if "Tvib" in points else float("nan")
+                _plot_saved_coronal_qc(
+                    points_path=coronal_points,
+                    output_path=(
+                        coronal_plot_dir
+                        / f"{stem}_{molecule_label.lower()}_coronal_tvib_{tvib:.0f}K_qc.png"
+                    ),
+                    title=f"{molecule_label} {shot} frame {frame}: coronal fit Tvib={tvib:.0f} K",
+                    y_limit=config.get("coronal_y_limit"),
+                    labels=config.get("coronal_labels"),
+                )
+        return {
+            "stem": stem,
+            "status": "ok",
+            "progress_label": f"{stem} plotted",
+            "boltzmann_row": {"shot": shot, "frame": frame, "stem": stem, "status": "plotted"},
+            "coronal_row": {"shot": shot, "frame": frame, "stem": stem, "status": "plotted"},
+        }
+    except Exception as exc:
+        return {
+            "stem": stem,
+            "status": "failed",
+            "error": repr(exc),
+            "progress_label": f"{stem} failed",
+            "boltzmann_row": {"shot": shot, "frame": frame, "stem": stem, "status": "failed", "error": repr(exc)},
+            "coronal_row": {"shot": shot, "frame": frame, "stem": stem, "status": "failed", "error": repr(exc)},
+        }
+
+
+def _analysis_config(
+    args: argparse.Namespace,
+    *,
+    input_dir: Path,
+    output_dir: Path,
+    fit_report_dir: Path | None,
+    plot_kinds: set[str],
+) -> dict[str, object]:
+    return {
+        "input_dir": str(input_dir),
+        "output_dir": str(output_dir),
+        "fit_report_dir": str(fit_report_dir) if fit_report_dir is not None else "",
+        "plot_kinds": sorted(plot_kinds),
+        "isotopologue": args.isotopologue,
+        "max_fit_relerr": args.max_fit_relerr,
+        "qc_every": args.qc_every,
+        "show_model_output": args.show_model_output,
+    }
+
+
+def _write_boltzmann_fit_curve(path: Path, bp: BoltzmannPlot) -> None:
+    rows = []
+    for band_index in bp.nd_bol_synth:
+        band = f"{int(band_index)}-{int(band_index)}"
+        for row_index, value in bp.nd_bol_synth[band_index].items():
+            energy = bp.Ed[band_index].loc[row_index]
+            if not np_is_finite(value) or not np_is_finite(energy):
+                continue
+            rows.append(
+                {
+                    "band": band,
+                    "band_index": int(band_index),
+                    "N": int(row_index) + 1,
+                    "energy_eV": float(energy),
+                    "nd_bol_synth": float(value),
+                }
+            )
+    path.parent.mkdir(parents=True, exist_ok=True)
+    pd.DataFrame(rows).to_csv(path, index=False)
+
+
+def np_is_finite(value: object) -> bool:
+    try:
+        return math.isfinite(float(value))
+    except (TypeError, ValueError):
+        return False
+
+
+def _ceil_to_step(value: float, step: float) -> float:
+    return math.ceil(value / step) * step
+
+
+def _positive_log_floor(values: list[float]) -> float:
+    positive = [value for value in values if value > 0 and math.isfinite(value)]
+    if not positive:
+        return 1e-3
+    return 10 ** math.floor(math.log10(min(positive) * 0.8))
+
+
+def _boltzmann_axis_limits(points: pd.DataFrame, fit_curve: pd.DataFrame) -> tuple[tuple[float, float], tuple[float, float]]:
+    x_values = list(points["energy_eV"].astype(float))
+    if not fit_curve.empty:
+        x_values.extend(fit_curve["energy_eV"].astype(float))
+    x_upper = max(0.45, _ceil_to_step(max(x_values) * 1.03, 0.05)) if x_values else 0.45
+
+    point_y = points["nd_rel"].astype(float)
+    point_err = points["relerr"].astype(float) * point_y
+    lower_values = list((point_y - point_err).clip(lower=0.0))
+    upper_values = list(point_y + point_err)
+    if not fit_curve.empty:
+        curve_y = list(fit_curve["nd_bol_synth"].astype(float))
+        lower_values.extend(curve_y)
+        upper_values.extend(curve_y)
+    y_lower = _positive_log_floor(lower_values)
+    y_upper = max(1.25, _ceil_to_step(max(upper_values) * 1.08, 0.25)) if upper_values else 1.25
+    return (0.0, x_upper), (y_lower, y_upper)
+
+
+def _coronal_y_limit(points: pd.DataFrame) -> float:
+    upper_values = list(points["measured_norm"].astype(float) + points["measured_err_norm"].astype(float))
+    upper_values.extend(points["model_norm"].astype(float))
+    if "model_err_norm" in points:
+        upper_values.extend(points["model_norm"].astype(float) + points["model_err_norm"].astype(float))
+    upper = max(upper_values) if upper_values else 0.0
+    return max(0.16, _ceil_to_step(upper * 1.10, 0.02))
+
+
+def _shared_boltzmann_y_limits(
+    *,
+    tables_dir: Path,
+    pending: list[tuple[int, dict[str, object]]],
+    qc_every: int,
+) -> tuple[float, float] | None:
+    frame_limits = []
+    for index, record in pending:
+        if not _should_write_qc(index, qc_every):
+            continue
+        stem = str(record["stem"])
+        points_path = tables_dir / f"{stem}_boltzmann_qc_points.csv"
+        fit_curve_path = tables_dir / f"{stem}_boltzmann_qc_fit.csv"
+        points = pd.read_csv(points_path)
+        fit_curve = pd.read_csv(fit_curve_path)
+        _, ylim = _boltzmann_axis_limits(points, fit_curve)
+        frame_limits.append(ylim)
+    if len(frame_limits) < 2:
+        return frame_limits[0] if frame_limits else None
+
+    shared = (min(low for low, _ in frame_limits), max(high for _, high in frame_limits))
+    frame_spans = sorted(math.log10(high / low) for low, high in frame_limits if low > 0 and high > low)
+    if not frame_spans or shared[0] <= 0 or shared[1] <= shared[0]:
+        return None
+    median_span = frame_spans[len(frame_spans) // 2]
+    shared_span = math.log10(shared[1] / shared[0])
+    if shared_span <= median_span + 0.70:
+        return shared
+    return None
+
+
+def _shared_coronal_y_limit(
+    *,
+    tables_dir: Path,
+    pending: list[tuple[int, dict[str, object]]],
+    qc_every: int,
+) -> float | None:
+    frame_limits = []
+    for index, record in pending:
+        if not _should_write_qc(index, qc_every):
+            continue
+        stem = str(record["stem"])
+        points = pd.read_csv(tables_dir / f"{stem}_coronal_qc_points.csv")
+        frame_limits.append(_coronal_y_limit(points))
+    if len(frame_limits) < 2:
+        return frame_limits[0] if frame_limits else None
+
+    shared = max(frame_limits)
+    median = sorted(frame_limits)[len(frame_limits) // 2]
+    if median > 0 and shared <= median * 2.0:
+        return shared
+    return None
+
+
+def _shared_coronal_labels(
+    *,
+    tables_dir: Path,
+    pending: list[tuple[int, dict[str, object]]],
+    qc_every: int,
+) -> list[str]:
+    labels: list[str] = []
+    seen = set()
+    for index, record in pending:
+        if not _should_write_qc(index, qc_every):
+            continue
+        stem = str(record["stem"])
+        points = pd.read_csv(tables_dir / f"{stem}_coronal_qc_points.csv")
+        sort_columns = ["index"] if "index" in points else None
+        if sort_columns is not None:
+            points = points.sort_values(sort_columns)
+        for label in points["label"].astype(str):
+            if label not in seen:
+                seen.add(label)
+                labels.append(label)
+    return labels
+
+
+def _shared_qc_plot_limits(
+    *,
+    tables_dir: Path,
+    pending: list[tuple[int, dict[str, object]]],
+    plot_kinds: set[str],
+    qc_every: int,
+) -> dict[str, object]:
+    limits: dict[str, object] = {}
+    if "boltzmann" in plot_kinds:
+        boltzmann_limits = _shared_boltzmann_y_limits(
+            tables_dir=tables_dir,
+            pending=pending,
+            qc_every=qc_every,
+        )
+        if boltzmann_limits is not None:
+            limits["boltzmann_y_limits"] = boltzmann_limits
+    if "coronal" in plot_kinds:
+        coronal_limit = _shared_coronal_y_limit(
+            tables_dir=tables_dir,
+            pending=pending,
+            qc_every=qc_every,
+        )
+        if coronal_limit is not None:
+            limits["coronal_y_limit"] = coronal_limit
+        coronal_labels = _shared_coronal_labels(
+            tables_dir=tables_dir,
+            pending=pending,
+            qc_every=qc_every,
+        )
+        if coronal_labels:
+            limits["coronal_labels"] = coronal_labels
+    return limits
+
+
+def _write_coronal_qc_points(path: Path, cm: CoronaModel) -> None:
+    exp_values = flatdf(cm.bp.nd[cm.bp.mask])
+    exp_errors = flatdf(cm.bp.nd_err[cm.bp.mask])
+    model_values = flatdf(cm.nd[cm.bp.mask])
+    labels = flatdf(cm.bp.qnames[cm.bp.mask])
+    exp_sum = exp_values.sum()
+    model_sum = model_values.sum()
+    exp_norm = exp_values / exp_sum
+    exp_err_norm = exp_errors / exp_sum
+    model_norm = model_values / model_sum
+    yerr_flat = getattr(cm, "yerr_flat", None)
+
+    rows = []
+    for index, (label, measured, measured_err, model) in enumerate(
+        zip(labels, exp_norm, exp_err_norm, model_norm)
+    ):
+        row = {
+            "index": index,
+            "label": label,
+            "measured_norm": float(measured),
+            "measured_err_norm": float(measured_err),
+            "model_norm": float(model),
+            "Tvib": float(cm.tvib),
+            "Tvib_stderr": float(cm.tviberr),
+        }
+        if yerr_flat is not None and len(yerr_flat) == len(model_norm):
+            row["model_err_norm"] = float(yerr_flat[index])
+        rows.append(row)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    pd.DataFrame(rows).to_csv(path, index=False)
+
+
+def _plot_saved_boltzmann_qc(
+    *,
+    points_path: Path,
+    fit_curve_path: Path,
+    output_path: Path,
+    title: str,
+    y_limits: tuple[float, float] | None = None,
+) -> None:
+    points = pd.read_csv(points_path)
+    fit_curve = pd.read_csv(fit_curve_path)
+    fig, ax = plt.subplots(figsize=BOLTZMANN_FIGSIZE)
+    first_excluded_label = True
+    for band, group in points.groupby("band", sort=True):
+        style = band_style(band)
+        fit_group = group.loc[group["fit_mask"].astype(bool)]
+        excluded = group.loc[~group["fit_mask"].astype(bool)]
+        if not fit_group.empty:
+            ax.errorbar(
+                fit_group["energy_eV"],
+                fit_group["nd_rel"],
+                yerr=fit_group["relerr"] * fit_group["nd_rel"],
+                fmt=style.marker,
+                ms=5.0,
+                capsize=2.5,
+                lw=0.8,
+                color=style.color,
+            )
+        if not excluded.empty:
+            ax.scatter(
+                excluded["energy_eV"],
+                excluded["nd_rel"],
+                marker=style.marker,
+                s=38,
+                color=style.color,
+                alpha=0.45,
+                zorder=3,
+            )
+            ax.scatter(
+                excluded["energy_eV"],
+                excluded["nd_rel"],
+                marker="x",
+                s=95,
+                color="black",
+                lw=1.4,
+                label="not fit" if first_excluded_label else None,
+                zorder=4,
+            )
+            first_excluded_label = False
+        curve = fit_curve.loc[fit_curve["band"] == band]
+        if not curve.empty:
+            ax.plot(
+                curve["energy_eV"],
+                curve["nd_bol_synth"],
+                color=style.color,
+                lw=1.25,
+                ls=style.linestyle,
+                label=band,
+            )
+    ax.set_xlabel("Rotational Energy [eV]")
+    ax.set_ylabel(r"$\mathrm{\frac{n_{d v' N'}}{(2N'+1)\,g_{\mathrm{as}}^{N'}}}$ [a.u.]")
+    ax.set_title(title)
+    ax.set_yscale("log")
+    xlim, ylim = _boltzmann_axis_limits(points, fit_curve)
+    ax.set_xlim(*xlim)
+    ax.set_ylim(*(y_limits or ylim))
+    ax.grid(True, which="both", color="0.88", lw=0.7)
+    ax.legend(title="Band", fontsize=7.5, loc="upper right", framealpha=0.92)
+    fig.subplots_adjust(**BOLTZMANN_SUBPLOTS)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(output_path, dpi=180)
+    plt.close(fig)
+
+
+def _plot_saved_coronal_qc(
+    *,
+    points_path: Path,
+    output_path: Path,
+    title: str,
+    y_limit: float | None = None,
+    labels: list[str] | None = None,
+) -> None:
+    points = pd.read_csv(points_path)
+    fig, ax = plt.subplots(figsize=CORONAL_FIGSIZE)
+    labels = labels or list(points["label"].astype(str))
+    x_positions = {label: index for index, label in enumerate(labels)}
+    points = points.assign(_x=points["label"].astype(str).map(x_positions)).dropna(subset=["_x"]).sort_values("_x")
+    x = points["_x"].astype(float)
+    ax.errorbar(
+        x,
+        points["measured_norm"],
+        yerr=points["measured_err_norm"],
+        fmt="o",
+        ms=4.5,
+        capsize=2.5,
+        lw=0.8,
+        color="#2f6fce",
+        label="measured",
+    )
+    ax.plot(
+        x,
+        points["model_norm"],
+        "s-",
+        ms=4.0,
+        lw=1.1,
+        color="#d54a2a",
+        label="model",
+    )
+    if "model_err_norm" in points:
+        lower = (points["model_norm"] - points["model_err_norm"]).clip(lower=0.0)
+        upper = points["model_norm"] + points["model_err_norm"]
+        ax.fill_between(x, lower, upper, color="#d54a2a", alpha=0.18, label="+/- 1 sigma")
+    ax.set_xticks(range(len(labels)))
+    ax.set_xticklabels(labels, rotation=90, fontsize=7)
+    ax.set_xlim(-0.5, len(labels) - 0.5)
+    ax.set_ylim(0.0, y_limit or _coronal_y_limit(points))
+    ax.set_xlabel("Q-branch transition")
+    ax.set_ylabel("Normalized d-state population")
+    ax.set_title(title)
+    ax.grid(True, color="0.88", lw=0.7)
+    ax.legend(fontsize=8, loc="upper right", framealpha=0.92)
+    fig.subplots_adjust(**CORONAL_SUBPLOTS)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(output_path, dpi=180)
+    plt.close(fig)
+
+
+def _record_done(
+    result: dict[str, object],
+    *,
+    records: list[dict[str, object]],
+    output_dir: Path,
+    boltzmann_by_stem: dict[str, dict],
+    coronal_by_stem: dict[str, dict],
+    completed: int,
+    checkpoint_every: int,
+    write_summaries: bool,
+    progress: object | None,
+    base_desc: str,
+    no_progress: bool,
+    progress_every: int,
+    total: int,
+    start: float,
+) -> None:
+    stem = str(result["stem"])
+    boltzmann_by_stem[stem] = result["boltzmann_row"]
+    coronal_by_stem[stem] = result["coronal_row"]
+    progress_label = str(result["progress_label"])
+    if result.get("status") == "failed":
+        message = f"failed {stem}: {result.get('error')}"
+        if progress is not None:
+            progress.write(message, file=sys.stderr)
+        else:
+            print(message, file=sys.stderr, flush=True)
+
+    if write_summaries and completed % checkpoint_every == 0:
+        _write_summaries(output_dir, records, boltzmann_by_stem, coronal_by_stem)
+
+    if progress is not None:
+        progress.update(1)
+        progress.set_description_str(
+            f"{base_desc} | {_short_progress_label(progress_label)}",
+            refresh=False,
+        )
+    elif not no_progress and (completed == 1 or completed % progress_every == 0 or completed == total):
+        elapsed = time.monotonic() - start
+        verb = "plot" if base_desc.startswith("plot") else "fit"
+        print(f"{verb} {completed}/{total}: {progress_label}, elapsed {elapsed:.1f}s", flush=True)
+
+
 def analyze_batch(args: argparse.Namespace) -> None:
     input_dir = args.input_dir.expanduser()
     output_dir = args.output_dir.expanduser() if args.output_dir else input_dir.parent
     fit_report_dir = args.fit_report_dir.expanduser() if args.fit_report_dir else None
     manifest = args.manifest.expanduser() if args.manifest else None
-    plot_kinds = _plot_kinds(args)
+    plot_only = bool(getattr(args, "plot_only", False))
+    if not plot_only and (int(getattr(args, "qc_every", 0)) > 0 or getattr(args, "plot_kind", "none") != "none"):
+        raise SystemExit("QC plotting is separated from fitting; use --plot-only for plot generation.")
+    plot_kinds = _plot_kinds(args) if plot_only else set()
     checkpoint_every = max(1, int(getattr(args, "checkpoint_every", 1)))
     if fit_report_dir is None and (output_dir / "fit_reports").is_dir():
         fit_report_dir = output_dir / "fit_reports"
@@ -272,22 +928,38 @@ def analyze_batch(args: argparse.Namespace) -> None:
         boltzmann_by_stem, coronal_by_stem = _summary_maps(output_dir)
     else:
         boltzmann_by_stem, coronal_by_stem = {}, {}
+    write_summaries = not plot_only
     start = time.monotonic()
     total = len(records)
     skipped = 0
-    molecule_label = "H2" if args.isotopologue == "h" else "D2"
+    workers = max(1, int(getattr(args, "workers", 1)))
+    base_desc = "plot frames" if plot_only else "fit frames"
+    config = _analysis_config(
+        args,
+        input_dir=input_dir,
+        output_dir=output_dir,
+        fit_report_dir=fit_report_dir,
+        plot_kinds=plot_kinds,
+    )
+    verb = "plotting" if plot_only else "analyzing"
+    if not args.no_progress:
+        print(f"{verb} {total} frames with {workers} worker{'s' if workers != 1 else ''}", flush=True)
     progress = None
     if not args.no_progress and tqdm is not None:
-        progress = tqdm(records, total=total, desc="fit frames", unit="frame", dynamic_ncols=True)
-        record_iterable = progress
-    else:
-        record_iterable = records
-    for index, record in enumerate(record_iterable, start=1):
-        shot = str(record["shot"])
-        frame = str(record["frame"])
+        progress = tqdm(
+            total=total,
+            desc=base_desc,
+            unit="fr",
+            ncols=96,
+            dynamic_ncols=False,
+            bar_format="{desc:<34} {percentage:3.0f}%|{bar:10}| {n_fmt:>4}/{total_fmt:<4} [{elapsed}<{remaining}, {rate_fmt}]",
+        )
+
+    pending: list[tuple[int, dict[str, object]]] = []
+    completed = 0
+    for index, record in enumerate(records, start=1):
         stem = str(record["stem"])
-        progress_label = stem
-        if getattr(args, "resume", False):
+        if getattr(args, "resume", False) and not plot_only:
             existing_boltzmann = boltzmann_by_stem.get(stem, {})
             existing_coronal = coronal_by_stem.get(stem, {})
             if (
@@ -295,135 +967,105 @@ def analyze_batch(args: argparse.Namespace) -> None:
                 and existing_coronal.get("status") == "ok"
             ):
                 skipped += 1
+                completed += 1
                 progress_label = f"{stem} skipped"
                 if progress is not None:
-                    progress.set_postfix_str(progress_label, refresh=False)
-                elif not args.no_progress and (index == 1 or index % args.progress_every == 0 or index == total):
+                    progress.update(1)
+                    progress.set_description_str(
+                        f"{base_desc} | {_short_progress_label(progress_label)}",
+                        refresh=False,
+                    )
+                elif not args.no_progress and (completed == 1 or completed % args.progress_every == 0 or completed == total):
                     elapsed = time.monotonic() - start
-                    print(f"fit {index}/{total}: {progress_label}, elapsed {elapsed:.1f}s", flush=True)
+                    print(f"fit {completed}/{total}: {progress_label}, elapsed {elapsed:.1f}s", flush=True)
                 continue
-        model_stdout = io.StringIO()
-        stdout_context = (
-            contextlib.nullcontext()
-            if args.show_model_output
-            else contextlib.redirect_stdout(model_stdout)
+        pending.append((index, record))
+
+    if plot_only:
+        config.update(
+            _shared_qc_plot_limits(
+                tables_dir=tables_dir,
+                pending=pending,
+                plot_kinds=plot_kinds,
+                qc_every=args.qc_every,
+            )
         )
-        try:
-            with stdout_context:
-                fit_report = _fit_report_path(
-                    stem,
-                    input_dir=input_dir,
-                    fit_report_dir=fit_report_dir,
-                )
-                intensities = read_intensities(shot, frame, data_folder=input_dir)
-                bp = BoltzmannPlot(intensities, args.isotopologue)
-                points = boltzmann_qc_points(
-                    bp,
-                    max_fit_relerr=args.max_fit_relerr,
-                    fit_report=fit_report,
-                )
-                apply_boltzmann_qc_mask(bp, points)
-                bp.autofit()
-                points = boltzmann_qc_points(
-                    bp,
-                    max_fit_relerr=args.max_fit_relerr,
-                    fit_report=fit_report,
-                )
-                points.to_csv(tables_dir / f"{stem}_boltzmann_qc_points.csv", index=False)
-                boltzmann_row = {
-                    "shot": shot,
-                    "frame": frame,
-                    "stem": stem,
-                    "isotopologue": args.isotopologue,
-                    "alpha": bp.alpha,
-                    "beta": bp.beta,
-                    "Trot1": bp.trot1,
-                    "Trot2": bp.trot2,
-                    "alpha_stderr": bp.err[0],
-                    "beta_stderr": bp.err[1],
-                    "Trot1_stderr": bp.err[2],
-                    "Trot2_stderr": bp.err[3],
-                    "n_boltzmann_points": int(points["fit_mask"].sum()) if "fit_mask" in points else "",
-                    "fit_report": str(fit_report or ""),
-                    "qc_points": str(tables_dir / f"{stem}_boltzmann_qc_points.csv"),
-                    "status": "ok",
-                }
 
-                cm = CoronaModel(bp)
-                cm.coronal_autofit()
-                progress_label = _progress_label(
-                    stem,
-                    trot1=bp.trot1,
-                    trot2=bp.trot2,
-                    tvib=cm.tvib,
+    if workers == 1 or len(pending) <= 1:
+        for index, record in pending:
+            worker_fn = _plot_record if plot_only else _analyze_record
+            result = worker_fn(index, record, config)
+            completed += 1
+            _record_done(
+                result,
+                records=records,
+                output_dir=output_dir,
+                boltzmann_by_stem=boltzmann_by_stem,
+                coronal_by_stem=coronal_by_stem,
+                completed=completed,
+                checkpoint_every=checkpoint_every,
+                write_summaries=write_summaries,
+                progress=progress,
+                base_desc=base_desc,
+                no_progress=args.no_progress,
+                progress_every=args.progress_every,
+                total=total,
+                start=start,
+            )
+    else:
+        with ProcessPoolExecutor(max_workers=workers) as executor:
+            worker_fn = _plot_record if plot_only else _analyze_record
+            futures = [
+                executor.submit(worker_fn, index, record, config)
+                for index, record in pending
+            ]
+            for future in as_completed(futures):
+                result = future.result()
+                completed += 1
+                _record_done(
+                    result,
+                    records=records,
+                    output_dir=output_dir,
+                    boltzmann_by_stem=boltzmann_by_stem,
+                    coronal_by_stem=coronal_by_stem,
+                    completed=completed,
+                    checkpoint_every=checkpoint_every,
+                    write_summaries=write_summaries,
+                    progress=progress,
+                    base_desc=base_desc,
+                    no_progress=args.no_progress,
+                    progress_every=args.progress_every,
+                    total=total,
+                    start=start,
                 )
-                coronal_row = {
-                    "shot": shot,
-                    "frame": frame,
-                    "stem": stem,
-                    "isotopologue": args.isotopologue,
-                    "Tvib": cm.tvib,
-                    "Tvib_stderr": cm.tviberr,
-                    "status": "ok",
-                }
-
-                if _should_write_qc(index, args.qc_every):
-                    if "boltzmann" in plot_kinds:
-                        boltzmann_qc_path = boltzmann_plot_dir / f"{stem}_boltzmann_qc.png"
-                        fig = plot_boltzmann_qc(
-                            bp,
-                            points,
-                            title=f"{molecule_label} {shot} frame {frame}: d-state Boltzmann fit",
-                        )
-                        fig.savefig(boltzmann_qc_path, dpi=180)
-                        plt.close(fig)
-                        boltzmann_row["boltzmann_qc_plot"] = str(boltzmann_qc_path)
-                    if "coronal" in plot_kinds:
-                        coronal_qc_path = (
-                            coronal_plot_dir
-                            / f"{stem}_{molecule_label.lower()}_coronal_tvib_{cm.tvib:.0f}K_qc.png"
-                        )
-                        fig = plot_coronal_qc(
-                            cm,
-                            title=(
-                                f"{molecule_label} {shot} frame {frame}: "
-                                f"coronal fit Tvib={cm.tvib:.0f} K"
-                            ),
-                        )
-                        fig.savefig(coronal_qc_path, dpi=180)
-                        plt.close(fig)
-                        coronal_row["coronal_qc_plot"] = str(coronal_qc_path)
-                boltzmann_by_stem[stem] = boltzmann_row
-                coronal_by_stem[stem] = coronal_row
-        except Exception as exc:
-            boltzmann_row = {"shot": shot, "frame": frame, "stem": stem, "status": "failed", "error": repr(exc)}
-            if not args.show_model_output and model_stdout.getvalue():
-                boltzmann_row["captured_stdout"] = model_stdout.getvalue()
-            boltzmann_row["traceback"] = traceback.format_exc()
-            boltzmann_by_stem[stem] = boltzmann_row
-            coronal_by_stem[stem] = {"shot": shot, "frame": frame, "stem": stem, "status": "failed", "error": repr(exc)}
-            progress_label = f"{stem} failed"
-            if progress is not None:
-                progress.write(f"failed {stem}: {exc!r}", file=sys.stderr)
-            else:
-                print(f"failed {stem}: {exc!r}", file=sys.stderr, flush=True)
-
-        if index % checkpoint_every == 0:
-            _write_summaries(output_dir, records, boltzmann_by_stem, coronal_by_stem)
-
-        if progress is not None:
-            progress.set_postfix_str(progress_label, refresh=False)
-        elif not args.no_progress and (index == 1 or index % args.progress_every == 0 or index == total):
-            elapsed = time.monotonic() - start
-            print(f"fit {index}/{total}: {progress_label}, elapsed {elapsed:.1f}s", flush=True)
     if progress is not None:
         progress.close()
 
-    _write_summaries(output_dir, records, boltzmann_by_stem, coronal_by_stem)
-    print(f"analyzed frames: {total}")
-    if skipped:
-        print(f"skipped completed frames: {skipped}")
-    print(f"output: {_display_path(output_dir)}")
+    if write_summaries:
+        _write_summaries(output_dir, records, boltzmann_by_stem, coronal_by_stem)
+    molecule_label = "H2" if args.isotopologue == "h" else "D2"
+    artifacts: list[tuple[str, str, Path]] = []
+    if write_summaries:
+        artifacts.extend(
+            [
+                ("WRITE", "Boltzmann", output_dir / "boltzmann_summary.csv"),
+                ("WRITE", "coronal", output_dir / "coronal_summary.csv"),
+            ]
+        )
+    artifacts.append((("READ" if plot_only else "WRITE"), "QC tables", tables_dir))
+    if "boltzmann" in plot_kinds:
+        artifacts.append(("WRITE", "Boltzmann QC", boltzmann_plot_dir))
+    if "coronal" in plot_kinds:
+        artifacts.append(("WRITE", "coronal QC", coronal_plot_dir))
+    _print_analysis_summary(
+        title=f"{molecule_label} Fulcher {'QC plotting' if plot_only else 'analysis'}",
+        input_dir=input_dir,
+        output_dir=output_dir,
+        artifacts=artifacts,
+        analyzed_frames=total,
+        skipped_frames=skipped,
+        workers=workers,
+    )
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -436,10 +1078,12 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--isotopologue", default="h", choices=["h", "d"], help="Molecule constants to use: h for H2 or d for D2.")
     parser.add_argument("--max-fit-relerr", type=float, default=1.0)
     parser.add_argument("--max-frames", type=int, default=None)
-    parser.add_argument("--qc-every", type=int, default=1, help="Write QC plots every N frames; 0 disables plots.")
-    parser.add_argument("--plot-kind", choices=sorted(PLOT_KINDS), default="all", help="QC plot stage to write.")
+    parser.add_argument("--qc-every", type=int, default=0, help="Write QC plots every N frames; 0 disables plots.")
+    parser.add_argument("--plot-kind", choices=sorted(PLOT_KINDS), default="none", help="QC plot stage to write.")
+    parser.add_argument("--plot-only", action="store_true", help="Regenerate analyzer QC plots without rewriting summary CSVs.")
     parser.add_argument("--resume", action="store_true", help="Skip frames already marked ok in existing summary CSVs.")
     parser.add_argument("--checkpoint-every", type=int, default=1, help="Rewrite summary CSVs every N processed frames.")
+    parser.add_argument("--workers", type=int, default=1, help="Number of parallel worker processes for frame analysis.")
     parser.add_argument("--progress-every", type=int, default=10)
     parser.add_argument("--no-progress", action="store_true", help="Disable progress output.")
     parser.add_argument("--show-model-output", action="store_true", help="Show verbose per-frame model output.")
@@ -453,6 +1097,13 @@ def main(argv: list[str] | None = None) -> None:
     args = parser.parse_args(argv)
     if args.plan:
         _apply_plan(args, args.plan, provided)
+    if args.plot_only:
+        if "plot_kind" not in provided:
+            args.plot_kind = "all"
+        if "qc_every" not in provided:
+            args.qc_every = 1
+    elif args.qc_every > 0 or args.plot_kind != "none":
+        parser.error("QC plotting is separated from fitting; use --plot-only for plot generation.")
     if args.input_dir is None:
         parser.error("--input-dir is required unless supplied by --plan [analyze].input_dir")
     analyze_batch(args)
