@@ -225,6 +225,8 @@ def test_batch_cli_qc_schedule_defaults_to_every_frame():
     args = _build_parser().parse_args([])
     assert args.qc_every == 0
     assert args.plot_kind == "none"
+    plot_args = _build_parser().parse_args(["--plot"])
+    assert plot_args.plot_only
 
 
 def test_batch_cli_plan_applies_analyze_section(tmp_path):

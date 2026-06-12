@@ -81,10 +81,10 @@ plus plot-ready QC data tables, but it does not render figures. Plot rendering
 is a separate pass that reads those saved tables:
 
 ```bash
-fulcher-analyze-batch --plan h2_dataset_plan.toml --plot-only
+fulcher-analyze-batch --plan h2_dataset_plan.toml --plot
 ```
 
-The plot-only pass writes:
+The plot pass writes:
 
 ```text
 dataset/plots/boltzmann/*_boltzmann_qc.png
@@ -108,7 +108,7 @@ Useful rerun patterns:
 fulcher-analyze-batch --plan h2_dataset_plan.toml --resume
 
 # Regenerate only Boltzmann QC plots.
-fulcher-analyze-batch --plan h2_dataset_plan.toml --plot-only --plot-kind boltzmann
+fulcher-analyze-batch --plan h2_dataset_plan.toml --plot --plot-kind boltzmann
 
 # Write only tables and summary CSVs.
 fulcher-analyze-batch --plan h2_dataset_plan.toml

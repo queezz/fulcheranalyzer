@@ -104,7 +104,7 @@ dataset/intensities/*.csv
         +--> dataset/tables/*_boltzmann_qc_points.csv
         |
         v
-  fulcher-analyze-batch --plot-only
+  fulcher-analyze-batch --plot
         |
         +--> dataset/plots/boltzmann/*_boltzmann_qc.png
         +--> dataset/plots/coronal/*_coronal_tvib_*K_qc.png
@@ -113,7 +113,7 @@ dataset/intensities/*.csv
 The batch command reuses extractor `fit_reports/` when present so lines marked
 for Boltzmann exclusion stay excluded in the downstream fit. The analysis pass
 writes summaries and plot-ready QC data tables; it does not render figures.
-Plot rendering is a separate `--plot-only` pass that reads those saved tables.
+Plot rendering is a separate `--plot` pass that reads those saved tables.
 QC plots are separated by stage with
 `--plot-kind all|boltzmann|coronal|none`, and summary CSVs are checkpointed
 during analysis. Use `--resume` to skip frames already marked `ok` in both

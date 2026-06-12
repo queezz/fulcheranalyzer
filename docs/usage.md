@@ -80,7 +80,7 @@ dataset/coronal_summary.csv
 dataset/tables/*_boltzmann_qc_points.csv
 ```
 
-No figures are rendered during fitting. The plot-only pass reads the saved QC
+No figures are rendered during fitting. The plot pass reads the saved QC
 tables and writes:
 
 ```text
@@ -92,21 +92,22 @@ Rerun controls:
 
 ```bash
 fulcher-analyze-batch --plan h2_dataset_plan.toml --resume
-fulcher-analyze-batch --plan h2_dataset_plan.toml --plot-only
-fulcher-analyze-batch --plan h2_dataset_plan.toml --plot-only --plot-kind boltzmann
-fulcher-analyze-batch --plan h2_dataset_plan.toml --plot-only --plot-kind coronal
+fulcher-analyze-batch --plan h2_dataset_plan.toml --plot
+fulcher-analyze-batch --plan h2_dataset_plan.toml --plot --plot-kind boltzmann
+fulcher-analyze-batch --plan h2_dataset_plan.toml --plot --plot-kind coronal
 ```
 
 `--resume` skips frames already marked `ok` in both summary CSVs. Summaries are
 checkpointed after each processed frame by default; use `--checkpoint-every N`
 to reduce write frequency on very large runs.
 
-`--plot-only` regenerates analyzer QC plots from saved QC tables as a separate
+`--plot` regenerates analyzer QC plots from saved QC tables as a separate
 pass, analogous to the extractor `plot` stage. It does not refit frames or
 rewrite summary CSVs. `--workers N` runs independent frames in parallel worker
 processes. Summary CSVs are still merged in manifest/discovery order, so
 blink-review filenames and tables remain deterministic even when frames finish
 out of order.
+
 
 ---
 

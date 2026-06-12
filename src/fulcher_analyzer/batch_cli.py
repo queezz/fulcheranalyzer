@@ -941,7 +941,7 @@ def analyze_batch(args: argparse.Namespace) -> None:
     manifest = args.manifest.expanduser() if args.manifest else None
     plot_only = bool(getattr(args, "plot_only", False))
     if not plot_only and (int(getattr(args, "qc_every", 0)) > 0 or getattr(args, "plot_kind", "none") != "none"):
-        raise SystemExit("QC plotting is separated from fitting; use --plot-only for plot generation.")
+        raise SystemExit("QC plotting is separated from fitting; use --plot for plot generation.")
     plot_kinds = _plot_kinds(args) if plot_only else set()
     checkpoint_every = max(1, int(getattr(args, "checkpoint_every", 1)))
     if fit_report_dir is None and (output_dir / "fit_reports").is_dir():
@@ -1118,7 +1118,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--max-frames", type=int, default=None)
     parser.add_argument("--qc-every", type=int, default=0, help="Write QC plots every N frames; 0 disables plots.")
     parser.add_argument("--plot-kind", choices=sorted(PLOT_KINDS), default="none", help="QC plot stage to write.")
-    parser.add_argument("--plot-only", action="store_true", help="Regenerate analyzer QC plots without rewriting summary CSVs.")
+    parser.add_argument("--plot", dest="plot_only", action="store_true", help="Regenerate analyzer QC plots without rewriting summary CSVs.")
     parser.add_argument("--resume", action="store_true", help="Skip frames already marked ok in existing summary CSVs.")
     parser.add_argument("--checkpoint-every", type=int, default=1, help="Rewrite summary CSVs every N processed frames.")
     parser.add_argument("--workers", type=int, default=1, help="Number of parallel worker processes for frame analysis.")
@@ -1141,7 +1141,7 @@ def main(argv: list[str] | None = None) -> None:
         if "qc_every" not in provided:
             args.qc_every = 1
     elif args.qc_every > 0 or args.plot_kind != "none":
-        parser.error("QC plotting is separated from fitting; use --plot-only for plot generation.")
+        parser.error("QC plotting is separated from fitting; use --plot for plot generation.")
     if args.input_dir is None:
         parser.error("--input-dir is required unless supplied by --plan [analyze].input_dir")
     analyze_batch(args)
