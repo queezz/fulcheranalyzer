@@ -541,9 +541,81 @@ def test_plot_only_preflight_uses_shared_y_limits(tmp_path):
         qc_every=1,
     )
 
-    assert limits["boltzmann_y_limits"] == (0.01, 1.25)
+    assert limits["boltzmann_y_limits"] == (0.01, 2.0)
     assert limits["coronal_y_limit"] == 0.16
     assert limits["coronal_labels"] == ["Q1(0-0)", "Q2(0-0)", "Q1(1-1)", "Q4(1-1)", "Q6(1-1)"]
+
+
+def test_boltzmann_limits_hold_default_floor_above_one_percent():
+    import pandas as pd
+
+    from fulcher_analyzer.batch_cli import _boltzmann_axis_limits
+
+    points = pd.DataFrame(
+        {
+            "energy_eV": [0.0, 0.12, 0.30],
+            "nd_rel": [1.05, 0.12, 0.014],
+            "relerr": [0.05, 0.10, 0.05],
+        }
+    )
+    fit_curve = pd.DataFrame(
+        {
+            "energy_eV": [0.0, 0.45],
+            "nd_bol_synth": [1.0, 0.02],
+        }
+    )
+
+    _, ylim = _boltzmann_axis_limits(points, fit_curve)
+
+    assert ylim == (0.01, 2.0)
+
+
+def test_boltzmann_limits_hold_default_ceiling_for_high_first_points():
+    import pandas as pd
+
+    from fulcher_analyzer.batch_cli import _boltzmann_axis_limits
+
+    points = pd.DataFrame(
+        {
+            "energy_eV": [0.0, 0.12, 0.30],
+            "nd_rel": [1.45, 0.12, 0.014],
+            "relerr": [0.05, 0.10, 0.05],
+        }
+    )
+    fit_curve = pd.DataFrame(
+        {
+            "energy_eV": [0.0, 0.45],
+            "nd_bol_synth": [1.0, 0.02],
+        }
+    )
+
+    _, ylim = _boltzmann_axis_limits(points, fit_curve)
+
+    assert ylim == (0.01, 2.0)
+
+
+def test_boltzmann_limits_clip_errors_when_points_stay_above_floor():
+    import pandas as pd
+
+    from fulcher_analyzer.batch_cli import _boltzmann_axis_limits
+
+    points = pd.DataFrame(
+        {
+            "energy_eV": [0.0, 0.14, 0.30],
+            "nd_rel": [1.05, 0.07, 0.03],
+            "relerr": [0.05, 0.98, 0.10],
+        }
+    )
+    fit_curve = pd.DataFrame(
+        {
+            "energy_eV": [0.0, 0.45],
+            "nd_bol_synth": [1.0, 0.02],
+        }
+    )
+
+    _, ylim = _boltzmann_axis_limits(points, fit_curve)
+
+    assert ylim == (0.01, 2.0)
 
 
 def test_batch_cli_rejects_qc_flags_during_fit(tmp_path):

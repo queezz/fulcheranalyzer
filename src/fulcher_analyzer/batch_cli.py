@@ -24,6 +24,7 @@ import matplotlib
 matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
+from matplotlib.legend_handler import HandlerTuple
 import pandas as pd
 try:
     from tqdm.auto import tqdm
@@ -45,6 +46,7 @@ PLAN_PATH_KEYS = {"input_dir", "output_dir", "fit_report_dir", "manifest"}
 PLOT_KINDS = {"all", "boltzmann", "coronal", "none"}
 BOLTZMANN_FIGSIZE = (7.4, 5.0)
 BOLTZMANN_SUBPLOTS = {"left": 0.14, "right": 0.96, "bottom": 0.15, "top": 0.88}
+BOLTZMANN_DEFAULT_Y_LIMITS = (1e-2, 2.0)
 CORONAL_FIGSIZE = (8.2, 5.2)
 CORONAL_SUBPLOTS = {"left": 0.10, "right": 0.96, "bottom": 0.22, "top": 0.92}
 
@@ -552,8 +554,11 @@ def _ceil_to_step(value: float, step: float) -> float:
 def _positive_log_floor(values: list[float]) -> float:
     positive = [value for value in values if value > 0 and math.isfinite(value)]
     if not positive:
-        return 1e-3
-    return 10 ** math.floor(math.log10(min(positive) * 0.8))
+        return BOLTZMANN_DEFAULT_Y_LIMITS[0]
+    minimum = min(positive)
+    if minimum >= BOLTZMANN_DEFAULT_Y_LIMITS[0]:
+        return BOLTZMANN_DEFAULT_Y_LIMITS[0]
+    return 10 ** math.floor(math.log10(minimum * 0.8))
 
 
 def _boltzmann_axis_limits(points: pd.DataFrame, fit_curve: pd.DataFrame) -> tuple[tuple[float, float], tuple[float, float]]:
@@ -564,14 +569,20 @@ def _boltzmann_axis_limits(points: pd.DataFrame, fit_curve: pd.DataFrame) -> tup
 
     point_y = points["nd_rel"].astype(float)
     point_err = points["relerr"].astype(float) * point_y
-    lower_values = list((point_y - point_err).clip(lower=0.0))
+    error_lower = point_y - point_err
+    lower_values = list(
+        error_lower.where(
+            point_y < BOLTZMANN_DEFAULT_Y_LIMITS[0],
+            BOLTZMANN_DEFAULT_Y_LIMITS[0],
+        ).clip(lower=0.0)
+    )
     upper_values = list(point_y + point_err)
     if not fit_curve.empty:
         curve_y = list(fit_curve["nd_bol_synth"].astype(float))
         lower_values.extend(curve_y)
         upper_values.extend(curve_y)
     y_lower = _positive_log_floor(lower_values)
-    y_upper = max(1.25, _ceil_to_step(max(upper_values) * 1.08, 0.25)) if upper_values else 1.25
+    y_upper = BOLTZMANN_DEFAULT_Y_LIMITS[1]
     return (0.0, x_upper), (y_lower, y_upper)
 
 
@@ -739,12 +750,13 @@ def _plot_saved_boltzmann_qc(
     fit_curve = pd.read_csv(fit_curve_path)
     fig, ax = plt.subplots(figsize=BOLTZMANN_FIGSIZE)
     first_excluded_label = True
+    band_handles: dict[str, dict[str, object]] = {}
     for band, group in points.groupby("band", sort=True):
         style = band_style(band)
         fit_group = group.loc[group["fit_mask"].astype(bool)]
         excluded = group.loc[~group["fit_mask"].astype(bool)]
         if not fit_group.empty:
-            ax.errorbar(
+            band_handles.setdefault(str(band), {})["points"] = ax.errorbar(
                 fit_group["energy_eV"],
                 fit_group["nd_rel"],
                 yerr=fit_group["relerr"] * fit_group["nd_rel"],
@@ -777,14 +789,14 @@ def _plot_saved_boltzmann_qc(
             first_excluded_label = False
         curve = fit_curve.loc[fit_curve["band"] == band]
         if not curve.empty:
-            ax.plot(
+            (line,) = ax.plot(
                 curve["energy_eV"],
                 curve["nd_bol_synth"],
                 color=style.color,
                 lw=1.25,
                 ls=style.linestyle,
-                label=band,
             )
+            band_handles.setdefault(str(band), {})["line"] = line
     ax.set_xlabel("Rotational Energy [eV]")
     ax.set_ylabel(r"$\mathrm{\frac{n_{d v' N'}}{(2N'+1)\,g_{\mathrm{as}}^{N'}}}$ [a.u.]")
     ax.set_title(title)
@@ -793,7 +805,33 @@ def _plot_saved_boltzmann_qc(
     ax.set_xlim(*xlim)
     ax.set_ylim(*(y_limits or ylim))
     ax.grid(True, which="both", color="0.88", lw=0.7)
-    ax.legend(title="Band", fontsize=7.5, loc="upper right", framealpha=0.92)
+    handles = []
+    labels = []
+    for band, parts in band_handles.items():
+        if "points" in parts and "line" in parts:
+            handles.append((parts["points"], parts["line"]))
+        else:
+            handles.append(parts.get("points") or parts.get("line"))
+        labels.append(band)
+    extra_handles, extra_labels = ax.get_legend_handles_labels()
+    for handle, label in zip(extra_handles, extra_labels):
+        if label == "not fit":
+            handles.append(handle)
+            labels.append(label)
+    ax.legend(
+        handles,
+        labels,
+        title="Band",
+        fontsize=7.0,
+        title_fontsize=8.0,
+        loc="upper right",
+        framealpha=0.92,
+        labelspacing=0.25,
+        handlelength=1.8,
+        borderpad=0.35,
+        borderaxespad=0.35,
+        handler_map={tuple: HandlerTuple(ndivide=None)},
+    )
     fig.subplots_adjust(**BOLTZMANN_SUBPLOTS)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(output_path, dpi=180)
