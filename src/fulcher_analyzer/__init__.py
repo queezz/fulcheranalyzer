@@ -10,7 +10,7 @@ Canonical public API
 
     from fulcher_analyzer import BoltzmannPlot, CoronaModel, read_intensities
 """
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 from .molecular_constants import MolecularConstants
 from .boltzmann import BoltzmannPlot

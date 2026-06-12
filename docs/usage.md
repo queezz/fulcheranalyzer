@@ -103,9 +103,10 @@ to reduce write frequency on very large runs.
 
 `--plot-only` regenerates analyzer QC plots from saved QC tables as a separate
 pass, analogous to the extractor `plot` stage. It does not refit frames or
-rewrite summary CSVs. `--workers N` runs independent frames in parallel worker processes. Summary CSVs
-are still merged in manifest/discovery order, so blink-review filenames and
-tables remain deterministic even when frames finish out of order.
+rewrite summary CSVs. `--workers N` runs independent frames in parallel worker
+processes. Summary CSVs are still merged in manifest/discovery order, so
+blink-review filenames and tables remain deterministic even when frames finish
+out of order.
 
 ---
 
