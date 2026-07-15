@@ -77,3 +77,6 @@ cython_debug/
 
 # Project-specific: large raw spectra dataset, not stored in version control
 echelle_spectra/
+
+# Disposable local QA renders and scratch outputs
+tmp/
