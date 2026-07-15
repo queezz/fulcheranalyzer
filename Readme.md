@@ -1,6 +1,6 @@
 # Molecula Hydrogen spectra analysis.
 
-[![DOI](https://zenodo.org/badge/512373585.svg)](https://doi.org/10.5281/zenodo.21372075)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21372075-blue.svg)](https://doi.org/10.5281/zenodo.21372075)
 
 ## Install package
 
