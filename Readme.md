@@ -52,6 +52,11 @@ cm   = CoronaModel(bp)
 cm.coronal_autofit()
 ```
 
+The compatibility default uses Lavrov's comparison calculation. Select the
+authors' recommended semiempirical coefficients, including their reported
+uncertainties, with `BoltzmannPlot(inte, isotop="h", a_table="semiempirical")`.
+`CoronaModel` inherits the same selection from the Boltzmann object.
+
 ### Batch analysis from extracted intensities
 
 After `fulcher-extractor` has written `intensities/` and `fit_reports/`, run
@@ -69,6 +74,9 @@ fulcher-analyze-batch --plan h2_dataset_plan.toml
 
 The analyzer reads `[analyze]` from the plan. CLI flags override plan values
 when supplied.
+
+Set `a_table = "semiempirical"` in `[analyze]`, or pass
+`--a-table semiempirical`, to use Lavrov's recommended coefficient column.
 
 By default, summaries are written next to the `intensities/` directory:
 
@@ -119,6 +127,10 @@ fulcher-analyze-batch --plan h2_dataset_plan.toml
 Summary CSVs are checkpointed after each frame by default, so interrupted runs
 can be continued with `--resume`.
 
+`boltzmann_summary.csv` includes `fit_at_bound`, `Trot1_at_bound`, and
+`Trot2_at_bound`. A temperature whose flag is true is a fitted limit rather
+than an unconstrained measurement.
+
 ## Documentation
 
 Install the docs dependencies and serve locally:
@@ -137,6 +149,14 @@ mkdocs build
 ```
 
 Output goes to `site/`.
+
+## Molecular-data provenance
+
+The packaged H2 and D2 Einstein-A matrices are the comparison columns from
+Tables 5 and 7 of Lavrov, Pozdeev & Yakovleva (2015), quoting the
+non-empirical adiabatic calculation in their reference 21. See
+[arXiv:1512.06306](https://doi.org/10.48550/arXiv.1512.06306). The data files
+record their units, orientation, and exact column identity.
 
 ## VENV
 

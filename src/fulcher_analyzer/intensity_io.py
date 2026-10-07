@@ -1,9 +1,10 @@
 """
 CSV I/O helpers for fitted Q-branch line intensities.
 """
-import pandas as pd
-from os.path import join
 from importlib.resources import files
+from os.path import join
+
+import pandas as pd
 
 # Bundled example/regression intensity data shipped with the package.
 INTENSITY_DATA = files("fulcher_analyzer.example_data.intensities")
@@ -29,6 +30,7 @@ def write_intensities(inte, *arg, data_folder=None):
         # Writing into the installed package tree is not supported; callers
         # that need persistence should supply an explicit data_folder.
         from os.path import abspath
+
         from ._constants import package_directory
         data_folder = abspath(join(package_directory, "..", "..", "data"))
 
@@ -79,7 +81,7 @@ def read_intensities(shot, frame, data_folder=None):
     inte = _read(folder.joinpath(f"{shot}_fr_{frame}.csv"))
     try:
         interr = _read(folder.joinpath(f"{shot}_fr_{frame}_err.csv"))
-    except Exception:
+    except (OSError, ValueError, pd.errors.ParserError):
         print("no error data was found")
         return inte, inte * 0.1
     return inte, interr

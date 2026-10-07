@@ -1,11 +1,22 @@
 """
 Molecular constants for hydrogen isotopologues (H2, D2).
 """
-import numpy as np
-import pandas as pd
 from importlib.resources import files
 
+import numpy as np
+import pandas as pd
+
 MOLECULAR_DATA_FOLDER = files("fulcher_analyzer.data_molecular")
+A_SOURCE_DOI = "10.48550/arXiv.1512.06306"
+A_SOURCE = (
+    "Lavrov, Pozdeev & Yakovleva (2015), Tables 5 (H2) and 7 (D2), "
+    "comparison columns from their reference 21"
+)
+A_SEMIEMPIRICAL_SOURCE = (
+    "Lavrov, Pozdeev & Yakovleva (2015), Tables 5 (H2) and 7 (D2), "
+    "recommended semiempirical columns"
+)
+A_TABLES = ("comparison", "semiempirical")
 
 
 class MolecularConstants:
@@ -13,7 +24,10 @@ class MolecularConstants:
     Hydrogen Isotopolouges molecular constants
     """
 
-    def __init__(self):
+    def __init__(self, a_table="comparison"):
+        if a_table not in A_TABLES:
+            raise ValueError(f"a_table must be one of {A_TABLES}, got {a_table!r}")
+        self.A_table = a_table
         self.name = "Molecular Constatns for Hydrogen Isotopologues"
         self.create_dataframes()
         self.calculate_tfrac(4, norm=True)
@@ -25,7 +39,7 @@ class MolecularConstants:
 
     def general_constants(self):
         """
-        Populate class with useful constants 
+        Populate class with useful constants
         """
         self.eV_cm = 1.23984e-4  # eV/cm-1 wavenumber to eV
 
@@ -166,104 +180,50 @@ class MolecularConstants:
         self.EdD = self.calculate_E_rot(vlen, Jlen, isotop="d", state="d3")
         self.ExD = self.calculate_E_rot(vlen, Jlen, isotop="d", state="X")
 
-    # TODO: Move data to datafiles. Add data reference to the source.
     def acoeff(self):
         """
-        Populate Acoeff for D2 and H2
+        Load Q-branch Einstein-A coefficients for D2 and H2.
+
+        The packaged matrices are the non-empirical adiabatic comparison
+        columns in Tables 5 and 7 of Lavrov, Pozdeev & Yakovleva (2015),
+        transposed to rows ``v'=0..3`` and columns ``v''=0..7``. Values are
+        in s^-1 and apply to N=1; the source reports negligible N dependence.
         """
-        # Deuterium
-        self.AD = pd.DataFrame(
-            [
-                [
-                    2.3387e07,
-                    2.3479e06,
-                    3.9083e04,
-                    6.9282e01,
-                    6.7372e-02,
-                    1.9986e-02,
-                    2.9027e-04,
-                    7.7599e-03,
-                ],
-                [
-                    2.1551e06,
-                    1.8841e07,
-                    4.4730e06,
-                    1.2747e05,
-                    2.7294e02,
-                    4.3313e-01,
-                    3.4305e-02,
-                    3.5382e-02,
-                ],
-                [
-                    1.8763e05,
-                    3.8098e06,
-                    1.4795e07,
-                    6.3500e06,
-                    2.4539e05,
-                    6.9366e02,
-                    2.0363e00,
-                    2.0664e-03,
-                ],
-                [
-                    1.7678e04,
-                    5.2206e05,
-                    4.9835e06,
-                    1.1276e07,
-                    7.9698e06,
-                    4.1361e05,
-                    1.3613e03,
-                    6.0937e00,
-                ],
-            ]
+        self.A_source = (
+            A_SEMIEMPIRICAL_SOURCE if self.A_table == "semiempirical" else A_SOURCE
+        )
+        self.A_source_doi = A_SOURCE_DOI
+        with MOLECULAR_DATA_FOLDER.joinpath("einstein_A_d2.csv").open(
+            "r", encoding="utf-8"
+        ) as f:
+            self.AD_comparison = pd.read_csv(f, comment="#", header=None)
+        with MOLECULAR_DATA_FOLDER.joinpath("einstein_A_h2.csv").open(
+            "r", encoding="utf-8"
+        ) as f:
+            self.AH_comparison = pd.read_csv(f, comment="#", header=None)
+        self.AD_semiempirical = self._load_a_table("einstein_A_d2_semiempirical.csv")
+        self.AH_semiempirical = self._load_a_table("einstein_A_h2_semiempirical.csv")
+        self.AD_semiempirical_err = self._load_a_table(
+            "einstein_A_d2_semiempirical_err.csv"
+        )
+        self.AH_semiempirical_err = self._load_a_table(
+            "einstein_A_h2_semiempirical_err.csv"
+        )
+        self.AD = getattr(self, f"AD_{self.A_table}")
+        self.AH = getattr(self, f"AH_{self.A_table}")
+        self.AD_err = (
+            self.AD_semiempirical_err if self.A_table == "semiempirical" else None
+        )
+        self.AH_err = (
+            self.AH_semiempirical_err if self.A_table == "semiempirical" else None
         )
         self.ADsum = self.AD.sum(axis=1).values
-        # Hydrogen
-        self.AH = pd.DataFrame(
-            [
-                (
-                    2.4077e7,
-                    1.6552e6,
-                    9.2743e3,
-                    7.7501e-2,
-                    5.6159e-2,
-                    2.1645e-5,
-                    1.2126e-4,
-                    2.4635e-4,
-                ),
-                (
-                    1.5258e6,
-                    2.0655e7,
-                    3.2649e6,
-                    2.9732e4,
-                    2.8248e0,
-                    1.8340e-1,
-                    4.0941e-6,
-                    4.9920e-3,
-                ),
-                (
-                    1.0712e5,
-                    2.8369e6,
-                    1.7377e7,
-                    4.7993e6,
-                    6.2309e4,
-                    2.1093e1,
-                    6.3848e-1,
-                    1.1783e-2,
-                ),
-                (
-                    8.3952e3,
-                    3.1899e5,
-                    3.8874e6,
-                    1.4317e7,
-                    6.2363e6,
-                    1.0633e5,
-                    1.0579e2,
-                    1.8096e0,
-                ),
-            ]
-        )
-
         self.AHsum = self.AH.sum(axis=1).values
+
+    @staticmethod
+    def _load_a_table(filename):
+        with MOLECULAR_DATA_FOLDER.joinpath(filename).open("r", encoding="utf-8") as f:
+            return pd.read_csv(f, comment="#", header=None)
 
     def calculate_spin_multiplicity(self, Jmax=13):
         """

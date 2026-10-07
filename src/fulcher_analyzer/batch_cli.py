@@ -24,13 +24,15 @@ import matplotlib
 matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
-from matplotlib.legend_handler import HandlerTuple
 import pandas as pd
+from matplotlib.legend_handler import HandlerTuple
+
 try:
     from tqdm.auto import tqdm
 except ImportError:  # pragma: no cover - exercised only in minimal installs.
     tqdm = None
 
+from ._utils import flatdf
 from .boltzmann import BoltzmannPlot
 from .boltzmann_qc import (
     apply_boltzmann_qc_mask,
@@ -38,9 +40,7 @@ from .boltzmann_qc import (
     boltzmann_qc_points,
 )
 from .coronal_model import CoronaModel
-from ._utils import flatdf
 from .intensity_io import read_intensities
-
 
 PLAN_PATH_KEYS = {"input_dir", "output_dir", "fit_report_dir", "manifest"}
 PLOT_KINDS = {"all", "boltzmann", "coronal", "none"}
@@ -150,7 +150,7 @@ def _intensity_records(
     records = []
     for path in sorted(input_dir.glob("*.csv")):
         stem = path.stem
-        if stem.endswith("_err") or stem.endswith("_fit_report"):
+        if stem.endswith(("_err", "_fit_report")):
             continue
         if "_fr_" not in stem:
             continue
@@ -170,7 +170,7 @@ def _manifest_frame_pairs(path: Path | None) -> set[tuple[str, str]] | None:
     if not {"shot", "frame"}.issubset(frame_table.columns):
         return None
     for row in frame_table.itertuples(index=False):
-        selected.add((str(getattr(row, "shot")), _frame_key(getattr(row, "frame"))))
+        selected.add((str(row.shot), _frame_key(row.frame)))
     return selected
 
 
@@ -341,6 +341,7 @@ def _analyze_record(
     )
     tables_dir = output_dir / "tables"
     isotopologue = str(config["isotopologue"])
+    a_table = str(config.get("a_table", "comparison"))
     max_fit_relerr = float(config.get("max_fit_relerr", 1.0))
     show_model_output = bool(config.get("show_model_output", False))
 
@@ -361,7 +362,7 @@ def _analyze_record(
                 fit_report_dir=fit_report_dir,
             )
             intensities = read_intensities(shot, frame, data_folder=input_dir)
-            bp = BoltzmannPlot(intensities, isotopologue)
+            bp = BoltzmannPlot(intensities, isotopologue, a_table=a_table)
             points = boltzmann_qc_points(
                 bp,
                 max_fit_relerr=max_fit_relerr,
@@ -383,6 +384,8 @@ def _analyze_record(
                 "frame": frame,
                 "stem": stem,
                 "isotopologue": isotopologue,
+                "a_table": a_table,
+                "a_source_doi": bp.mol.A_source_doi,
                 "alpha": bp.alpha,
                 "beta": bp.beta,
                 "Trot1": bp.trot1,
@@ -391,6 +394,9 @@ def _analyze_record(
                 "beta_stderr": bp.err[1],
                 "Trot1_stderr": bp.err[2],
                 "Trot2_stderr": bp.err[3],
+                "fit_at_bound": bool(bp.fit_at_bound.any()),
+                "Trot1_at_bound": bool(bp.fit_at_bound[2]),
+                "Trot2_at_bound": bool(bp.fit_at_bound[3]),
                 "n_boltzmann_points": int(points["fit_mask"].sum()) if "fit_mask" in points else "",
                 "fit_report": str(fit_report or ""),
                 "qc_points": str(qc_points_path),
@@ -411,6 +417,8 @@ def _analyze_record(
                 "frame": frame,
                 "stem": stem,
                 "isotopologue": isotopologue,
+                "a_table": a_table,
+                "a_source_doi": bp.mol.A_source_doi,
                 "Tvib": cm.tvib,
                 "Tvib_stderr": cm.tviberr,
                 "status": "ok",
@@ -425,7 +433,7 @@ def _analyze_record(
                 "boltzmann_row": boltzmann_row,
                 "coronal_row": coronal_row,
             }
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001 -- Record per-frame failures and continue the batch.
         boltzmann_row = {"shot": shot, "frame": frame, "stem": stem, "status": "failed", "error": repr(exc)}
         if not show_model_output and model_stdout.getvalue():
             boltzmann_row["captured_stdout"] = model_stdout.getvalue()
@@ -488,7 +496,7 @@ def _plot_record(
             "boltzmann_row": {"shot": shot, "frame": frame, "stem": stem, "status": "plotted"},
             "coronal_row": {"shot": shot, "frame": frame, "stem": stem, "status": "plotted"},
         }
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001 -- Record per-frame failures and continue the batch.
         return {
             "stem": stem,
             "status": "failed",
@@ -513,6 +521,7 @@ def _analysis_config(
         "fit_report_dir": str(fit_report_dir) if fit_report_dir is not None else "",
         "plot_kinds": sorted(plot_kinds),
         "isotopologue": args.isotopologue,
+        "a_table": getattr(args, "a_table", "comparison"),
         "max_fit_relerr": args.max_fit_relerr,
         "qc_every": args.qc_every,
         "show_model_output": args.show_model_output,
@@ -1114,6 +1123,12 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--fit-report-dir", type=Path, default=None, help="Optional directory containing <shot>_fr_<frame>_fit_report.csv files.")
     parser.add_argument("--manifest", type=Path, default=None, help="Optional selected_frames.csv used to filter frames.")
     parser.add_argument("--isotopologue", default="h", choices=["h", "d"], help="Molecule constants to use: h for H2 or d for D2.")
+    parser.add_argument(
+        "--a-table",
+        default="comparison",
+        choices=["comparison", "semiempirical"],
+        help="Lavrov Einstein-A column: compatibility comparison calculation or recommended semiempirical values.",
+    )
     parser.add_argument("--max-fit-relerr", type=float, default=1.0)
     parser.add_argument("--max-frames", type=int, default=None)
     parser.add_argument("--qc-every", type=int, default=0, help="Write QC plots every N frames; 0 disables plots.")

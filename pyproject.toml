@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "fulcher-analyzer"
-version = "0.2.0"
+version = "0.2.1"
 authors = [
   { name="A. K.", email="queezz@gmail.com" },
 ]
@@ -34,6 +34,7 @@ dev = [
     "jinja2",
     "jupyter",
     "pytest",
+    "ruff",
 ]
 spectrum = ["xarray"]
 docs = [

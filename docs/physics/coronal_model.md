@@ -1,5 +1,13 @@
 # Coronal model (X-state reconstruction)
 
+The H2 and D2 Einstein-A branching matrices are the comparison columns from
+Tables 5 and 7 of Lavrov, Pozdeev & Yakovleva (2015), quoting the
+non-empirical adiabatic calculation in their reference 21:
+[arXiv:1512.06306](https://doi.org/10.48550/arXiv.1512.06306).
+The model inherits the `comparison` or `semiempirical` selection from its
+`BoltzmannPlot`; semiempirical runs rebuild their R-matrix in memory so they
+cannot reuse or overwrite the packaged comparison-table cache.
+
 Stage 2 of the analysis. Given the fitted d-state population from
 [`BoltzmannPlot`](boltzmann.md), `CoronaModel` constructs a trial X-state
 rovibrational population for a given `Tvib`, projects it onto the d-state

@@ -42,13 +42,13 @@ workflow above to ensure these attributes exist before they are consumed.
 
 Plotting helpers live in ``.plotting`` and are exposed here as thin wrappers.
 """
-import numpy as np
-import pandas as pd
 from importlib.resources import files
 
-from .boltzmann import BoltzmannPlot, ABSOLUTESIGMA
-from ._utils import flatdf, delta_kro, g_as, g_as_vector, tjpo_vector, reshape_4d2d
-from .plotting import plot_rmatrix  # re-export so existing callers still work
+import numpy as np
+import pandas as pd
+
+from ._utils import delta_kro, flatdf, g_as, g_as_vector, reshape_4d2d, tjpo_vector
+from .boltzmann import ABSOLUTESIGMA, BoltzmannPlot
 
 MOLECULAR_DATA_FOLDER = files("fulcher_analyzer.data_molecular")
 
@@ -447,7 +447,7 @@ class CoronaModel:
             * self.ccs_formula(vX, vd)
             * self.branching(JX, Jd)
             * delta_kro(g_as(JX, isotop=self.isotop), g_as(Jd, isotop=self.isotop))
-        )   
+        )
         """
 
         # Ishihara-s formula: branching[jx, jd] * fcf[vx, vd] * ccs[vx, vd]
@@ -511,8 +511,8 @@ class CoronaModel:
         dshape = self.bp.nd.shape
         limits = [dshape[1] - 1, dshape[0] - 1] + limits
         names = ["vd", "jd", "vx", "jx"]
-        x = {f"{n}max": l for n, l in zip(names, limits)}
-        y = {f"{n}len": l + 1 for n, l in zip(names, limits)}
+        x = {f"{n}max": index_value for n, index_value in zip(names, limits)}
+        y = {f"{n}len": index_value + 1 for n, index_value in zip(names, limits)}
         self.popshape = x | y
         self.rshapelist = [self.popshape[f"{i}len"] for i in ["vd", "jd", "vx", "jx"]]
 
@@ -523,14 +523,14 @@ class CoronaModel:
 
         if self.popshape["vxmax"] < self.popshape["vdmax"]:
             raise ValueError(
-                (
+
                     f"X-state v range (0-{self.popshape['vxmax']}) must be"
                     f" at least equal to d-state v range (0-{self.popshape['vdmax']})"
-                )
+
             )
 
     def print_pop_shape(self):
-        """ 
+        """
         Print vx, jx, vd, jd
         """
         sh = (
@@ -570,14 +570,14 @@ class CoronaModel:
 
         fname = f"Rmatrix_{vxmax}_{jxmax}_{vdmax}_{jdmax}_{self.isotop}.npy"
         rmatrix_resource = MOLECULAR_DATA_FOLDER.joinpath(fname)
-        if load:
+        if load and self.mol.A_table == "comparison":
             try:
                 with rmatrix_resource.open("rb") as f:
                     self.Rm = np.load(f)
                 print("saved R-matrix found, loaded")
                 self.make_rmatrix_2d()
                 return
-            except:
+            except (OSError, ValueError, EOFError):
                 print("could not load, calculating R-matrix")
 
         Rmatrix = np.empty([vxmax + 1, jxmax + 1, vdmax + 1, jdmax + 1])
@@ -595,7 +595,8 @@ class CoronaModel:
         self.Rm = Rmatrix
         # TODO: move regenerated R-matrix cache to a user cache directory (e.g. platformdirs)
         # For editable installs the resource path is a real filesystem path and np.save works.
-        np.save(str(rmatrix_resource), Rmatrix)
+        if self.mol.A_table == "comparison":
+            np.save(str(rmatrix_resource), Rmatrix)
         self.make_rmatrix_2d()
 
     def make_rmatrix_2d(self):
@@ -623,8 +624,8 @@ class CoronaModel:
         :meth:`R_formula`.  Prints both values and a validity flag.
         Intended for interactive verification after regenerating the matrix.
         """
-        from operator import mul
         from functools import reduce
+        from operator import mul
 
         vx, jx, vd, jd = (1, 5, 2, 1)
         print(f"vX={vx} jX={jx} vd={vd} jd={jd}")
@@ -828,7 +829,7 @@ class CoronaModel:
     # ------------------------------------------------------------------
 
     def coronal_fit_formula(
-        self, _=[], Tvib=8000, alpha=0.57, beta=0.33, Trot1=200, Trot2=1000
+        self, _=None, Tvib=8000, alpha=0.57, beta=0.33, Trot1=200, Trot2=1000
     ):
         """Second-stage fit function: vary only ``Tvib``, inherit rotational parameters.
 

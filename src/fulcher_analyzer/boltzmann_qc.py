@@ -39,7 +39,7 @@ def band_style(band: str | int) -> BandStyle:
 
 
 def boltzmann_qc_points(
-    bp: "BoltzmannPlot",
+    bp: BoltzmannPlot,
     *,
     max_fit_relerr: float = 1.0,
     fit_report: str | Path | pd.DataFrame | None = None,
@@ -80,7 +80,7 @@ def boltzmann_qc_points(
 
 
 def apply_boltzmann_qc_mask(
-    bp: "BoltzmannPlot",
+    bp: BoltzmannPlot,
     points: pd.DataFrame | None = None,
     *,
     max_fit_relerr: float = 1.0,
@@ -115,10 +115,10 @@ def apply_boltzmann_qc_mask(
 
 
 def plot_boltzmann_qc(
-    bp: "BoltzmannPlot",
+    bp: BoltzmannPlot,
     points: pd.DataFrame | None = None,
     *,
-    ax: "Axes | None" = None,
+    ax: Axes | None = None,
     title: str | None = None,
     fit_label: str = "double exp",
     max_fit_relerr: float = 1.0,
@@ -126,7 +126,7 @@ def plot_boltzmann_qc(
     annotate: bool = True,
     ylim: tuple[float, float] | None = None,
     fit_report: str | Path | pd.DataFrame | None = None,
-) -> "Figure":
+) -> Figure:
     """Plot Boltzmann points and an optional fitted population curve for QC."""
     import matplotlib.pyplot as plt
 
@@ -216,7 +216,7 @@ def plot_boltzmann_qc(
 
 
 def _annotate_points(
-    ax: "Axes",
+    ax: Axes,
     points: pd.DataFrame,
     *,
     color: str,
@@ -259,7 +259,7 @@ def _fit_report_lookup(
     for row in report.to_dict(orient="records"):
         try:
             key = (int(row["N"]), str(row["band"]))
-        except Exception:
+        except (TypeError, ValueError, OverflowError):
             continue
         lookup[key] = row
     return lookup

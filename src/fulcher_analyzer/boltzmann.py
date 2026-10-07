@@ -1,12 +1,13 @@
 """
 Free helper functions and BoltzmannPlot class for two-temperature Boltzmann analysis.
 """
-import numpy as np
-import pandas as pd
 from importlib.resources import files
 
-from .molecular_constants import MolecularConstants
+import numpy as np
+import pandas as pd
+
 from ._utils import flatdf
+from .molecular_constants import MolecularConstants
 from .plotting import figsize
 
 ABSOLUTESIGMA = False
@@ -31,7 +32,7 @@ def two_t_all_v(Erot, *param, **kws):
     populate DataFrame
     a, b - exponent multiplyers for v=0 and others, v>0 assumed to have same multiplier
     T1, T2 - temperatures of the two exponents
-    cs - tuple of constants for all v.     
+    cs - tuple of constants for all v.
     """
     a, b, T1, T2 = param[:4]
     cs = param[4:]
@@ -69,15 +70,15 @@ def plot_n_all_v(n, E, **kws):
     nomarker = kws.get("nomarker", False)
     noline = kws.get("noline", False)
     mkws = [
-        {"label": f"v'={l}", "marker": m, "ls": "--"}
-        for l, m in zip(range(4), ["s", "o", "d", "x"])
+        {"label": f"v'={index_value}", "marker": m, "ls": "--"}
+        for index_value, m in zip(range(4), ["s", "o", "d", "x"])
     ]
     if nomarker:
-        mkws = [{"label": f"v'={l}", "ls": "--"} for l in range(4)]
+        mkws = [{"label": f"v'={index_value}", "ls": "--"} for index_value in range(4)]
     if noline:
         mkws = [
-            {"label": f"v'={l}", "marker": m, "ls": ""}
-            for l, m in zip(range(4), ["s", "o", "d", "x"])
+            {"label": f"v'={index_value}", "marker": m, "ls": ""}
+            for index_value, m in zip(range(4), ["s", "o", "d", "x"])
         ]
 
     log = kws.get("log", True)
@@ -110,13 +111,13 @@ class BoltzmannPlot:
     Analysis of Boltzmann distribution
     """
 
-    def __init__(self, inte, isotop):
-        """ 
+    def __init__(self, inte, isotop, a_table="comparison"):
+        """
         Supply intensity DataFrame
 
         Parameters
         ----------
-        inte: 
+        inte:
 
         isotop: string
              'd' or 'h' for deuterium and hydrogen, respectively.
@@ -125,9 +126,10 @@ class BoltzmannPlot:
         self.name = "Analysis of Boltzmann distribution"
         self.inte, self.interr = inte
         isotops = ["h", "d"]
-        if not isotop in isotops:
+        if isotop not in isotops:
             raise ValueError(f"isotop must be one of the {isotops}")
         self.isotop = isotop
+        self.a_table = a_table
         self.load_wavelength_data()
         self.trim_wavelength()
         self.prep_mol()
@@ -138,8 +140,8 @@ class BoltzmannPlot:
 
     # TODO: Move to MolecularConstants class
     def load_wavelength_data(self):
-        """ 
-        Load wavelength data for Q-branch for H and D 
+        """
+        Load wavelength data for Q-branch for H and D
         """
         # Deuterium, data in the file is in [cm^{-1}], 800 is nan
         with MOLECULAR_DATA_FOLDER.joinpath("fulcher-α_band_wavenumber_D2.txt").open("r") as f:
@@ -175,9 +177,9 @@ class BoltzmannPlot:
 
     def prep_mol(self):
         """
-        load molecular data class and adjust DataFrame shapes 
+        load molecular data class and adjust DataFrame shapes
         """
-        self.mol = MolecularConstants()
+        self.mol = MolecularConstants(a_table=self.a_table)
         self.mol.calculate_tfrac(self.inte.shape[1], norm=True)
         self.mol.calculate_all_E_rot(*self.inte.shape[::-1])
 
@@ -190,9 +192,17 @@ class BoltzmannPlot:
             self.EX = self.mol.ExH
             self.Aev = np.diag(self.mol.AH)
 
+        band_count = self.inte.shape[1]
+        if band_count > len(self.Aev):
+            raise ValueError(
+                f"Einstein-A data cover {len(self.Aev)} diagonal bands, "
+                f"but the intensity table contains {band_count}."
+            )
+        self.Aev = self.Aev[:band_count]
+
     def bplot_constants(self):
         """
-        Calculated 2J+1, g_as, and Franck-Condon vectors 
+        Calculate 2J+1, g_as, and broadcast diagonal Einstein-A values.
         """
         # D2
         # vector of  2J + 1, same for D2 and H2
@@ -204,29 +214,17 @@ class BoltzmannPlot:
             self.vg = np.array(
                 [6 - 3 * np.mod((J + 1), 2) for J in range(self.inte.shape[0])]
             )[:, None]
-            # Franck-Condon factors
-            self.fc = np.array([2.3387e7, 1.8841e7, 1.4795e7, 1.1276e7])
-
-            # So I'm just broadcasting Aev for electronic levels into AevJ for ro-vib with same vals
-            self.AevJ = np.array(
-                [[i for i in self.Aev] for J in range(self.inte.shape[0])]
-            )
         # H2
         elif self.isotop == "h":
             # vector g_as
             self.vg = np.array(
                 [np.mod((J + 1), 2) * 2 + 1 for J in range(self.inte.shape[0])]
             )[:, None]
-            # Franck-Condon factors (Relative?)
-            self.fc = np.array([0.93016, 0.79701, 0.67139])
-            # For H2 self.Aev[:-1] because Hydrogen discharge had only v = 0,1,2.
-            # TODO: automatically correct shape if intensities include values up to v = 3.
-            self.AevJ = np.array(
-                [[i for i in self.Aev[:-1]] for J in range(self.inte.shape[0])]
-            )
+
+        self.AevJ = np.broadcast_to(self.Aev, self.inte.shape)
 
     def calculate_boltzmann(self):
-        """ 
+        """
         Calculate population from intensity.
         nd: population of the upper state d3
         nd_bol: nd/(2J+1)/g_as for Boltzmann plot
@@ -234,7 +232,7 @@ class BoltzmannPlot:
         """
         # nd = I*lambda / (hc) / A, so formula before is true up to a constant hc
         self.nd = self.inte * self.wl / self.AevJ
-        self.nd_bol = self.inte * self.wl ** 4 / self.v2jp1 / self.vg / self.fc
+        self.nd_bol = self.nd / self.v2jp1 / self.vg
         norm = self.nd_bol[0].dropna().iloc[0]
         self.nd_rel = self.nd_bol / norm
         self.mask = ~pd.isna(self.nd_rel)
@@ -244,12 +242,12 @@ class BoltzmannPlot:
         ).T
 
         self.nd_err = self.interr * self.wl / self.AevJ
-        self.nd_bol_err = self.nd_err / self.v2jp1 / self.vg / self.fc
+        self.nd_bol_err = self.nd_err / self.v2jp1 / self.vg
         self.relerr = self.nd_err / self.nd
 
     def plot_boltzmannn(self):
-        """ 
-        Plto Boltzmann plot 
+        """
+        Plto Boltzmann plot
         """
         import matplotlib.pyplot as plt
 
@@ -260,8 +258,8 @@ class BoltzmannPlot:
         plt.yscale("log")
 
     def prep_fit(self):
-        """ 
-        prep 2-temperature fit for all vibrational q.n. at the same time 
+        """
+        prep 2-temperature fit for all vibrational q.n. at the same time
         """
         # initial guess
         self.param = [6.9e-1, 6.0e-1, 200, 1700] + [
@@ -269,14 +267,14 @@ class BoltzmannPlot:
         ]
         # bounds
         self.bounds = [
-            [0.05, 0.05, 100, 1000] + list(0.1 for i in range(self.inte.shape[1])),
-            [1, 1, 800, 3000] + list(1.5 for i in range(self.inte.shape[1])),
+            [0.05, 0.05, 100, 1000] + [0.1 for i in range(self.inte.shape[1])],
+            [1, 1, 800, 6000] + [1.5 for i in range(self.inte.shape[1])],
         ]
 
     def plot_fit(self, init=True):
-        """ 
-        plot nd_rel and resuls for initial guess 
-        
+        """
+        plot nd_rel and resuls for initial guess
+
         Parameters
         ----------
         init: bool
@@ -300,7 +298,7 @@ class BoltzmannPlot:
 
     def print_fit_result(self):
         """
-        Print fit result 
+        Print fit result
         """
         err = self.err
         names = ["alpha", "beta", "Trot1", "Trot2"]
@@ -316,7 +314,7 @@ class BoltzmannPlot:
 
     def fit_boltzmann(self):
         """
-        Fit boltzmann distribution with 2-temp and 
+        Fit boltzmann distribution with 2-temp and
         all vibrational quantum numbers at onece.
         """
         from scipy.optimize import curve_fit
@@ -341,6 +339,12 @@ class BoltzmannPlot:
         self.beta = self.popt[1]
 
         self.err = np.sqrt(np.diag(self.pcov))
+        lower = np.asarray(self.bounds[0], dtype=float)
+        upper = np.asarray(self.bounds[1], dtype=float)
+        tolerance = 1e-5 * np.maximum(1.0, upper - lower)
+        self.fit_at_lower_bound = np.abs(self.popt - lower) <= tolerance
+        self.fit_at_upper_bound = np.abs(upper - self.popt) <= tolerance
+        self.fit_at_bound = self.fit_at_lower_bound | self.fit_at_upper_bound
 
     def calc_nd_synth(self):
         """
@@ -352,7 +356,7 @@ class BoltzmannPlot:
 
     def plot_fit_nice(self):
         """
-        plot fit result 
+        plot fit result
         plot Boltzamnn distribution with preformated output using plot_n_all
         data: nd_rel(Ed) here rel for relative, defined up to a multiplier constant
         fit: ns(Ed), s for synthetic
@@ -368,7 +372,7 @@ class BoltzmannPlot:
         plt.ylabel(r"$n/(2J+1)/g_{as}$, a.u.")
 
     def calc_nd_const(self):
-        """ 
+        """
         Calculate constant for synthetic nd_synth to match with nd
         c_nd - multiplier constant for synthetic nd
         c_nd_err - error for these constants for each vibrational q.n.
@@ -425,8 +429,8 @@ class BoltzmannPlot:
         self.trotall = pd.concat([trotd, trotx], axis=1)
 
     def autofit(self):
-        """ 
-        A shortcut function to run required fits with default parameters 
+        """
+        A shortcut function to run required fits with default parameters
         """
         self.fit_boltzmann()
         self.calc_nd_const()
@@ -443,13 +447,12 @@ class BoltzmannPlot:
                 "mec": m,
                 "mfc": j,
                 "color": "k",
-                "mec": m,
                 "label": f"(v'-v'') = ({k}-{k})",
                 "ms": size,
-                "mew": l,
+                "mew": index_value,
                 "lw": 1,
             }
-            for i, j, k, l, m in zip(
+            for i, j, k, index_value, m in zip(
                 ["o", "o", "x", "s"],
                 ["k", "w", "k", "dimgray"],
                 range(4),
@@ -466,7 +469,6 @@ class BoltzmannPlot:
                 "mec": m,
                 "mfc": m,
                 "color": m,
-                "mec": m,
                 "label": f"(v'-v'') = ({k}-{k})",
                 "ms": size,
                 "mew": 0.5,
@@ -482,7 +484,7 @@ class BoltzmannPlot:
 
     def plot_popd_paper(self, stylename="bw", fontsize=11, ms=2):
         """
-        Plot d-state population with errors and fit results 
+        Plot d-state population with errors and fit results
         fontsize = 11, image width = 8cm (for WORD document)
         """
         from matplotlib import pyplot as plt
@@ -539,7 +541,7 @@ class BoltzmannPlot:
         return plot_boltzmann_qc(self, points=points, **kwargs)
 
     def about_var(self):
-        """ 
+        """
         Print info about variables.
         TODO: improve names to reduce confusion
         """

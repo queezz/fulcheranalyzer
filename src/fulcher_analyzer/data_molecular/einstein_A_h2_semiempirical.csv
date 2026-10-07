@@ -1,0 +1,7 @@
+# Recommended semiempirical H2 coefficients [s^-1], Lavrov et al. (2015) Table 5
+# Rows v'=0..3; columns v''=0..7. Zeros mean below semiempirical reach,
+# not measured physical zeros. DOI: 10.48550/arXiv.1512.06306
+2.48e7,1.61e6,7.70e3,0,0,0,0,0
+1.68e6,2.10e7,3.16e6,2.49e4,0,0,0,0
+1.28e5,3.11e6,1.74e7,4.58e6,5.20e4,0,0,0
+1.12e4,3.72e5,4.22e6,1.42e7,5.90e6,8.80e4,0,0

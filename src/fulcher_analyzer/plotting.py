@@ -8,8 +8,9 @@ class.  No circular imports: ``CoronaModel`` is only referenced under
 """
 from __future__ import annotations
 
-import numpy as np
 from typing import TYPE_CHECKING
+
+import numpy as np
 
 from ._utils import flatdf
 
@@ -64,7 +65,7 @@ def plot_rmatrix(Rm, shapes, text="R-matrix"):
     ax.text(
         -0.12,
         0.75,
-        f"$\\nexists Jd = 0$, $Jd>0$!!!",
+        "$\\nexists Jd = 0$, $Jd>0$!!!",
         transform=ax.transAxes,
         rotation=90,
     )
@@ -85,7 +86,7 @@ def plot_rmatrix(Rm, shapes, text="R-matrix"):
 # Style helper
 # ---------------------------------------------------------------------------
 
-def prep_corona_style(model: "CoronaModel", ms: int = 8) -> None:
+def prep_corona_style(model: CoronaModel, ms: int = 8) -> None:
     """Populate ``model.style_coronaplot`` and ``model.style_rovib``."""
     model.style_coronaplot = [
         {
@@ -97,10 +98,10 @@ def prep_corona_style(model: "CoronaModel", ms: int = 8) -> None:
             "markeredgecolor": j,
             "color": j,
             "label": k,
-            "ms": l,
+            "ms": index_value,
             "lw": 0.6,
         }
-        for i, j, k, l in zip(
+        for i, j, k, index_value in zip(
             ["o-.", "s-."],
             ["k", "r"],
             ["experiment", "reconstructed"],
@@ -133,7 +134,7 @@ def prep_corona_style(model: "CoronaModel", ms: int = 8) -> None:
 # Plotting functions (standalone, first arg = CoronaModel instance)
 # ---------------------------------------------------------------------------
 
-def plot_fit_ishi(model: "CoronaModel", **kws) -> None:
+def plot_fit_ishi(model: CoronaModel, **kws) -> None:
     """'Nice' plot of the vibro fit and gauge for Ishihara's fit."""
     import matplotlib.pyplot as plt
 
@@ -151,7 +152,7 @@ def plot_fit_ishi(model: "CoronaModel", **kws) -> None:
 
     try:
         tvib = kws.get("tvib", model.tvib)
-    except Exception:
+    except AttributeError:
         tvib = kws.get("tvib", 1000)
 
     nv = model.f_vibro("", tvib, False)
@@ -169,12 +170,12 @@ def plot_fit_ishi(model: "CoronaModel", **kws) -> None:
         handles=gls, loc=1, prop={"size": 7}, bbox_to_anchor=[1.13, 1.01]
     )
     ax.add_artist(pl0)
-    pl1 = plt.legend(handles=[l1, l2])
+    plt.legend(handles=[l1, l2])
     plt.xlabel("vibrational q.n.")
     plt.ylabel(r"relative pop. of $d^3\Pi_u$")
 
 
-def plot_xd(model: "CoronaModel") -> None:
+def plot_xd(model: CoronaModel) -> None:
     """Plot synthetic nX and nd."""
     import matplotlib.pyplot as plt
 
@@ -188,10 +189,11 @@ def plot_xd(model: "CoronaModel") -> None:
     axs[1].text(0.5, 0.8, r"$d^3\Pi_{u}$", transform=axs[1].transAxes)
 
 
-def plot_xd_flat(model: "CoronaModel", **kws) -> None:
+def plot_xd_flat(model: CoronaModel, **kws) -> None:
     """Plot flattened X and d populations."""
-    import matplotlib.pyplot as plt
     from math import ceil
+
+    import matplotlib.pyplot as plt
 
     ax = kws.get("ax", plt.gca())
 
@@ -210,7 +212,7 @@ def plot_xd_flat(model: "CoronaModel", **kws) -> None:
     ax.set_xlim(-1, ceil(model.nd.shape[0] * model.nd.shape[1] / 5) * 5)
 
 
-def plot_paper_compare(model: "CoronaModel", **kws) -> None:
+def plot_paper_compare(model: CoronaModel, **kws) -> None:
     """
     Plot comparison of experimental d-state population with Corona-Model
     reconstruction (fig. 4.24 Ishihara thesis / figs. 11–12 JQSRT-2021).
@@ -252,10 +254,10 @@ def plot_paper_compare(model: "CoronaModel", **kws) -> None:
     ax.set_ylabel(r"$\mathrm{n_{d v^{\prime} N^{\prime}}}$ [a.u.]")
 
 
-def plot_rtp(model: "CoronaModel") -> None:
+def plot_rtp(model: CoronaModel) -> None:
     """Plot rtp (radiation transition probability)."""
-    import matplotlib.pyplot as plt
     import matplotlib as mpl
+    import matplotlib.pyplot as plt
 
     im = plt.imshow(
         model.rtp, origin="lower", cmap=plt.cm.seismic, norm=mpl.colors.LogNorm()
@@ -266,7 +268,7 @@ def plot_rtp(model: "CoronaModel") -> None:
     ax.set_ylabel("J (X)")
 
 
-def plot_R(model: "CoronaModel") -> None:
+def plot_R(model: CoronaModel) -> None:
     """Plot R-matrix."""
     import matplotlib.pyplot as plt
 
@@ -275,10 +277,10 @@ def plot_R(model: "CoronaModel") -> None:
     plt.gcf().set_size_inches([9, 9])
 
 
-def plot_fcf(model: "CoronaModel") -> None:
+def plot_fcf(model: CoronaModel) -> None:
     """Plot Franck-Condon factors."""
-    import matplotlib.pyplot as plt
     import matplotlib as mpl
+    import matplotlib.pyplot as plt
 
     fcf = model.fcf[:4, :4]
     im = plt.imshow(
@@ -292,10 +294,9 @@ def plot_fcf(model: "CoronaModel") -> None:
     ax.set_ylabel(r"$v$' ($d^3\Pi_u$)")
 
 
-def plot_ccs(model: "CoronaModel") -> None:
+def plot_ccs(model: CoronaModel) -> None:
     """Plot collision cross-sections."""
     import matplotlib.pyplot as plt
-    import matplotlib as mpl
 
     ccs = model.ccs.values[:4, :4]
     im = plt.imshow(ccs, origin="lower", cmap=plt.cm.seismic)
@@ -307,7 +308,7 @@ def plot_ccs(model: "CoronaModel") -> None:
     ax.set_ylabel(r"$v$' ($d^3\Pi_u$)")
 
 
-def plot_coronal_result(model: "CoronaModel") -> None:
+def plot_coronal_result(model: CoronaModel) -> None:
     """Plot two panels: synthetic population and data comparison."""
     import matplotlib.pyplot as plt
 
@@ -318,10 +319,11 @@ def plot_coronal_result(model: "CoronaModel") -> None:
     fig.set_size_inches([12, 10])
 
 
-def plot_contribution(model: "CoronaModel", Tvib: int = 7000) -> None:
+def plot_contribution(model: CoronaModel, Tvib: int = 7000) -> None:
     """Plot contribution of X-state vibrational levels to d-state population."""
-    import matplotlib.pyplot as plt
     from math import ceil
+
+    import matplotlib.pyplot as plt
     from scipy.constants import Boltzmann, elementary_charge
 
     kb = Boltzmann / elementary_charge
@@ -375,7 +377,7 @@ def plot_contribution(model: "CoronaModel", Tvib: int = 7000) -> None:
     )
 
 
-def plot_popx_paper(model: "CoronaModel", fontsize: int = 11, ms: int = 4) -> None:
+def plot_popx_paper(model: CoronaModel, fontsize: int = 11, ms: int = 4) -> None:
     """Plot X-state population (figs 9–10 of the paper)."""
     import matplotlib.pylab as plt
 

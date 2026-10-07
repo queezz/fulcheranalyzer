@@ -1,0 +1,7 @@
+# Recommended semiempirical D2 coefficients [s^-1], Lavrov et al. (2015) Table 7
+# Rows v'=0..3; columns v''=0..7. Zeros mean below semiempirical reach,
+# not measured physical zeros. DOI: 10.48550/arXiv.1512.06306
+2.48e7,2.42e6,3.75e4,0,0,0,0,0
+2.42e6,1.98e7,4.58e6,1.162e5,2.60e2,0,0,0
+2.27e5,4.25e6,1.539e7,6.46e6,2.37e5,5.20e2,0,0
+2.33e4,6.19e5,5.52e6,1.156e7,8.03e6,3.98e5,1.10e3,0

@@ -16,11 +16,11 @@ if TYPE_CHECKING:
 
 
 def plot_coronal_qc(
-    model: "CoronaModel",
+    model: CoronaModel,
     *,
-    ax: "Axes | None" = None,
+    ax: Axes | None = None,
     title: str | None = None,
-) -> "Figure":
+) -> Figure:
     """Plot measured d-state populations against the fitted coronal model."""
     import matplotlib.pyplot as plt
 

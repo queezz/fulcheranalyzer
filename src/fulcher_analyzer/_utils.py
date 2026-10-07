@@ -6,7 +6,7 @@ import pandas as pd
 
 
 def delta_kro(a, b):
-    """ 
+    """
     Kronecker-s delta  https://en.wikipedia.org/wiki/Kronecker_delta
     """
     if a == b:
@@ -17,7 +17,7 @@ def delta_kro(a, b):
 
 def g_as(J, isotop="d"):
     """
-    Spin multiplicity, or stat. weight, 
+    Spin multiplicity, or stat. weight,
     formula for rotational q.n. J for H2 or D2
     """
     if isotop == "d":
@@ -38,7 +38,7 @@ def g_as_vector(Jlen=15, isotop="d", transpose=False, j0=0):
 
 
 def tjpo_vector(Jlen=15, transpose=False, j0=0):
-    """ 
+    """
     vector (2(Jind+1)+1)
     d-state: j0=1
     X-state: j0=0
@@ -64,7 +64,7 @@ def reshape_4d2d(matrix):
 def flatdf(df, order="f"):
     """
     Flatten a DataFrame with nans into np.array()
-   
+
 
     Parameters
     ----------
@@ -76,7 +76,7 @@ def flatdf(df, order="f"):
 
 
 def flatdf_1(df, name="val"):
-    """ 
+    """
     Flatten DataFrame, remove nans, reset index. Good for fitting.
     Consistently returns 1d array. Order is Column-wise, or 'f'.
     """

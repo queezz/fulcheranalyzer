@@ -1,0 +1,9 @@
+# H2 d3Pi_u- -> a3Sigma_g+ Q-branch Einstein A coefficients [s^-1]
+# Rows: v'=0..3; columns: v''=0..7. Source table is transposed.
+# Source: Lavrov, Pozdeev & Yakovleva (2015), Table 5 comparison column
+# (non-empirical adiabatic calculation from their reference 21).
+# DOI: 10.48550/arXiv.1512.06306
+2.4077e7,1.6552e6,9.2743e3,7.7501e-2,5.6159e-2,2.1645e-5,1.2126e-4,2.4635e-4
+1.5258e6,2.0655e7,3.2649e6,2.9732e4,2.8248e0,1.8340e-1,4.0941e-6,4.9920e-3
+1.0712e5,2.8369e6,1.7377e7,4.7993e6,6.2309e4,2.1093e1,6.3848e-1,1.1783e-2
+8.3952e3,3.1899e5,3.8874e6,1.4317e7,6.2363e6,1.0633e5,1.0579e2,1.8096e0

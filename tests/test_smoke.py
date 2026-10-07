@@ -67,6 +67,12 @@ def test_molecular_data_files():
         "fulcher-\u03b1_band_wavelength.txt",
         "fulcher-\u03b1_band_wavenumber_D2.txt",
         "spectroscopic_constants.csv",
+        "einstein_A_h2.csv",
+        "einstein_A_d2.csv",
+        "einstein_A_h2_semiempirical.csv",
+        "einstein_A_h2_semiempirical_err.csv",
+        "einstein_A_d2_semiempirical.csv",
+        "einstein_A_d2_semiempirical_err.csv",
     ]
     for fname in required:
         resource = MOLECULAR_DATA_FOLDER.joinpath(fname)
@@ -92,6 +98,54 @@ def test_spectroscopic_constants_values():
     # DataFrame index order must be preserved
     assert list(mc.h2.index) == ["d3", "a3", "X"]
     assert list(mc.d2.index) == ["d3", "a3", "X"]
+
+
+def test_einstein_a_provenance_and_lifetime_cross_check():
+    from fulcher_analyzer import MolecularConstants
+
+    mc = MolecularConstants()
+
+    assert mc.AH.shape == (4, 8)
+    assert mc.AD.shape == (4, 8)
+    assert mc.A_source_doi == "10.48550/arXiv.1512.06306"
+    assert mc.AH.iloc[0, 0] == pytest.approx(2.4077e7)
+    assert mc.AD.iloc[3, 3] == pytest.approx(1.1276e7)
+    assert 1e9 / mc.AHsum[0] == pytest.approx(38.848, abs=0.001)
+
+
+def test_semiempirical_einstein_a_tables_and_uncertainties():
+    from fulcher_analyzer import MolecularConstants
+
+    mc = MolecularConstants(a_table="semiempirical")
+
+    assert mc.A_table == "semiempirical"
+    assert "recommended semiempirical" in mc.A_source
+    assert mc.AH.iloc[0, 0] == pytest.approx(2.48e7)
+    assert mc.AD.iloc[3, 3] == pytest.approx(1.156e7)
+    assert mc.AH_err.iloc[0, 0] == pytest.approx(3.0e5)
+    assert mc.AD_err.iloc[3, 6] == pytest.approx(2.0e2)
+    np_lifetimes_h = 1e9 / mc.AHsum
+    np_lifetimes_d = 1e9 / mc.ADsum
+    assert np_lifetimes_h.tolist() == pytest.approx(
+        [37.85, 38.66, 39.57, 40.34], abs=0.02
+    )
+    assert np_lifetimes_d.tolist() == pytest.approx(
+        [36.69, 37.15, 37.64, 38.24], abs=0.02
+    )
+
+
+def test_boltzmann_selects_semiempirical_einstein_a_table():
+    from fulcher_analyzer import BoltzmannPlot, read_intensities
+
+    comparison = BoltzmannPlot(read_intensities(152478, 10), "h")
+    semiempirical = BoltzmannPlot(
+        read_intensities(152478, 10), "h", a_table="semiempirical"
+    )
+
+    assert comparison.a_table == "comparison"
+    assert semiempirical.a_table == "semiempirical"
+    assert semiempirical.Aev[0] == pytest.approx(2.48e7)
+    assert not comparison.nd.equals(semiempirical.nd)
 
 
 def test_read_intensities_d2():
@@ -128,6 +182,41 @@ def test_boltzmann_init_h2():
     assert bp.isotop == "h"
     assert bp.nd.shape == (11, 3)
     assert bp.nd_rel.shape == (11, 3)
+
+
+def test_h2_boltzmann_accepts_four_diagonal_bands():
+    import pandas as pd
+
+    from fulcher_analyzer import BoltzmannPlot
+
+    intensities = pd.DataFrame(1.0, index=range(9), columns=range(4))
+    errors = pd.DataFrame(0.1, index=range(9), columns=range(4))
+
+    bp = BoltzmannPlot((intensities, errors), "h")
+
+    assert bp.nd.shape == (9, 4)
+    assert bp.AevJ.shape == (9, 4)
+    assert bp.AevJ[0, 3] == pytest.approx(bp.mol.AH.iloc[3, 3])
+
+
+def test_boltzmann_population_uses_one_einstein_a_path():
+    from fulcher_analyzer import BoltzmannPlot, read_intensities
+
+    bp = BoltzmannPlot(read_intensities(152478, 10), "h")
+
+    expected = bp.nd / bp.v2jp1 / bp.vg
+    assert bp.nd_bol.equals(expected)
+
+
+def test_boltzmann_hot_temperature_bound_and_diagnostic():
+    from fulcher_analyzer import BoltzmannPlot, read_intensities
+
+    bp = BoltzmannPlot(read_intensities(152478, 10), "h")
+
+    assert bp.bounds[1][3] == 6000
+    bp.autofit()
+    assert bp.fit_at_bound.shape == bp.popt.shape
+    assert not bp.fit_at_upper_bound[3]
 
 
 def test_boltzmann_qc_plotter_renders(tmp_path):
@@ -230,27 +319,15 @@ def test_batch_cli_qc_schedule_defaults_to_every_frame():
 
 
 def test_batch_cli_plan_applies_analyze_section(tmp_path):
-    from fulcher_analyzer.batch_cli import _apply_plan, _build_parser, _provided_destinations
+    from fulcher_analyzer.batch_cli import (
+        _apply_plan,
+        _build_parser,
+        _provided_destinations,
+    )
 
     plan = tmp_path / "h2_dataset_plan.toml"
     plan.write_text(
-        "\n".join(
-            [
-                "[common]",
-                'cube_glob = "ignored/*.nc"',
-                "progress_every = 7",
-                "",
-                "[analyze]",
-                'input_dir = "dataset/intensities"',
-                'output_dir = "~/Fulcher-runs/demo/dataset"',
-                'fit_report_dir = "dataset/fit_reports"',
-                'manifest = "scan/selected_frames.csv"',
-                'isotopologue = "h"',
-                "qc_every = 2",
-                "workers = 3",
-                "max_fit_relerr = 0.5",
-            ]
-        ),
+        '[common]\ncube_glob = "ignored/*.nc"\nprogress_every = 7\n\n[analyze]\ninput_dir = "dataset/intensities"\noutput_dir = "~/Fulcher-runs/demo/dataset"\nfit_report_dir = "dataset/fit_reports"\nmanifest = "scan/selected_frames.csv"\nisotopologue = "h"\nqc_every = 2\nworkers = 3\nmax_fit_relerr = 0.5',
         encoding="utf-8",
     )
 
@@ -401,6 +478,8 @@ def test_batch_cli_plot_kind_limits_qc_outputs(tmp_path):
     coronal_summary = pd.read_csv(output_dir / "coronal_summary.csv")
     assert "boltzmann_qc_plot" not in boltzmann_summary.columns
     assert "coronal_qc_plot" not in coronal_summary.columns
+    assert bool(boltzmann_summary.loc[0, "fit_at_bound"]) is False
+    assert bool(boltzmann_summary.loc[0, "Trot2_at_bound"]) is False
 
 
 def test_saved_qc_plotters_use_stable_geometry(tmp_path, monkeypatch):
@@ -848,7 +927,7 @@ if __name__ == "__main__":
         try:
             t()
             print(f"  PASS  {t.__name__}")
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 -- Standalone runner reports every test failure.
             print(f"  FAIL  {t.__name__}: {exc}")
             failed += 1
     print(f"\n{len(tests) - failed}/{len(tests)} tests passed.")
