@@ -20,7 +20,7 @@
       
       
       <link rel="icon" href="../../assets/h2icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -28,7 +28,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1073,6 +1073,13 @@
 
 
 <h1 id="coronal-model-x-state-reconstruction">Coronal model (X-state reconstruction)<a class="headerlink" href="#coronal-model-x-state-reconstruction" title="Permanent link">¶</a></h1>
+<p>The H2 and D2 Einstein-A branching matrices are the comparison columns from
+Tables 5 and 7 of Lavrov, Pozdeev &amp; Yakovleva (2015), quoting the
+non-empirical adiabatic calculation in their reference 21:
+<a href="https://doi.org/10.48550/arXiv.1512.06306">arXiv:1512.06306</a>.
+The model inherits the <code>comparison</code> or <code>semiempirical</code> selection from its
+<code>BoltzmannPlot</code>; semiempirical runs rebuild their R-matrix in memory so they
+cannot reuse or overwrite the packaged comparison-table cache.</p>
 <p>Stage 2 of the analysis. Given the fitted d-state population from
 <a href="../boltzmann/"><code>BoltzmannPlot</code></a>, <code>CoronaModel</code> constructs a trial X-state
 rovibrational population for a given <code>Tvib</code>, projects it onto the d-state
@@ -1263,7 +1270,7 @@ regression values.</p>
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.top", "content.code.copy", "content.image.zoom"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="../../javascripts/mathjax.js"></script>
       

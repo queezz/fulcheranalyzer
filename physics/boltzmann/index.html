@@ -20,7 +20,7 @@
       
       
       <link rel="icon" href="../../assets/h2icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -28,7 +28,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1080,6 +1080,20 @@ Einstein A coefficients, transition energies, and degeneracy factors for
 the chosen isotopologue, converts line intensities into a Boltzmann plot
 of d-state level populations, and fits a two-temperature rotational
 distribution.</p>
+<p>The population and the Boltzmann ordinate use one consistent route:
+<code>n_d ∝ I·λ/A</code>, followed by division by <code>(2N'+1) g_as</code>. Franck–Condon
+factors belong to the downstream coronal model and are not a second
+normalization of the measured d-state population.</p>
+<p>The packaged H2 and D2 Einstein-A matrices reproduce the comparison columns
+of Tables 5 and 7 in Lavrov, Pozdeev &amp; Yakovleva (2015), transposed to
+<code>(v', v'')</code>: <a href="https://doi.org/10.48550/arXiv.1512.06306">arXiv:1512.06306</a>.
+Those columns quote the non-empirical adiabatic calculation from that paper's
+reference 21; they are not the authors' recommended semiempirical H2 values.
+Both complete H2 and D2 columns are available. Pass
+<code>a_table="semiempirical"</code> to <code>BoltzmannPlot</code> to select the recommended values;
+the default <code>"comparison"</code> preserves historical results. Semiempirical
+uncertainties are exposed as <code>bp.mol.AH_err</code> and <code>bp.mol.AD_err</code>. Zeros in
+that table mean below the semiempirical method's reach, not physical zeros.</p>
 <h2 id="fitted-quantities-used-downstream">Fitted quantities used downstream<a class="headerlink" href="#fitted-quantities-used-downstream" title="Permanent link">¶</a></h2>
 <p>After <code>bp.autofit()</code> the following attributes are populated and are
 consumed by the second-stage coronal-model fit:</p>
@@ -1111,6 +1125,10 @@ consumed by the second-stage coronal-model fit:</p>
 <td><code>bp.popt</code></td>
 <td>Full <code>curve_fit</code> parameter vector</td>
 </tr>
+<tr>
+<td><code>bp.fit_at_bound</code></td>
+<td>Boolean vector identifying parameters fitted at a limit</td>
+</tr>
 </tbody>
 </table>
 <p><code>CoronaModel</code> inherits these via its <code>bp</code> reference and holds them fixed
@@ -1121,6 +1139,8 @@ during the <code>Tvib</code> fit. See <a href="../coronal_model/">Coronal model<
   published workflow / Ishihara-style analysis. It is preserved by
   regression tests; do not re-parameterise without updating the
   regression values.</li>
+<li>The default upper bound for the hot rotational component is 6000 K.
+  Treat a true value in <code>bp.fit_at_bound</code> as a limit, not a measurement.</li>
 <li><code>BoltzmannPlot</code> accepts either the <code>(intensity_df, error_df)</code> tuple
   returned by <code>read_intensities</code> or just the intensity DataFrame.</li>
 </ul>
@@ -1182,7 +1202,7 @@ during the <code>Tvib</code> fit. See <a href="../coronal_model/">Coronal model<
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.top", "content.code.copy", "content.image.zoom"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="../../javascripts/mathjax.js"></script>
       
