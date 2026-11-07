@@ -13,9 +13,10 @@ The code reproduces the published coronal-model workflow described in:
 > (JQSRT), 2021.
 
 The package has been **mechanically refactored** from a monolithic script into a
-structured `src`-layout Python package. All numerical behavior is preserved:
-regression tests assert the published D₂ and H₂ reference outputs to floating-point
-precision.
+structured `src`-layout Python package. Since 0.2.1 the populations follow one
+consistent Einstein-A path, which moved the reference temperatures by 1–4 %; the
+regression tests assert the D₂ and H₂ reference outputs recaptured after that fix
+(see the changelog) to floating-point precision.
 
 ## Quick start
 

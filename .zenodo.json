@@ -1,0 +1,26 @@
+{
+  "upload_type": "software",
+  "title": "fulcher-analyzer: Molecular hydrogen Fulcher-alpha emission analyzer",
+  "description": "<p>This release archives the software version used for the H₂ Fulcher-α\ncompanion analysis of the revised LHD study.</p>\n<p>Changes since v0.2.0:</p>\n<ul>\n<li>Derives the measured d-state and Boltzmann populations through one\nconsistent Einstein-A path instead of mixing incompatible Einstein-A and\nFranck–Condon tables.</li>\n<li>Supports four-band H₂ intensity tables using the packaged diagonal\nEinstein-A values.</li>\n<li>Moves the H₂ and D₂ Einstein-A matrices into cited data files,\nidentified as the Lavrov et al. (2015) Tables 5/7 comparison\ncolumns.</li>\n<li>Adds selectable recommended semiempirical H₂/D₂ matrices with\nuncertainties and independent lifetime regression checks\n(<code>a_table=\"semiempirical\"</code> in the API,\n<code>--a-table semiempirical</code> in the batch CLI); the comparison\ntable remains the default.</li>\n<li>Raises the hot rotational-temperature ceiling to 6000 K and exposes\nbound contact through <code>BoltzmannPlot.fit_at_bound</code> and the\nbatch-summary flags <code>fit_at_bound</code>,\n<code>Trot1_at_bound</code>, <code>Trot2_at_bound</code>.</li>\n<li>Re-freezes the regression reference values of the published D₂ and\nH₂ reproduction after the population fix (the hot-component and\nvibrational temperatures move by 1–4 %).</li>\n</ul>\n<p>Validation for this release: 52 tests passed; the documentation built\nsuccessfully in strict mode.</p>",
+  "creators": [
+    {
+      "name": "Kuzmin, Arseniy A.",
+      "affiliation": "Kyoto University",
+      "orcid": "0000-0002-8429-3298"
+    },
+    {
+      "name": "Liptak, Alexander",
+      "affiliation": "Diamond Light Source Ltd"
+    }
+  ],
+  "license": "mit",
+  "keywords": [
+    "Fulcher-alpha",
+    "molecular hydrogen",
+    "Boltzmann plot",
+    "rotational temperature",
+    "coronal model",
+    "plasma spectroscopy"
+  ],
+  "access_right": "open"
+}

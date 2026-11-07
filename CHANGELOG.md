@@ -11,6 +11,9 @@
   uncertainties and independent lifetime regression checks.
 - Raise the hot rotational-temperature ceiling to 6000 K and expose bound
   contact through `BoltzmannPlot.fit_at_bound` and batch-summary flags.
+- Re-freeze the reproduction values of `tests/test_paper_reproduction.py` after
+  the population fix (D2: T_rot,2 1782.83 -> 1732.77 K, T_vib 7743 -> 7840 K;
+  H2: T_rot,2 2079.14 -> 2010.27 K, T_vib 6801 -> 7053 K; T_rot,1 within 2.5 K).
 
 ## 0.2.0 - 2026-06-13
 
