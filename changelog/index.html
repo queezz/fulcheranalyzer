@@ -20,7 +20,7 @@
       
       
       <link rel="icon" href="../assets/h2icon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -28,10 +28,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -791,6 +791,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
+  <a href="#021-2026-08-29" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.2.1 - 2026-08-29
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#020-2026-06-13" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -949,6 +960,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
+  <a href="#021-2026-08-29" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.2.1 - 2026-08-29
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#020-2026-06-13" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -980,6 +1002,21 @@
 
 
 <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">¶</a></h1>
+<h2 id="021-2026-08-29">0.2.1 - 2026-08-29<a class="headerlink" href="#021-2026-08-29" title="Permanent link">¶</a></h2>
+<ul>
+<li>Derive measured d-state and Boltzmann populations through one consistent
+  Einstein-A path instead of mixing incompatible A and Franck–Condon tables.</li>
+<li>Support four-band H2 intensity tables using the packaged diagonal A values.</li>
+<li>Move the H2 and D2 Einstein-A matrices into cited data files and identify
+  them as Lavrov et al. (2015) Tables 5/7 comparison columns.</li>
+<li>Add selectable complete recommended semiempirical H2/D2 matrices with
+  uncertainties and independent lifetime regression checks.</li>
+<li>Raise the hot rotational-temperature ceiling to 6000 K and expose bound
+  contact through <code>BoltzmannPlot.fit_at_bound</code> and batch-summary flags.</li>
+<li>Re-freeze the reproduction values of <code>tests/test_paper_reproduction.py</code> after
+  the population fix (D2: T_rot,2 1782.83 -&gt; 1732.77 K, T_vib 7743 -&gt; 7840 K;
+  H2: T_rot,2 2079.14 -&gt; 2010.27 K, T_vib 6801 -&gt; 7053 K; T_rot,1 within 2.5 K).</li>
+</ul>
 <h2 id="020-2026-06-13">0.2.0 - 2026-06-13<a class="headerlink" href="#020-2026-06-13" title="Permanent link">¶</a></h2>
 <ul>
 <li>Add <code>fulcher-analyze-batch</code> for running Boltzmann and coronal analysis from extractor intensity tables.</li>
@@ -1045,10 +1082,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.top", "content.code.copy", "content.image.zoom"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.top", "content.code.copy", "content.image.zoom"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../javascripts/mathjax.js"></script>
       
